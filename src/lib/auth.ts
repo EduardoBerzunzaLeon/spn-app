@@ -7,6 +7,9 @@ export const auth = betterAuth({
   database: drizzleAdapter(db.spn, {
     provider: 'pg', // or "mysql", "sqlite"
   }),
+  advanced: {
+    cookiePrefix: 'spn',
+  },
   session: {
     cookieCache: {
       enabled: true,

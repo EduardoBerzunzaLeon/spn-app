@@ -7,9 +7,9 @@ export default {
   schema: './src/server/db/spn/schema.ts',
   out: './.drizzle',
   dialect: 'postgresql',
-  //   breakpoints: true,
-  //   verbose: true,
-  //   strict: true,
+  breakpoints: true,
+  verbose: true,
+  strict: true,
   dbCredentials: {
     url: process.env.DATABASE_URL!,
   },

@@ -3,15 +3,26 @@ import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { createServerFn } from '@tanstack/react-start';
+import { getWebRequest } from '@tanstack/react-start/server';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import mantineCssUrl from '@mantine/core/styles.css?url';
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary';
 import { NotFound } from '~/components/NotFound';
+import { auth } from '~/lib/auth';
 import { seo } from '~/utils/seo';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
+  user: Awaited<ReturnType<typeof getUser>>;
 }>()({
+  beforeLoad: async ({ context }) => {
+    const user = await context.queryClient.fetchQuery({
+      queryKey: ['user'],
+      queryFn: ({ signal }) => getUser({ signal }),
+    }); // we're using react-query for caching, see router.tsx
+    return { user };
+  },
   head: () => ({
     meta: [
       {
@@ -67,6 +78,13 @@ function RootComponent() {
     </RootDocument>
   );
 }
+
+const getUser = createServerFn({ method: 'GET' }).handler(async () => {
+  const { headers } = getWebRequest()!;
+  const session = await auth.api.getSession({ headers });
+
+  return session?.user || null;
+});
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
