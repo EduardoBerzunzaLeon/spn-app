@@ -1,4 +1,5 @@
 import { ErrorComponent, Link, rootRouteId, useMatch, useRouter } from '@tanstack/react-router';
+// eslint-disable-next-line no-duplicate-imports
 import type { ErrorComponentProps } from '@tanstack/react-router';
 
 export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
@@ -15,24 +16,25 @@ export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
       <ErrorComponent error={error} />
       <div className="flex gap-2 items-center flex-wrap">
         <button
+          type="button"
           onClick={() => {
             router.invalidate();
           }}
-          className={`px-2 py-1 bg-gray-600 dark:bg-gray-700 rounded text-white uppercase font-extrabold`}
+          className="px-2 py-1 bg-gray-600 dark:bg-gray-700 rounded text-white uppercase font-extrabold"
         >
           Try Again
         </button>
         {isRoot ? (
           <Link
             to="/"
-            className={`px-2 py-1 bg-gray-600 dark:bg-gray-700 rounded text-white uppercase font-extrabold`}
+            className="px-2 py-1 bg-gray-600 dark:bg-gray-700 rounded text-white uppercase font-extrabold"
           >
             Home
           </Link>
         ) : (
           <Link
             to="/"
-            className={`px-2 py-1 bg-gray-600 dark:bg-gray-700 rounded text-white uppercase font-extrabold`}
+            className="px-2 py-1 bg-gray-600 dark:bg-gray-700 rounded text-white uppercase font-extrabold"
             onClick={(e) => {
               e.preventDefault();
               window.history.back();

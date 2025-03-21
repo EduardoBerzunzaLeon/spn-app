@@ -1,9 +1,10 @@
-import { QueryClient } from '@tanstack/react-query';
+import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
 import { createRouter as createTanStackRouter } from '@tanstack/react-router';
 import { routerWithQueryClient } from '@tanstack/react-router-with-query';
 import { DefaultCatchBoundary } from './components/DefaultCatchBoundary';
 import { NotFound } from './components/NotFound';
 import { routeTree } from './routeTree.gen';
+import { toast } from './utils';
 
 export function createRouter() {
   const queryClient = new QueryClient({
@@ -14,6 +15,16 @@ export function createRouter() {
         retry: 0,
       },
     },
+    queryCache: new QueryCache({
+      onError: (error) => {
+        return toast.error(error.message);
+      },
+    }),
+    mutationCache: new MutationCache({
+      onError: (error) => {
+        return toast.error(error.message);
+      },
+    }),
   });
 
   return routerWithQueryClient(

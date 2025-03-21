@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, redirect, useRouter } from '@tanstack/react-router';
 import { Button } from '@mantine/core';
 import { authClient } from '~/lib/utils/authClient';
+import { keys } from '~/utils';
 
 export const Route = createFileRoute('/_auth')({
   component: DashboardLayout,
@@ -13,10 +14,6 @@ export const Route = createFileRoute('/_auth')({
         },
       });
     }
-
-    // `context.queryClient` is also available in our loaders
-    // https://tanstack.com/start/latest/docs/framework/react/examples/start-basic-react-query
-    // https://tanstack.com/router/latest/docs/framework/react/guide/external-data-loading
   },
 });
 
@@ -42,7 +39,7 @@ function DashboardLayout() {
       <Button
         onClick={async () => {
           await authClient.signOut();
-          await queryClient.invalidateQueries({ queryKey: ['user'] });
+          await queryClient.invalidateQueries({ queryKey: [keys.auth.AUTH_USER] });
           await router.invalidate();
         }}
         type="button"

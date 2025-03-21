@@ -7,9 +7,12 @@ import { createServerFn } from '@tanstack/react-start';
 import { getWebRequest } from '@tanstack/react-start/server';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import mantineCssUrl from '@mantine/core/styles.css?url';
+import { Notifications } from '@mantine/notifications';
+import notificationCssUrl from '@mantine/notifications/styles.css?url';
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary';
 import { NotFound } from '~/components/NotFound';
 import { auth } from '~/lib/auth';
+import { keys } from '~/utils';
 import { seo } from '~/utils/seo';
 
 export const Route = createRootRouteWithContext<{
@@ -18,9 +21,9 @@ export const Route = createRootRouteWithContext<{
 }>()({
   beforeLoad: async ({ context }) => {
     const user = await context.queryClient.fetchQuery({
-      queryKey: ['user'],
+      queryKey: [keys.auth.AUTH_USER],
       queryFn: ({ signal }) => getUser({ signal }),
-    }); // we're using react-query for caching, see router.tsx
+    });
     return { user };
   },
   head: () => ({
@@ -39,6 +42,7 @@ export const Route = createRootRouteWithContext<{
     ],
     links: [
       { rel: 'stylesheet', href: mantineCssUrl },
+      { rel: 'stylesheet', href: notificationCssUrl },
       {
         rel: 'apple-touch-icon',
         sizes: '180x180',
@@ -94,7 +98,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <ColorSchemeScript nonce="8IBTHwOdqNKAWeKl7plt8g==" defaultColorScheme="dark" />
       </head>
       <body>
-        <MantineProvider defaultColorScheme="dark">{children}</MantineProvider>
+        <MantineProvider defaultColorScheme="dark">
+          <Notifications position="top-right" limit={4} />
+          {children}
+        </MantineProvider>
         <TanStackRouterDevtools position="bottom-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" />
         <Scripts />
