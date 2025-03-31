@@ -3,15 +3,13 @@ import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-import { createServerFn } from '@tanstack/react-start';
-import { getWebRequest } from '@tanstack/react-start/server';
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import mantineCssUrl from '@mantine/core/styles.css?url';
 import { Notifications } from '@mantine/notifications';
 import notificationCssUrl from '@mantine/notifications/styles.css?url';
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary';
 import { NotFound } from '~/components/NotFound';
-import { auth } from '~/lib/auth';
+import { getUser } from '~/server/functions/auth/auth.function';
 import linksCssUrl from '~/styles/links-groups.css?url';
 import sidebarCssUrl from '~/styles/sidebar.css?url';
 import { keys } from '~/utils';
@@ -86,13 +84,6 @@ function RootComponent() {
     </RootDocument>
   );
 }
-
-const getUser = createServerFn({ method: 'GET' }).handler(async () => {
-  const { headers } = getWebRequest()!;
-  const session = await auth.api.getSession({ headers });
-
-  return session?.user || null;
-});
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (

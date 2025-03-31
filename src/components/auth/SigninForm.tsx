@@ -4,8 +4,8 @@ import { signInFormOptions } from '~/utils';
 export const SigninForm = () => {
   const form = useAppForm({
     ...signInFormOptions,
-    onSubmit: async ({ value }) => {
-      await signInMutation.mutateAsync({ data: value });
+    onSubmit: ({ value }) => {
+      signInMutation.mutate({ data: value });
     },
   });
 
@@ -18,6 +18,7 @@ export const SigninForm = () => {
         e.stopPropagation();
         form.handleSubmit();
       }}
+      method="post"
     >
       <form.AppField name="email">
         {(field) => (
@@ -30,7 +31,12 @@ export const SigninForm = () => {
         )}
       </form.AppField>
       <form.AppForm>
-        <form.SubscribeButton fullWidth mt="xl" label="Iniciar Sesión" />
+        <form.SubmitButton
+          fullWidth
+          mt="xl"
+          label="Iniciar Sesión"
+          isSubmitting={signInMutation.isPending}
+        />
       </form.AppForm>
     </form>
   );

@@ -19,7 +19,7 @@ import {
   Text,
   useMantineTheme,
 } from '@mantine/core';
-import FeaturesLink from './FeaturesLink';
+import { FeaturesLink } from './FeaturesLink';
 
 const mockdata = [
   {
@@ -54,7 +54,7 @@ const mockdata = [
   },
 ];
 
-const FeaturesCard = () => {
+export const FeaturesCard = () => {
   const theme = useMantineTheme();
 
   return (
@@ -103,5 +103,3 @@ const FeaturesCard = () => {
     </HoverCard>
   );
 };
-
-export default FeaturesCard;

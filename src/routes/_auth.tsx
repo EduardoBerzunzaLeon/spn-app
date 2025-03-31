@@ -1,19 +1,9 @@
-import {
-  IconAdjustments,
-  IconCalendarStats,
-  IconFileAnalytics,
-  IconGauge,
-  IconLock,
-  IconNotes,
-  IconPresentationAnalytics,
-} from '@tabler/icons-react';
-import { createFileRoute, redirect, useRouter } from '@tanstack/react-router';
+import { IconGauge, IconNotes } from '@tabler/icons-react';
+import { createFileRoute, Outlet, redirect, useRouter } from '@tanstack/react-router';
 import { AppShell, Burger, Group, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import FeaturesCard from '~/components/ui/FeaturesCard/FeaturesCard';
-import { LinksGroup } from '~/components/ui/LinksGroup/LinksGroups';
-import { authClient } from '~/lib/utils/authClient';
-import { keys } from '~/utils';
+import { SignOut } from '~/components/auth/';
+import { FeaturesCard, LinksGroup } from '~/components/ui';
 
 export const Route = createFileRoute('/_auth')({
   component: DashboardLayout,
@@ -32,45 +22,22 @@ export const Route = createFileRoute('/_auth')({
 const mockdataLink = [
   { label: 'Dashboard', icon: IconGauge },
   {
-    label: 'Market news',
+    label: 'Conceptos',
     icon: IconNotes,
     initiallyOpened: true,
     links: [
-      { label: 'Overview', link: '/' },
-      { label: 'Forecasts', link: '/' },
-      { label: 'Outlook', link: '/' },
-      { label: 'Real time', link: '/' },
-    ],
-  },
-  {
-    label: 'Releases',
-    icon: IconCalendarStats,
-    links: [
-      { label: 'Upcoming releases', link: '/' },
-      { label: 'Previous releases', link: '/' },
-      { label: 'Releases schedule', link: '/' },
-    ],
-  },
-  { label: 'Analytics', icon: IconPresentationAnalytics },
-  { label: 'Contracts', icon: IconFileAnalytics },
-  { label: 'Settings', icon: IconAdjustments },
-  {
-    label: 'Security',
-    icon: IconLock,
-    links: [
-      { label: 'Enable 2FA', link: '/' },
-      { label: 'Change password', link: '/' },
-      { label: 'Recovery codes', link: '/' },
+      { label: 'Reintegros', link: '/' },
+      { label: 'Forte', link: '/' },
+      { label: 'Inaeco', link: '/' },
     ],
   },
 ];
 
 function DashboardLayout() {
-  const { queryClient } = Route.useRouteContext();
+  const { user } = Route.useRouteContext();
   // const { user } = Route.useLoaderData();
 
-  // const { user } = Route.useRouteContext();
-  const router = useRouter();
+  console.log({ user });
   const linksN = mockdataLink.map((item) => <LinksGroup {...item} key={item.label} />);
 
   // console.log({ user });
@@ -99,13 +66,17 @@ function DashboardLayout() {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
-        <AppShell.Section></AppShell.Section>
+        <AppShell.Section>Holi</AppShell.Section>
         <AppShell.Section grow my="md" component={ScrollArea}>
           {linksN}
         </AppShell.Section>
-        <AppShell.Section>Navbar footer – always at the bottom</AppShell.Section>
+        <AppShell.Section>
+          <SignOut />
+        </AppShell.Section>
       </AppShell.Navbar>
-      <AppShell.Main>Main</AppShell.Main>
+      <AppShell.Main>
+        <Outlet />
+      </AppShell.Main>
     </AppShell>
   );
 }

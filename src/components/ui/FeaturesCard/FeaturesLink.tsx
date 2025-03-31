@@ -8,7 +8,7 @@ interface Props {
   description: string;
 }
 
-const FeaturesLink = ({ Icon, title, description }: Props) => {
+export const FeaturesLink = ({ Icon, title, description }: Props) => {
   const theme = useMantineTheme();
 
   return (
@@ -29,5 +29,3 @@ const FeaturesLink = ({ Icon, title, description }: Props) => {
     </UnstyledButton>
   );
 };
-
-export default FeaturesLink;
