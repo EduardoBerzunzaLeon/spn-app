@@ -10,6 +10,7 @@ export const signIn = createServerFn({ method: 'POST' })
   .middleware([errorMiddleware])
   .validator(LoginSchema)
   .handler(async ({ data }) => {
+
     const response = await auth.cases.signIn(data);
     setHeader('set-cookie', response.headers.getSetCookie());
 

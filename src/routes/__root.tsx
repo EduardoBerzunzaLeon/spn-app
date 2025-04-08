@@ -26,8 +26,12 @@ export const Route = createRootRouteWithContext<{
   beforeLoad: async ({ context }) => {
     const user = await context.queryClient.fetchQuery(authQueryOptions());
 
+    if(!user) {
+      return { user };
+    }
+    
     const initialSiapsep = await context.queryClient.fetchQuery(
-      controlProcessQueryOptions({ enabled: !!user })
+      controlProcessQueryOptions()
     );
 
     return { user, initialSiapsep };

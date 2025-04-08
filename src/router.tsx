@@ -6,9 +6,21 @@ import { NotFound } from './features/core/components/NotFound';
 import { routeTree } from './routeTree.gen';
 import { toast } from './utils';
 
+const handleErrorMessage = (errorMessage?: string) => {
+  if(!errorMessage) {
+    return 'Error inmanegable, favor de verificar los logs';
+  }
+  
+  if(errorMessage.length > 100) {
+    return 'Error demasiado largo, favor de verificar los logs';
+  } 
+  
+  return errorMessage;
+}
+
 const initialSiapsep = {
   online: false,
-  error: true,
+  error: 'No ha inicializado',
   ordinaryFortnight: {
     fortnight: 0,
     status: '',
@@ -31,13 +43,16 @@ export function createRouter() {
     },
     queryCache: new QueryCache({
       onError: (error) => {
-        return toast.error(error.message);
+        console.log({ errorQuery: error })
+        const message = handleErrorMessage(error.message);
+        return toast.error(message);
       },
     }),
     mutationCache: new MutationCache({
       onError: (error) => {
-        console.log({ error });
-        return toast.error(error.message);
+        console.log({ errorMutation: error })
+        const message = handleErrorMessage(error.message);
+        return toast.error(message);
       },
       onSuccess: () => {
         queryClient.invalidateQueries();
