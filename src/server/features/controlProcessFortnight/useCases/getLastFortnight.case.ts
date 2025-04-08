@@ -63,7 +63,7 @@ const getCurrentOpenFortnight = async () => {
 export const getSiapsepInitialData = async () => {
   const result = {
     online: true,
-    error: false,
+    error: '',
   };
 
   try {

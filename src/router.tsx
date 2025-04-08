@@ -7,16 +7,16 @@ import { routeTree } from './routeTree.gen';
 import { toast } from './utils';
 
 const handleErrorMessage = (errorMessage?: string) => {
-  if(!errorMessage) {
+  if (!errorMessage) {
     return 'Error inmanegable, favor de verificar los logs';
   }
-  
-  if(errorMessage.length > 100) {
+
+  if (errorMessage.length > 100) {
     return 'Error demasiado largo, favor de verificar los logs';
-  } 
-  
+  }
+
   return errorMessage;
-}
+};
 
 const initialSiapsep = {
   online: false,
@@ -32,6 +32,17 @@ const initialSiapsep = {
   },
 };
 
+const initialSicon = {
+  online: false,
+  error: 'No ha inicitalizado',
+  module: {
+    id: 0,
+    status: '',
+    fortnight: 0,
+    name: '',
+  },
+};
+
 export function createRouter() {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -43,14 +54,14 @@ export function createRouter() {
     },
     queryCache: new QueryCache({
       onError: (error) => {
-        console.log({ errorQuery: error })
+        console.log({ errorQuery: error });
         const message = handleErrorMessage(error.message);
         return toast.error(message);
       },
     }),
     mutationCache: new MutationCache({
       onError: (error) => {
-        console.log({ errorMutation: error })
+        console.log({ errorMutation: error });
         const message = handleErrorMessage(error.message);
         return toast.error(message);
       },
@@ -63,7 +74,7 @@ export function createRouter() {
   return routerWithQueryClient(
     createTanStackRouter({
       routeTree,
-      context: { queryClient, user: null, initialSiapsep },
+      context: { queryClient, user: null, initialSiapsep, initialSicon },
       defaultPreload: 'intent',
       // react-query will handle data fetching & caching
       // https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#passing-all-loader-events-to-an-external-cache

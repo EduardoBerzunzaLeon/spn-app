@@ -4,6 +4,7 @@ import { AppShell, Burger, Group, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { SignOut } from '~/features/auth';
 import { InititalSiapsep } from '~/features/controlProcess';
+import { InititalSicon } from '~/features/controlSicon';
 import { FeaturesCard, LinksGroup } from '~/features/ui';
 
 export const Route = createFileRoute('/_auth')({
@@ -62,6 +63,7 @@ function DashboardLayout() {
           {/* <MantineLogo size={30} /> */}
           {/* {initialSiapsep.online && initialSiapsep.ordinaryFortnight?.fortnight} */}
           <InititalSiapsep />
+          <InititalSicon />
           <Group h="100%" gap={0} visibleFrom="sm">
             <FeaturesCard />
           </Group>

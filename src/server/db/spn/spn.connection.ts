@@ -2,10 +2,12 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import pkg from 'pg';
 import * as schema from './schema';
 
+import 'dotenv/config';
+
 const { Pool } = pkg;
 
 const pool = new Pool({
-  connectionString: 'postgres://postgres:postgres@localhost:5432/test_db',
+  connectionString: process.env.SPN_BD_URL!,
 });
 
 const db_spn = drizzle(pool, {

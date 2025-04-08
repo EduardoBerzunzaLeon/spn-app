@@ -14,6 +14,7 @@ import { serverFn } from '~/server/functions';
 // import appCssUrl from '~/styles/app.css?url';
 import '~/styles/app.css';
 
+import { controlSiconQueryOptions } from '~/features/controlSicon';
 import linksCssUrl from '~/styles/links-groups.css?url';
 import sidebarCssUrl from '~/styles/sidebar.css?url';
 import { seo } from '~/utils/seo';
@@ -22,19 +23,21 @@ export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
   user: Awaited<ReturnType<typeof serverFn.auth.getUser>>;
   initialSiapsep: Awaited<ReturnType<typeof serverFn.controlProcess.getFortnight>>;
+  initialSicon: Awaited<ReturnType<typeof serverFn.controlSicon.getFortnight>>;
 }>()({
   beforeLoad: async ({ context }) => {
     const user = await context.queryClient.fetchQuery(authQueryOptions());
 
-    if(!user) {
+    if (!user) {
       return { user };
     }
-    
-    const initialSiapsep = await context.queryClient.fetchQuery(
-      controlProcessQueryOptions()
-    );
 
-    return { user, initialSiapsep };
+    const [initialSiapsep, initialSicon] = await Promise.all([
+      context.queryClient.fetchQuery(controlProcessQueryOptions()),
+      context.queryClient.fetchQuery(controlSiconQueryOptions()),
+    ]);
+
+    return { user, initialSiapsep, initialSicon };
   },
   head: () => ({
     meta: [

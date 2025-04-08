@@ -1,6 +1,8 @@
 import odbc from 'odbc';
 import { ExecuteProps, OdbcConnection } from './siapsep.interface';
 
+import 'dotenv/config';
+
 export class SiapsepConnection implements OdbcConnection {
   private connection: odbc.Connection | undefined;
 
@@ -8,7 +10,7 @@ export class SiapsepConnection implements OdbcConnection {
     if (this.connection) {
       return;
     }
-    this.connection = await odbc.connect('DSN=nomina3');
+    this.connection = await odbc.connect(process.env.SIAPSEP_DB_DS!);
   }
 
   async prepareStatement<T>({ query, args }: ExecuteProps) {
