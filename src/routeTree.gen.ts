@@ -14,6 +14,9 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as SigninImport } from './routes/signin'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AuthIndexImport } from './routes/_auth/index'
+import { Route as AuthConceptsIndexImport } from './routes/_auth/concepts/index'
+import { Route as AuthConceptsRefundIndexImport } from './routes/_auth/concepts/refund/index'
+import { Route as AuthConceptsForteIndexImport } from './routes/_auth/concepts/forte/index'
 
 // Create/Update Routes
 
@@ -31,6 +34,24 @@ const AuthRoute = AuthImport.update({
 const AuthIndexRoute = AuthIndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthConceptsIndexRoute = AuthConceptsIndexImport.update({
+  id: '/concepts/',
+  path: '/concepts/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthConceptsRefundIndexRoute = AuthConceptsRefundIndexImport.update({
+  id: '/concepts/refund/',
+  path: '/concepts/refund/',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthConceptsForteIndexRoute = AuthConceptsForteIndexImport.update({
+  id: '/concepts/forte/',
+  path: '/concepts/forte/',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -59,6 +80,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/concepts/': {
+      id: '/_auth/concepts/'
+      path: '/concepts'
+      fullPath: '/concepts'
+      preLoaderRoute: typeof AuthConceptsIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/concepts/forte/': {
+      id: '/_auth/concepts/forte/'
+      path: '/concepts/forte'
+      fullPath: '/concepts/forte'
+      preLoaderRoute: typeof AuthConceptsForteIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/concepts/refund/': {
+      id: '/_auth/concepts/refund/'
+      path: '/concepts/refund'
+      fullPath: '/concepts/refund'
+      preLoaderRoute: typeof AuthConceptsRefundIndexImport
+      parentRoute: typeof AuthImport
+    }
   }
 }
 
@@ -66,10 +108,16 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthIndexRoute: typeof AuthIndexRoute
+  AuthConceptsIndexRoute: typeof AuthConceptsIndexRoute
+  AuthConceptsForteIndexRoute: typeof AuthConceptsForteIndexRoute
+  AuthConceptsRefundIndexRoute: typeof AuthConceptsRefundIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthIndexRoute: AuthIndexRoute,
+  AuthConceptsIndexRoute: AuthConceptsIndexRoute,
+  AuthConceptsForteIndexRoute: AuthConceptsForteIndexRoute,
+  AuthConceptsRefundIndexRoute: AuthConceptsRefundIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
@@ -78,11 +126,17 @@ export interface FileRoutesByFullPath {
   '': typeof AuthRouteWithChildren
   '/signin': typeof SigninRoute
   '/': typeof AuthIndexRoute
+  '/concepts': typeof AuthConceptsIndexRoute
+  '/concepts/forte': typeof AuthConceptsForteIndexRoute
+  '/concepts/refund': typeof AuthConceptsRefundIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/': typeof AuthIndexRoute
+  '/concepts': typeof AuthConceptsIndexRoute
+  '/concepts/forte': typeof AuthConceptsForteIndexRoute
+  '/concepts/refund': typeof AuthConceptsRefundIndexRoute
 }
 
 export interface FileRoutesById {
@@ -90,14 +144,30 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/signin': typeof SigninRoute
   '/_auth/': typeof AuthIndexRoute
+  '/_auth/concepts/': typeof AuthConceptsIndexRoute
+  '/_auth/concepts/forte/': typeof AuthConceptsForteIndexRoute
+  '/_auth/concepts/refund/': typeof AuthConceptsRefundIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/signin' | '/'
+  fullPaths:
+    | ''
+    | '/signin'
+    | '/'
+    | '/concepts'
+    | '/concepts/forte'
+    | '/concepts/refund'
   fileRoutesByTo: FileRoutesByTo
-  to: '/signin' | '/'
-  id: '__root__' | '/_auth' | '/signin' | '/_auth/'
+  to: '/signin' | '/' | '/concepts' | '/concepts/forte' | '/concepts/refund'
+  id:
+    | '__root__'
+    | '/_auth'
+    | '/signin'
+    | '/_auth/'
+    | '/_auth/concepts/'
+    | '/_auth/concepts/forte/'
+    | '/_auth/concepts/refund/'
   fileRoutesById: FileRoutesById
 }
 
@@ -128,7 +198,10 @@ export const routeTree = rootRoute
     "/_auth": {
       "filePath": "_auth.tsx",
       "children": [
-        "/_auth/"
+        "/_auth/",
+        "/_auth/concepts/",
+        "/_auth/concepts/forte/",
+        "/_auth/concepts/refund/"
       ]
     },
     "/signin": {
@@ -136,6 +209,18 @@ export const routeTree = rootRoute
     },
     "/_auth/": {
       "filePath": "_auth/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/concepts/": {
+      "filePath": "_auth/concepts/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/concepts/forte/": {
+      "filePath": "_auth/concepts/forte/index.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/concepts/refund/": {
+      "filePath": "_auth/concepts/refund/index.tsx",
       "parent": "/_auth"
     }
   }

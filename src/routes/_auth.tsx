@@ -22,15 +22,14 @@ export const Route = createFileRoute('/_auth')({
 });
 
 const mockdataLink = [
-  { label: 'Dashboard', icon: IconGauge },
+  { label: 'Dashboard', icon: IconGauge, link: '/' },
   {
     label: 'Conceptos',
     icon: IconNotes,
-    initiallyOpened: true,
+    initiallyOpened: false,
     links: [
-      { label: 'Reintegros', link: '/' },
-      { label: 'Forte', link: '/' },
-      { label: 'Inaeco', link: '/' },
+      { label: 'Reintegros', link: '/refund' },
+      { label: 'Forte', link: '/forte' },
     ],
   },
 ];
