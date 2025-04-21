@@ -1,11 +1,17 @@
-import { IconGauge, IconNotes } from '@tabler/icons-react';
-import { createFileRoute, Outlet, redirect, useRouter } from '@tanstack/react-router';
+import { useMemo } from 'react';
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useChildMatches,
+  useRouterState,
+} from '@tanstack/react-router';
 import { AppShell, Burger, Group, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { SignOut } from '~/features/auth';
 import { InititalSiapsep } from '~/features/controlProcess';
 import { InititalSicon } from '~/features/controlSicon';
-import { FeaturesCard, LinksGroup } from '~/features/ui';
+import { FeaturesCard, SideBarMenu } from '~/features/ui';
 
 export const Route = createFileRoute('/_auth')({
   component: DashboardLayout,
@@ -19,31 +25,30 @@ export const Route = createFileRoute('/_auth')({
       });
     }
   },
+  head: ({ params }) => ({
+    meta: [
+      {
+        title: 'Dashboard | SPN',
+      },
+    ],
+  }),
+  // meta: { title: 'SPN | Dashboard' },
 });
 
-const mockdataLink = [
-  { label: 'Dashboard', icon: IconGauge, link: '/' },
-  {
-    label: 'Conceptos',
-    icon: IconNotes,
-    initiallyOpened: false,
-    links: [
-      { label: 'Reintegros', link: '/refund' },
-      { label: 'Forte', link: '/forte' },
-    ],
-  },
-];
-
 function DashboardLayout() {
-  // const { user, initialSiapsep } = Route.useRouteContext();
-  // const { user } = Route.useLoaderData();
-
-  const linksN = mockdataLink.map((item) => <LinksGroup {...item} key={item.label} />);
-
-  // console.log({ user });
-
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
+
+  const matches = useRouterState({ select: (s) => s.matches });
+
+  const breadcrumbs = matches
+    // .filter((match) => match.context.getTitle)
+    .map(({ pathname, context, params }) => ({
+      // title: context.getTitle({ params }),
+      path: pathname,
+    }));
+
+  console.log({ breadcrumbs });
 
   return (
     <AppShell
@@ -59,8 +64,6 @@ function DashboardLayout() {
         <Group h="100%" px="md" justify="space-between">
           <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
           <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
-          {/* <MantineLogo size={30} /> */}
-          {/* {initialSiapsep.online && initialSiapsep.ordinaryFortnight?.fortnight} */}
           <Group>
             <InititalSiapsep />
             <InititalSicon />
@@ -73,7 +76,7 @@ function DashboardLayout() {
       <AppShell.Navbar p="md">
         <AppShell.Section>Holi</AppShell.Section>
         <AppShell.Section grow my="md" component={ScrollArea}>
-          {linksN}
+          <SideBarMenu />
         </AppShell.Section>
         <AppShell.Section>
           <SignOut />

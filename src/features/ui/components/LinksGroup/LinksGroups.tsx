@@ -1,58 +1,27 @@
-import React, { PropsWithChildren, useState } from 'react';
+import React, { useState } from 'react';
 import { IconChevronRight } from '@tabler/icons-react';
-import { Link } from '@tanstack/react-router';
-import { string } from 'better-auth';
-import { Box, Collapse, Group, ThemeIcon, UnstyledButton } from '@mantine/core';
-import { isFunction } from '../../../../utils/validationTypes/validationTypes';
+import { Box, Collapse, Group, UnstyledButton } from '@mantine/core';
 import { AppLink } from '../AppLink/AppLink';
+import { LinkSingle } from './LinkSingle';
+import { LinkWrapper } from './LinkWrapper';
 
 interface LinksGroupProps {
   icon: React.FC<any>;
   label: string;
   initiallyOpened?: boolean;
   link?: string;
+  matchRoute?: string;
   links?: { label: string; link: string }[];
 }
 
-interface LinkSingleProps {
-  icon: React.FC<any>;
-  label: string;
-  className?: string;
-}
-
-const LinkSingle = ({ icon: Icon, label, className }: LinkSingleProps) => {
-  return (
-    <Box style={{ display: 'flex', alignItems: 'center' }}>
-      <ThemeIcon variant="light" size={30}>
-        <Icon size={18} />
-      </ThemeIcon>
-      <Box ml="md" className={className}>
-        {label}
-      </Box>
-    </Box>
-  );
-};
-
-interface LinkWrapperProps {
-  children: React.ReactNode | ((props: { isActive: boolean }) => React.ReactNode);
-  link?: string;
-}
-
-const LinkWrapper = ({ link, children }: LinkWrapperProps) => {
-  // if (!link) {
-  //   return <>{children({ isActive: false })}</>;
-  // }
-
-  return (
-    <AppLink to={link} underline="never" disabled={!!link}>
-      {({ isActive }: { isActive: boolean }) => {
-        return isFunction(children) ? children({ isActive }) : children;
-      }}
-    </AppLink>
-  );
-};
-
-export const LinksGroup = ({ icon, label, initiallyOpened, links, link }: LinksGroupProps) => {
+export const LinksGroup = ({
+  icon,
+  label,
+  initiallyOpened,
+  links,
+  link,
+  matchRoute,
+}: LinksGroupProps) => {
   const hasLinks = Array.isArray(links);
   const [opened, setOpened] = useState(initiallyOpened || false);
   const items = (hasLinks ? links : []).map((link) => (
@@ -72,9 +41,9 @@ export const LinksGroup = ({ icon, label, initiallyOpened, links, link }: LinksG
   ));
 
   return (
-    <>
-      <LinkWrapper link={link}>
-        {({ isActive }) => (
+    <LinkWrapper link={link} matchRoute={matchRoute}>
+      {({ isActive }) => (
+        <>
           <>
             <UnstyledButton onClick={() => setOpened((o) => !o)} className={'control'}>
               <Group justify="space-between" gap={0}>
@@ -84,15 +53,17 @@ export const LinksGroup = ({ icon, label, initiallyOpened, links, link }: LinksG
                     className={'chevron'}
                     stroke={1.5}
                     size={16}
-                    style={{ transform: opened ? 'rotate(-90deg)' : 'none' }}
+                    style={{
+                      transform: opened ? 'rotate(-90deg)' : 'none',
+                    }}
                   />
                 )}
               </Group>
             </UnstyledButton>
           </>
-        )}
-      </LinkWrapper>
-      {hasLinks ? <Collapse in={opened}>{items}</Collapse> : null}
-    </>
+          {hasLinks ? <Collapse in={opened}>{items}</Collapse> : null}
+        </>
+      )}
+    </LinkWrapper>
   );
 };

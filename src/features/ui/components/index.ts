@@ -4,3 +4,4 @@ export * from './LinksGroup/LinksGroups';
 export * from './Badges/';
 export * from './IconList/IconList';
 export * from './Icons';
+export * from './SideBarMenu/SideBarMenu';
