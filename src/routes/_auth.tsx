@@ -1,17 +1,10 @@
-import { useMemo } from 'react';
-import {
-  createFileRoute,
-  Outlet,
-  redirect,
-  useChildMatches,
-  useRouterState,
-} from '@tanstack/react-router';
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { AppShell, Burger, Group, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { SignOut } from '~/features/auth';
 import { InititalSiapsep } from '~/features/controlProcess';
 import { InititalSicon } from '~/features/controlSicon';
-import { FeaturesCard, SideBarMenu } from '~/features/ui';
+import { FeaturesCard, MainHeader, SideBarMenu } from '~/features/ui';
 
 export const Route = createFileRoute('/_auth')({
   component: DashboardLayout,
@@ -24,31 +17,20 @@ export const Route = createFileRoute('/_auth')({
         },
       });
     }
+    return { crumb: 'Dashboard', iconName: 'home' };
   },
-  head: ({ params }) => ({
+  head: () => ({
     meta: [
       {
         title: 'Dashboard | SPN',
       },
     ],
   }),
-  // meta: { title: 'SPN | Dashboard' },
 });
 
 function DashboardLayout() {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
-
-  const matches = useRouterState({ select: (s) => s.matches });
-
-  const breadcrumbs = matches
-    // .filter((match) => match.context.getTitle)
-    .map(({ pathname, context, params }) => ({
-      // title: context.getTitle({ params }),
-      path: pathname,
-    }));
-
-  console.log({ breadcrumbs });
 
   return (
     <AppShell
@@ -83,6 +65,7 @@ function DashboardLayout() {
         </AppShell.Section>
       </AppShell.Navbar>
       <AppShell.Main>
+        <MainHeader />
         <Outlet />
       </AppShell.Main>
     </AppShell>

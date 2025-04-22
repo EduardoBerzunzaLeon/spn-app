@@ -1,7 +1,6 @@
-import { IconProps, IconXboxX } from '@tabler/icons-react';
+import { IconXboxX } from '@tabler/icons-react';
+import { IconAppProps } from './icon.types';
 
-interface Props extends IconProps {}
-
-export const IconError = (props: Props) => {
+export const IconError = (props: IconAppProps) => {
   return <IconXboxX {...props} />;
 };

@@ -1,7 +1,6 @@
-import { IconProps, IconServerOff } from '@tabler/icons-react';
+import { IconServerOff } from '@tabler/icons-react';
+import { IconAppProps } from './icon.types';
 
-interface Props extends IconProps {}
-
-export const IconServerError = (props: Props) => {
+export const IconServerError = (props: IconAppProps) => {
   return <IconServerOff {...props} />;
 };

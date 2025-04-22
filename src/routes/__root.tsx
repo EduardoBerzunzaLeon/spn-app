@@ -23,13 +23,15 @@ import '~/styles/app.css';
 import { controlSiconQueryOptions } from '~/features/controlSicon';
 import linksCssUrl from '~/styles/links-groups.css?url';
 import sidebarCssUrl from '~/styles/sidebar.css?url';
-import { seo } from '~/utils/seo';
+import { Nulleable, seo } from '~/utils';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
   user: Awaited<ReturnType<typeof serverFn.auth.getUser>>;
   initialSiapsep: Awaited<ReturnType<typeof serverFn.controlProcess.getFortnight>>;
   initialSicon: Awaited<ReturnType<typeof serverFn.controlSicon.getFortnight>>;
+  crumb: Nulleable<string>;
+  iconName: Nulleable<string>;
 }>()({
   beforeLoad: async ({ context }) => {
     const user = await context.queryClient.fetchQuery(authQueryOptions());
@@ -43,8 +45,7 @@ export const Route = createRootRouteWithContext<{
       context.queryClient.fetchQuery(controlSiconQueryOptions()),
     ]);
 
-    return { user, initialSiapsep, initialSicon };
-    // return { user };
+    return { user, initialSiapsep, initialSicon, crumb: null, iconName: null };
   },
   head: () => ({
     meta: [

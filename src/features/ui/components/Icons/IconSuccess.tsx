@@ -1,7 +1,6 @@
-import { IconCircleCheck, IconProps } from '@tabler/icons-react';
+import { IconCircleCheck } from '@tabler/icons-react';
+import { IconAppProps } from './icon.types';
 
-interface Props extends IconProps {}
-
-export const IconSuccess = (props: Props) => {
+export const IconSuccess = (props: IconAppProps) => {
   return <IconCircleCheck {...props} />;
 };

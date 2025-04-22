@@ -1,4 +1,4 @@
-export type IsFunction<T> = T extends (...args: any[]) => any ? T : never;
+import { IsFunction } from '../interfaces';
 
 export const isFunction = <T extends any>(value?: T): value is IsFunction<T> => {
   return typeof value === 'function';

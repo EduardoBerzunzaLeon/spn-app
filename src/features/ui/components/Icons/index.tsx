@@ -5,3 +5,5 @@ export * from './IconSuccess';
 export * from './IconWarning';
 export * from './IconWrapper';
 export * from './IconServer';
+export * from './IconHome';
+export * from './IconConcept';
