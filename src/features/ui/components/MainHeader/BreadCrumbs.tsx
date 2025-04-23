@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Breadcrumbs as BreadcrumbsMantine } from '@mantine/core';
 import { AppButtonLink } from '../AppLink';
 import { IconConcept, IconHome } from '../Icons';
@@ -30,21 +31,25 @@ const getIcon = (iconName: Nulleable<string>) => {
 };
 
 const BreadCrumbs = ({ crumbs }: BreadCrumbsProps) => {
-  const breadcrumbs = crumbs.map(({ context: { crumb, iconName }, pathname }) => {
-    const Icon = getIcon(iconName);
-    return (
-      <AppButtonLink
-        to={pathname}
-        key={crumb}
-        variant="subtle"
-        size="xs"
-        radius="lg"
-        leftSection={Icon ? <Icon size={14} /> : null}
-      >
-        {crumb}
-      </AppButtonLink>
-    );
-  });
+  const breadcrumbs = useMemo(
+    () =>
+      crumbs.map(({ context: { crumb, iconName }, pathname }) => {
+        const Icon = getIcon(iconName);
+        return (
+          <AppButtonLink
+            to={pathname}
+            key={crumb}
+            variant="subtle"
+            size="xs"
+            radius="lg"
+            leftSection={Icon ? <Icon size={14} /> : null}
+          >
+            {crumb}
+          </AppButtonLink>
+        );
+      }),
+    []
+  );
   return <BreadcrumbsMantine>{breadcrumbs}</BreadcrumbsMantine>;
 };
 

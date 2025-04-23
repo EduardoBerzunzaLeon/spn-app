@@ -13,6 +13,8 @@ import {
 import mantineCssUrl from '@mantine/core/styles.css?url';
 import { Notifications } from '@mantine/notifications';
 import notificationCssUrl from '@mantine/notifications/styles.css?url';
+import { NavigationProgress } from '@mantine/nprogress';
+import nprogressCssUrl from '@mantine/nprogress/styles.css?url';
 import { authQueryOptions } from '~/features/auth';
 import { controlProcessQueryOptions } from '~/features/controlProcess';
 import { DefaultCatchBoundary, NotFound } from '~/features/core';
@@ -64,6 +66,7 @@ export const Route = createRootRouteWithContext<{
     links: [
       { rel: 'stylesheet', href: mantineCssUrl },
       { rel: 'stylesheet', href: notificationCssUrl },
+      { rel: 'stylesheet', href: nprogressCssUrl },
       { rel: 'stylesheet', href: sidebarCssUrl },
       { rel: 'stylesheet', href: linksCssUrl },
       // { rel: 'stylesheet', href: appCssUrl },
@@ -128,6 +131,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <MantineProvider defaultColorScheme="dark" theme={theme}>
+          <NavigationProgress />
           <Notifications position="top-right" limit={4} />
           {children}
         </MantineProvider>

@@ -22,6 +22,7 @@ export const SideBarMenu = () => {
       />
     ));
   }, []);
+
   return <>{linksN}</>;
 };
 

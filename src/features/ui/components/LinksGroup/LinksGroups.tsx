@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { memo, useState } from 'react';
 import { IconChevronRight } from '@tabler/icons-react';
-import { Box, Collapse, Group, UnstyledButton } from '@mantine/core';
+import { Collapse, Group, UnstyledButton } from '@mantine/core';
 import { AppLink } from '../AppLink/AppLink';
 import { LinkSingle } from './LinkSingle';
 import { LinkWrapper } from './LinkWrapper';
@@ -14,14 +14,14 @@ interface LinksGroupProps {
   links?: { label: string; link: string }[];
 }
 
-export const LinksGroup = ({
+export const LinksGroup = memo(function LinksGroup({
   icon,
   label,
   initiallyOpened,
   links,
   link,
   matchRoute,
-}: LinksGroupProps) => {
+}: LinksGroupProps) {
   const hasLinks = Array.isArray(links);
   const [opened, setOpened] = useState(initiallyOpened || false);
   const items = (hasLinks ? links : []).map((link) => (
@@ -66,4 +66,4 @@ export const LinksGroup = ({
       )}
     </LinkWrapper>
   );
-};
+});

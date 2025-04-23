@@ -1,6 +1,8 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
+import { useEffect } from 'react';
+import { createFileRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
 import { AppShell, Burger, Group, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { nprogress } from '@mantine/nprogress';
 import { SignOut } from '~/features/auth';
 import { InititalSiapsep } from '~/features/controlProcess';
 import { InititalSicon } from '~/features/controlSicon';
@@ -32,6 +34,20 @@ function DashboardLayout() {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(false);
 
+  const isLoading = useRouterState({
+    select: (s) => s.isLoading,
+  });
+
+  useEffect(() => {
+    if (isLoading) {
+      nprogress.start();
+    } else {
+      nprogress.complete();
+    }
+
+    return () => nprogress.complete();
+  }, [isLoading]);
+
   return (
     <AppShell
       header={{ height: { base: 60, md: 70, lg: 80 } }}
@@ -56,7 +72,6 @@ function DashboardLayout() {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
-        <AppShell.Section>Holi</AppShell.Section>
         <AppShell.Section grow my="md" component={ScrollArea}>
           <SideBarMenu />
         </AppShell.Section>
