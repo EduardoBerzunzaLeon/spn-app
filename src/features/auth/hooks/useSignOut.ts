@@ -10,7 +10,6 @@ export const useSignOut = () => {
     mutationFn: useServerFn(serverFn.auth.signOut),
     onSuccess: async () => {
       await router.invalidate({ sync: true });
-      router.navigate({ to: '/signin' });
     },
   });
 };

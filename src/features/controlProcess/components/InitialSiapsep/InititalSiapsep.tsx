@@ -1,10 +1,10 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { BadgeFortnightSiapsep } from './BadgeFortnightSiapsep';
-import { controlProcessQueryOptions } from '~/features/controlProcess';
+import { controlProcessQueries } from '~/features/controlProcess';
 import { AppBadge, IconServerError } from '~/features/ui';
 
 export const InititalSiapsep = () => {
-  const { data } = useSuspenseQuery(controlProcessQueryOptions());
+  const { data } = useSuspenseQuery(controlProcessQueries.fortnight());
 
   if (data.error || !data?.online) {
     return (

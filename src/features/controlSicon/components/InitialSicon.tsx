@@ -1,10 +1,10 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { controlSiconQueryOptions } from '../query';
+import { controlSiconQueries } from '../query';
 import { BadgeFortnightSicon } from './BadgeFortnightSicon';
 import { AppBadge, IconServerError } from '~/features/ui';
 
 export const InititalSicon = () => {
-  const { data } = useSuspenseQuery(controlSiconQueryOptions());
+  const { data } = useSuspenseQuery(controlSiconQueries.fortnight());
 
   if (data.error || !data?.online) {
     return (

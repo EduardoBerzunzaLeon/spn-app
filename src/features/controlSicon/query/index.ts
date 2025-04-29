@@ -1,2 +1,1 @@
-export * from './controlSicon.keys';
-export * from './controlSicon.options';
+export * from './controlSicon.queries';

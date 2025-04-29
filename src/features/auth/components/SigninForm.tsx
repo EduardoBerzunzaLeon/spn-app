@@ -1,12 +1,20 @@
+import { useNavigate } from '@tanstack/react-router';
 import { signInFormOptions } from '../form';
 import { useAuth } from '../hooks';
 import { useAppForm } from '~/features/form';
 
 export const SigninForm = () => {
+  const navigate = useNavigate();
+
   const form = useAppForm({
     ...signInFormOptions,
     onSubmit: ({ value }) => {
-      signInMutation.mutate({ data: value });
+      signInMutation.mutate(
+        { data: value },
+        {
+          onSuccess: () => navigate({ to: '/' }),
+        }
+      );
     },
   });
 

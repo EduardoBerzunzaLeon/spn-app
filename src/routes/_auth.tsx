@@ -61,17 +61,20 @@ function DashboardLayout() {
         <Group h="100%" px="md" justify="space-between">
           <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
           <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
-          <Group visibleFrom='sm'>
-            <InititalSiapsep />
+          <Group visibleFrom="sm">
             <InititalSicon />
+            <InititalSiapsep />
           </Group>
           <Searchbar />
         </Group>
       </AppShell.Header>
       <AppShell.Navbar p="md">
-        <AppShell.Section hiddenFrom='sm' className='flex flex-row flex-wrap gap-2 justify-start items-center'>
-            <InititalSiapsep />
-            <InititalSicon />
+        <AppShell.Section
+          hiddenFrom="sm"
+          className="flex flex-row flex-wrap gap-2 justify-start items-center"
+        >
+          <InititalSiapsep />
+          <InititalSicon />
         </AppShell.Section>
         <AppShell.Section grow my="md" component={ScrollArea}>
           <SideBarMenu />

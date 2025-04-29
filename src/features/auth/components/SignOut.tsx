@@ -1,13 +1,23 @@
 import React from 'react';
 import { IconLogout } from '@tabler/icons-react';
+import { useNavigate } from '@tanstack/react-router';
+import { nprogress } from '@mantine/nprogress';
 import { useSignOut } from '../hooks';
 
 export const SignOut = () => {
   const signOutMutation = useSignOut();
+  const navigate = useNavigate();
 
   const handleLogout = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    nprogress.start();
     e.preventDefault();
-    signOutMutation.mutate({});
+    signOutMutation.mutate(
+      {},
+      {
+        onSuccess: () => navigate({ to: '/signin' }),
+        onError: () => nprogress.complete(),
+      }
+    );
   };
 
   return (
