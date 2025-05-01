@@ -1,4 +1,4 @@
-import { IsFunction } from '../interfaces';
+import { IsFunction } from "./core.interface";
 
 export const isFunction = <T extends any>(value?: T): value is IsFunction<T> => {
   return typeof value === 'function';

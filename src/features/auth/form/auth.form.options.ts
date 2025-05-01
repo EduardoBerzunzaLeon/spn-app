@@ -1,5 +1,5 @@
 import { formOptions } from '@tanstack/react-form';
-import { LoginSchema } from '~/schemas';
+import { LoginSchema } from '~/shared';
 
 export const signInFormOptions = formOptions({
   defaultValues: {

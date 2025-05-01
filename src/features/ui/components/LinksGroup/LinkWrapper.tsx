@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useChildMatches } from '@tanstack/react-router';
 import { AppLink } from '../AppLink/AppLink';
-import { isFunction } from '~/utils';
+import { isFunction } from '~/shared';
 
 interface LinkWrapperProps {
   children: React.ReactNode | ((props: { isActive: boolean }) => React.ReactNode);

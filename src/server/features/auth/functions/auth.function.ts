@@ -3,7 +3,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { getWebRequest, setHeader } from '@tanstack/react-start/server';
 import { auth as betterAuth } from '~/lib/auth';
 import { errorMiddleware } from '~/lib/middleware';
-import { LoginSchema } from '~/schemas';
+import { LoginSchema } from '~/shared';
 import { ErrorApp } from '~/server/core';
 
 export const signIn = createServerFn({ method: 'POST' })
@@ -27,7 +27,7 @@ export const signOut = createServerFn({ method: 'POST' }).handler(async () => {
 
   const response = await auth.cases.signOut(request?.headers);
   setHeader('set-cookie', response.headers.getSetCookie());
-  if (!response.response.success) {
+  if (!response.ok) {
     throw new Error('Ocurrio un error al momento de cerrar la sesión');
   }
 });

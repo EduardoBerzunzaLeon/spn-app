@@ -5,7 +5,6 @@ import { serverFn } from '~/server/functions';
 
 export const useAuth = () => {
   const router = useRouter();
-
   const queryClient = useQueryClient();
 
   return useMutation({
