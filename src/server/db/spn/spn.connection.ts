@@ -8,6 +8,7 @@ const { Pool } = pkg;
 
 const pool = new Pool({
   connectionString: process.env.SPN_BD_URL!,
+  casing: 'snake_case'
 });
 
 const db_spn = drizzle(pool, {
