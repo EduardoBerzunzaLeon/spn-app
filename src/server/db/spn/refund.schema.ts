@@ -1,6 +1,9 @@
-import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { boolean, pgSchema, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
 
 
-export const refundLogs =  pgTable('re_logs', {
+export const refundSchema = pgSchema('refunds');
+
+export const refundLogs =  refundSchema.table('re_logs', {
+    
 
 })
