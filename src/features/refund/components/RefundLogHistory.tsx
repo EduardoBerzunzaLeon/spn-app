@@ -17,38 +17,7 @@ import { getRefundLogs } from '~/server/repositories/spn/refund';
 type Refunds = Awaited<ReturnType<typeof getRefundLogs>>[number];
 
 export const RefundLogHistory = () => {
-  const search = RefundRoute.useSearch();
-  const navigate = useNavigate({ from: RefundRoute.fullPath });
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
-  const { data, isLoading, isFetching, isError, refetch } = useQuery(
-    refundQueries.logs({ limit: search.limit, page: search.page })
-  );
-
-  console.log({ sorting });
-
-  const handlePaginationChange = (pagination: Updater<PaginationState>) => {
-    const newPagination =
-      typeof pagination === 'function'
-        ? pagination({
-            pageIndex: search.page,
-            pageSize: search.limit,
-          })
-        : pagination;
-
-    // if (search.page === newPagination.pageIndex + 1) return;
-
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        page: newPagination.pageIndex,
-        limit: newPagination.pageSize,
-      }),
-      replace: true,
-      resetScroll: false,
-    });
-  };
-
-  const columns = useMemo<MRT_ColumnDef<Refunds>[]>(
+   const columns = useMemo<MRT_ColumnDef<Refunds>[]>(
     () => [
       {
         accessorKey: 'processFortnight',
@@ -102,11 +71,87 @@ export const RefundLogHistory = () => {
     []
   );
 
-  const fetchedRefunds = data ?? [];
+
+  const search = RefundRoute.useSearch();
+  const navigate = useNavigate({ from: RefundRoute.fullPath });
+  const { data, isLoading, isFetching, isError, refetch } = useQuery(
+    refundQueries.logs({ ...search })
+  );
+
+  const [columnFilterFns, setColumnFilterFns] = //filter modes
+    useState<MRT_ColumnFilterFnsState>(
+      Object.fromEntries(
+        columns.map(({ accessorKey }) => [accessorKey, 'contains']),
+      ),
+    ); 
+
+    console.log({ columnFilterFns
+    });
+
+  const handlePaginationChange = (pagination: Updater<PaginationState>) => {
+    const newPagination =
+      typeof pagination === 'function'
+        ? pagination({
+            pageIndex: search.page,
+            pageSize: search.limit,
+          })
+        : pagination;
+
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: newPagination.pageIndex,
+        limit: newPagination.pageSize,
+      }),
+      replace: true,
+      resetScroll: false,
+    });
+  };
+
+
+  const handleFilterChange = (filters: MRT_ColumnFiltersState) => {
+    const newFilters = 
+      typeof filters === 'function'
+         ? filters(search.filters ? [...search.filters] : [])
+         : filters;
+
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        filters: [...newFilters]
+      }),
+      replace: true,
+      resetScroll: false,
+    })
+  }
+
+
+  const handleSortChange = (sort: MRT_SortingState) => {
+      const newSort =
+        typeof sort === 'function'
+          ? sort([{
+              id: 'id',
+              desc: true,
+            }])
+          : sort;
+        
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        orderBy: newSort[0].id,
+        order: newSort[0].desc ? 'desc': 'asc'
+      }),
+        replace: true,
+        resetScroll: false,
+      });
+  } 
+
+  const fetchedRefunds = data?.data ?? [];
+  const totalRowCount =  data?.meta.totalRowCount ?? 0;
 
   const table = useMantineReactTable({
     columns,
-    data: fetchedRefunds, //must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+    data: fetchedRefunds, 
     renderTopToolbarCustomActions: () => (
       <Tooltip label="Refresh Data">
         <ActionIcon onClick={() => refetch()}>
@@ -116,14 +161,22 @@ export const RefundLogHistory = () => {
     ),
     manualPagination: true,
     manualSorting: true,
-    onSortingChange: setSorting,
+    manualFiltering: true,
     onPaginationChange: handlePaginationChange,
+    onSortingChange: handleSortChange,
+    onColumnFilterFnsChange: setColumnFilterFns,
+    onColumnFiltersChange: handleFilterChange,
+    rowCount: totalRowCount,
+    enableColumnFilterModes: true,
     state: {
+      columnFilterFns,
+      columnFilters: search.filters ?? [],
       isLoading,
       pagination: {
         pageIndex: search.page,
         pageSize: search.limit,
       },
+      sorting: [{ id: search.orderBy, desc: search.order === 'desc' }],
       showAlertBanner: isError,
       showProgressBars: isFetching,
     },

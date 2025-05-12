@@ -1,5 +1,12 @@
 import { repository } from '~/server/repositories';
 
-export const getLogs = async (limit: number, page: number) => {
-  return await repository.spn.refunds.getRefundLogs({ limit, page });
+interface Props {
+  limit: number,
+  page: number,
+  orderBy: string,
+  order: 'asc'| 'desc',
+}
+
+export const getLogs = async (props: Props) => {
+  return await repository.spn.refunds.getRefundLogs({ ...props });
 };

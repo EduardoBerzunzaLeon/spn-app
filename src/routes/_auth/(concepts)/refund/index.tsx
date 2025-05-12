@@ -9,20 +9,23 @@ import { Alert } from '~/features/ui';
 export const refundSearchSchema = v.object({
   limit: v.optional(v.fallback(v.number(), 10), 10),
   page: v.optional(v.fallback(v.number(), 0), 0),
+  orderBy: v.optional(v.fallback(v.string(), 'processFortnight'), 'processFortnight'),
+  order: v.optional(v.fallback(v.string(), 'desc'), 'desc'),
 });
 
 const defaultValues = {
   limit: 10,
   page: 0,
+  orderBy: 'processFortnight',
+  order: 'desc'
 };
 
 export const Route = createFileRoute('/_auth/(concepts)/refund/')({
   component: RouteComponent,
   validateSearch: refundSearchSchema,
   beforeLoad: ({ context, search }) => {
-    const { limit, page } = search;
-    console.log({ limit, page });
-    context.queryClient.prefetchQuery(refundQueries.logs({ limit, page }));
+    const { limit, page, orderBy, order } = search;
+    context.queryClient.prefetchQuery(refundQueries.logs({ limit, page, orderBy, order }));
     return { crumb: 'Reintegros', iconName: 'concept' };
   },
   search: {

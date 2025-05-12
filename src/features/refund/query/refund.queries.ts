@@ -8,13 +8,15 @@ export const refundKeys = {
 interface Props {
   limit: number;
   page: number;
+  orderBy: string;
+  order: 'asc' | 'desc';
 }
 
 export const refundQueries = {
-  logs: ({ limit, page }: Props) =>
+  logs: ({ limit, page, orderBy, order }: Props) =>
     queryOptions({
-      queryKey: [...refundKeys.all, limit, page],
-      queryFn: ({ signal }) => serverFn.refund.getRefundLogs({ data: { limit, page }, signal }),
+      queryKey: [...refundKeys.all, limit, page, orderBy, order],
+      queryFn: ({ signal }) => serverFn.refund.getRefundLogs({ data: { limit, page, orderBy, order }, signal }),
       placeholderData: keepPreviousData,
     }),
 };
