@@ -11,15 +11,12 @@ import {
 } from 'mantine-react-table';
 import { MRT_Localization_ES } from 'mantine-react-table/locales/es/index.cjs';
 import { ActionIcon, Button, Tooltip } from '@mantine/core';
+import { RefundsLogs } from '../interfaces';
 import { refundQueries } from '../query';
 import { Route as RefundRoute } from '~/routes/_auth/(concepts)/refund';
-import { getRefundLogs } from '~/server/repositories/spn/refund';
 
-type ArrayElement<T> = T extends (infer U)[] ? U : never;
-
-type Refunds = ArrayElement<Awaited<ReturnType<typeof getRefundLogs>>['data']>;
 export const RefundLogHistory = () => {
-  const columns = useMemo<MRT_ColumnDef<Refunds>[]>(
+  const columns = useMemo<MRT_ColumnDef<RefundsLogs>[]>(
     () => [
       {
         accessorKey: 'processFortnight',
@@ -27,7 +24,7 @@ export const RefundLogHistory = () => {
         columnFilterModeOptions: ['contains', 'greaterThan', 'between'],
       },
       {
-        accessorFn: (row: Refunds) => row?.user?.name ?? 'no user',
+        accessorFn: (row: RefundsLogs) => row?.user?.name ?? 'no user',
         id: 'user.name',
         header: 'Usuario',
       },

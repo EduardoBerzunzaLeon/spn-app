@@ -1,5 +1,6 @@
 import { and, asc, between, count, desc, eq, gt, gte, ilike, lt, lte, ne, SQL } from 'drizzle-orm';
 import { PgColumn, PgSelect } from 'drizzle-orm/pg-core';
+import { ErrorApp } from '../errors';
 import {
   AddPaginateProps,
   CountProps,
@@ -9,7 +10,6 @@ import {
   WithPaginateProps,
 } from './pagination.adapter.interface';
 import { db } from '~/server/db';
-import { refundLogs, user } from '~/server/db/spn/schema';
 import { isEmpty } from '~/shared';
 
 // MOVE THIS METHODS IF IS NECESSARY IN CORE
@@ -58,7 +58,7 @@ const getFilterSchema = ({ id, schema, joinSchemas }: GetFilterSchema) => {
   if (!id.includes('.')) {
     return {
       currentSchema: schema,
-      newId: id,
+      columnName: id,
     };
   }
 
@@ -68,15 +68,15 @@ const getFilterSchema = ({ id, schema, joinSchemas }: GetFilterSchema) => {
     throw new Error(`The filter ${id} can't be processed`);
   }
 
-  const [table, field] = idArray;
+  const [table, columnName] = idArray;
 
-  if (!joinSchemas?.hasOwnProperty(table)) {
-    throw new Error(`Property ${field} don't found in the join`);
+  if (!joinSchemas?.hasOwnProperty(columnName)) {
+    throw new Error(`Property ${columnName} don't found in the join`);
   }
 
   return {
     currentSchema: joinSchemas[table].schema,
-    newId: field,
+    columnName,
   };
 };
 
@@ -88,13 +88,13 @@ const getFilters = ({ filters, filtersFn, schema, joinSchemas }: GetFiltersProps
   }
 
   for (const { value, id } of filters) {
-    const { currentSchema, newId } = getFilterSchema({ schema, id, joinSchemas });
+    const { currentSchema, columnName } = getFilterSchema({ schema, id, joinSchemas });
 
-    if (!currentSchema.hasOwnProperty(newId)) {
-      throw new Error(`Property ${newId} don't found in the table`);
+    if (!currentSchema.hasOwnProperty(columnName)) {
+      throw ErrorApp.badRequest(`Property ${columnName} don't found in the table`);
     }
 
-    const column = currentSchema[newId as keyof typeof schema]! as PgColumn;
+    const column = currentSchema[columnName as keyof typeof schema]! as PgColumn;
 
     const filterFn = filtersFn[id] ?? 'contains';
 
@@ -104,11 +104,11 @@ const getFilters = ({ filters, filtersFn, schema, joinSchemas }: GetFiltersProps
     }
 
     if (typeof value !== 'string') {
-      throw new Error(`Value ${value} isn't a valid type`);
+      throw ErrorApp.badRequest(`Value ${value} isn't a valid type`);
     }
 
     if (!METHODS_FILTER.hasOwnProperty(filterFn)) {
-      throw new Error(`Filter ${filterFn} isn't allowed`);
+      throw ErrorApp.badRequest(`Filter ${filterFn} isn't allowed`);
     }
 
     filtersSQL.push(METHODS_FILTER[filterFn as keyof typeof METHODS_FILTER](column, value));
