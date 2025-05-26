@@ -14,6 +14,7 @@ export interface PaginateProps {
   limit: number;
   page: number;
   orderBy: string;
+  gFilter: string;
   order: Order;
   filters: FilterI;
   filtersFn: FilterFnI;

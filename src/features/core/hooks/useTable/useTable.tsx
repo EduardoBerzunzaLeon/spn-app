@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { IconRefresh } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
@@ -10,8 +10,9 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import { MRT_Localization_ES } from 'mantine-react-table/locales/es/index.cjs';
-import { ActionIcon, Button, Tooltip } from '@mantine/core';
+import { ActionIcon, Button, Group, Highlight, List, Tooltip } from '@mantine/core';
 import { UseTableProps } from './useTable.interface';
+import { IconList } from '~/features/ui';
 import { isEmpty, isFunction } from '~/shared';
 
 const COLUMNS_STRING_FILTER: Array<MRT_FilterOption | string> = [
@@ -100,7 +101,6 @@ export const useTable = <T extends MRT_RowData, F extends string>({
   from,
   initialState,
   getData,
-  fullPath,
 }: UseTableProps<T, F>) => {
   const columnsMemo = useMemo(() => getColumns(columns), []);
 
@@ -124,7 +124,6 @@ export const useTable = <T extends MRT_RowData, F extends string>({
       }),
       replace: true,
       resetScroll: false,
-      // reloadDocument: true,
     });
   };
 
@@ -140,12 +139,9 @@ export const useTable = <T extends MRT_RowData, F extends string>({
   };
 
   const handleFilterChange = (filters: Updater<ColumnFiltersState>) => {
-    // console.log('changed');
     const newFilters = isFunction(filters)
       ? filters(search.filters ? [...search.filters] : [])
       : filters;
-
-    // setFil(newFilters);
 
     const refreshFilters = reCreateFilters(newFilters);
     navigateSearch({ filters: [...refreshFilters] });
@@ -162,6 +158,10 @@ export const useTable = <T extends MRT_RowData, F extends string>({
   const handleSortChange = (sort: Updater<SortingState>) => {
     const [{ id, desc }] = isFunction(sort) ? sort([{ id: 'id', desc: true }]) : sort;
     navigateSearch({ orderBy: id, order: desc ? 'desc' : 'asc' });
+  };
+
+  const handleGlobalFilterChange = (value: string) => {
+    navigateSearch({ gFilter: value });
   };
 
   const fetchedRefunds = data?.data ?? [];
@@ -190,22 +190,56 @@ export const useTable = <T extends MRT_RowData, F extends string>({
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
-    enableGlobalFilter: false,
+    enableGlobalFilter: true,
     initialState: { showColumnFilters: true },
     onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortChange,
     onColumnFilterFnsChange: handlerFilterFnChange,
     onColumnFiltersChange: handleFilterChange,
+    onGlobalFilterChange: handleGlobalFilterChange,
     // onColumnFiltersChange: setFil,
     localization: MRT_Localization_ES,
     rowCount: totalRowCount,
     enableColumnFilterModes: true,
     enableColumnResizing: true,
+    renderDetailPanel: ({ row }) => {
+      return (
+        <Group align="flex-start">
+          <List spacing="xs" size="sm" center icon={<IconList type="success" />}>
+            {row.original.rfcSuccess?.map((rfc) => (
+              <List.Item key={rfc.rfc}>
+                RFC:{' '}
+                <span className="font-bold">
+                  <Highlight highlight={search.gFilter}>{rfc.rfc}</Highlight>
+                </span>{' '}
+                - Tipo: <span className="font-bold">{rfc.type}</span> - Plaza:{' '}
+                <span className="font-bold">{rfc.plaza}</span>
+              </List.Item>
+            ))}
+          </List>
+          <List spacing="xs" size="sm" center icon={<IconList type="error" />}>
+            {row.original.rfcFailer?.map((rfc) => (
+              <List.Item key={rfc.rfc}>
+                RFC:{' '}
+                <span className="font-bold">
+                  <Highlight highlight={search.gFilter}>{rfc.rfc}</Highlight>
+                </span>{' '}
+                - Tipo: <span className="font-bold">{rfc.type}</span> - Error:{' '}
+                <span className="font-bold">{rfc.error}</span> - Plaza:{' '}
+                <span className="font-bold">{rfc.plaza}</span>
+              </List.Item>
+            ))}
+          </List>
+        </Group>
+      );
+    },
     state: {
       columnFilterFns: isEmpty(search.filtersFn) ? columnsFilter : search.filtersFn,
       // columnFilterFns: search.filtersFn ?? columnsFilter,
       // columnFilterFns: { ...columnsFilter, ...search.filtersFn },
+      showColumnFilters: !!search.gFilter,
       columnFilters: search.filters ?? [],
+      globalFilter: search.gFilter,
       isLoading,
       pagination: {
         pageIndex: search.page,

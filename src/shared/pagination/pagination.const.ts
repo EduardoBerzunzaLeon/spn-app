@@ -4,6 +4,7 @@ export const DEFAULT_SEARCH_VALUES: PaginateProps = {
   limit: 10,
   page: 0,
   orderBy: 'id',
+  gFilter: '',
   order: 'desc',
   filters: [],
   filtersFn: {},

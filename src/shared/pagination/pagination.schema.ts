@@ -22,7 +22,8 @@ export const getSearchSchema = (orderBy: string = 'id') =>
   v.object({
     limit: v.optional(v.fallback(v.number(), 10), 10),
     page: v.optional(v.fallback(v.number(), 0), 0),
-    orderBy: v.optional(v.fallback(v.string(), orderBy), orderBy),
+    gFilter: v.optional(v.fallback(v.pipe(v.string(), v.trim()), ''), ''),
+    orderBy: v.optional(v.fallback(v.pipe(v.string(), v.trim()), orderBy), orderBy),
     order: v.optional(v.fallback(v.picklist(Order), 'desc'), 'desc'),
     filters: v.optional(v.fallback(FilterSchema, []), []),
     filtersFn: v.optional(v.fallback(FilterFnSchema, {}), {}),

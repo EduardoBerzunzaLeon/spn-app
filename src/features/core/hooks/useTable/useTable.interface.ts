@@ -39,6 +39,7 @@ export type QueryKeysPagination<F extends string> = Readonly<
       readonly limit: number;
       readonly page: number;
       readonly orderBy: string;
+      readonly gFilter: string;
       readonly order: Order;
       readonly filters: FilterI;
       readonly filtersFn: FilterFnI;
@@ -51,7 +52,6 @@ type Column<T extends MRT_RowData> = MRT_ColumnDef<T> & { type?: ColumnType };
 export interface UseTableProps<T extends MRT_RowData, F extends string> {
   columns: Column<T>[];
   from: RoutesWithPageAndLimit;
-  fullPath: RoutesWithPath;
   initialState: SearchSchemaI;
   getData: (
     props: PaginateProps

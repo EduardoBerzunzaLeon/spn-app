@@ -51,6 +51,7 @@ async function main() {
       refundLogs: {
         count: 10,
         columns: {
+          consecutive: f.int({ minValue: 1, maxValue: 30 }),
           rfcCreated: f.int({ minValue: 0, maxValue: 10 }),
           rfcDeletedResponsabilities: f.int({ minValue: 0, maxValue: 5 }),
           rfcDeletedEmployeeConcept: f.int({ minValue: 0, maxValue: 5 }),
@@ -74,12 +75,26 @@ async function main() {
         count: 5,
         columns: {
           rfc: f.valuesFromArray({ values: ['XAXX010101000', 'XAXX010101001', 'XAXX010101002'] }),
+          plaza: f.valuesFromArray({
+            values: [
+              '075037  E068700.0070332',
+              '070402 S0180700.0300091',
+              '075029  E148900.0040091',
+            ],
+          }),
         },
       },
       refundRfcFailed: {
         count: 5,
         columns: {
           rfc: f.valuesFromArray({ values: ['XAXX010101000', 'XAXX010101001', 'XAXX010101002'] }),
+          plaza: f.valuesFromArray({
+            values: [
+              '070403 S0180700.0300376',
+              '140412  E028100.0021339',
+              '070413CF0105900.0200035',
+            ],
+          }),
         },
       },
     }));

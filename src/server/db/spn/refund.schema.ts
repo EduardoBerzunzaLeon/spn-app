@@ -1,4 +1,13 @@
-import { boolean, char, integer, pgEnum, pgSchema, smallint, text } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  char,
+  integer,
+  pgEnum,
+  pgSchema,
+  smallint,
+  text,
+  uniqueIndex,
+} from 'drizzle-orm/pg-core';
 import { user } from './auth.schema';
 import { createdAt } from './columns.helpers';
 
@@ -16,23 +25,28 @@ export const refundErrorsEnum = pgEnum('error_refund', [
 
 export const refundSchema = pgSchema('refunds');
 
-export const refundLogs = refundSchema.table('re_logs', {
-  id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  processFortnight: char({ length: 6 }).notNull(),
-  userId: text()
-    .notNull()
-    .references(() => user.id),
-  createdAt,
-  rfcCreated: smallint().default(0).notNull(),
-  rfcDeletedResponsabilities: smallint().default(0).notNull(),
-  rfcDeletedEmployeeConcept: smallint().default(0).notNull(),
-  rfcClosedTerm: smallint().default(0).notNull(),
-  rfcSuccesed: smallint().default(0).notNull(),
-  rfcFailed: smallint().default(0).notNull(),
-  hasError: boolean().default(false).notNull(),
-  activeBefore: integer().default(0).notNull(),
-  activeAfter: integer().default(0).notNull(),
-});
+export const refundLogs = refundSchema.table(
+  're_logs',
+  {
+    id: integer().primaryKey().generatedAlwaysAsIdentity(),
+    processFortnight: char({ length: 6 }).notNull(),
+    userId: text()
+      .notNull()
+      .references(() => user.id),
+    createdAt,
+    consecutive: smallint().default(1).notNull(),
+    rfcCreated: smallint().default(0).notNull(),
+    rfcDeletedResponsabilities: smallint().default(0).notNull(),
+    rfcDeletedEmployeeConcept: smallint().default(0).notNull(),
+    rfcClosedTerm: smallint().default(0).notNull(),
+    rfcSuccesed: smallint().default(0).notNull(),
+    rfcFailed: smallint().default(0).notNull(),
+    hasError: boolean().default(false).notNull(),
+    activeBefore: integer().default(0).notNull(),
+    activeAfter: integer().default(0).notNull(),
+  },
+  (table) => [uniqueIndex('re_logs_consecutive').on(table.processFortnight, table.consecutive)]
+);
 
 export const refundRfcSuccess = refundSchema.table('re_rfc_success', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -40,6 +54,7 @@ export const refundRfcSuccess = refundSchema.table('re_rfc_success', {
     .notNull()
     .references(() => refundLogs.id),
   rfc: char({ length: 13 }).notNull(),
+  plaza: char({ length: 23 }).notNull(),
   type: refundTypesEnum().notNull(),
 });
 
@@ -49,6 +64,7 @@ export const refundRfcFailed = refundSchema.table('re_rfc_failed', {
     .notNull()
     .references(() => refundLogs.id),
   rfc: char({ length: 13 }).notNull(),
+  plaza: char({ length: 23 }).notNull(),
   type: refundTypesEnum().notNull(),
   error: refundErrorsEnum().notNull(),
 });
