@@ -150,7 +150,9 @@ const getFilters = ({ filters, filtersFn, schema, joinSchemas }: GetFiltersProps
 
     const castedValue = column.dataType === 'date' ? new Date(value) : value;
     const castedFilterFn =
-      column.dataType === 'date' && filterFn === 'contains' ? 'equals' : filterFn;
+      (column.dataType === 'date' || column.dataType === 'number') && filterFn === 'contains'
+        ? 'equals'
+        : filterFn;
 
     if (!METHODS_FILTER.hasOwnProperty(castedFilterFn)) {
       throw ErrorApp.badRequest(`Filter ${castedFilterFn} isn't allowed`);

@@ -9,3 +9,5 @@ export * from './IconHome';
 export * from './IconConcept';
 export * from './IconSearch';
 export * from './IconEmptySearch';
+export * from './IconRefresh';
+export * from './IconSettingsOff';

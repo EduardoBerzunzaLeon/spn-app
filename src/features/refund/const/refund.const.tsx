@@ -1,5 +1,5 @@
-import { MRT_ColumnDef } from 'mantine-react-table';
 import { RefundsLogs } from '../interfaces';
+import { Column } from '~/features/core/hooks/useTable';
 import { DEFAULT_SEARCH_VALUES } from '~/shared';
 
 export const DEFAULT_COLUMN = 'processFortnight';
@@ -9,10 +9,12 @@ export const DEFAULT_REFUND_SEARCH = {
   orderBy: DEFAULT_COLUMN,
 };
 
-type ColumnType = 'string' | 'number' | 'date' | 'boolean';
-type Column = MRT_ColumnDef<RefundsLogs> & { type?: ColumnType };
-
-export const REFUND_LOG_COLUMNS: Column[] = [
+export const REFUND_LOG_COLUMNS: Column<RefundsLogs>[] = [
+  {
+    accessorKey: 'consecutive',
+    header: 'Consecutivo',
+    type: 'number',
+  },
   {
     accessorKey: 'processFortnight',
     header: 'Quincena Proceso',

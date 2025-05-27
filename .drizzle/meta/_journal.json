@@ -29,6 +29,13 @@
       "when": 1748293227069,
       "tag": "0003_old_mercury",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1748371833642,
+      "tag": "0004_mature_swordsman",
+      "breakpoints": true
     }
   ]
 }

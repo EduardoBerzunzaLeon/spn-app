@@ -15,6 +15,7 @@ import {
   HoverCard,
   mantineHtmlProps,
   MantineProvider,
+  Tooltip,
 } from '@mantine/core';
 import mantineCssUrl from '@mantine/core/styles.css?url';
 import datesCssUrl from '@mantine/dates/styles.css?url';
@@ -116,6 +117,13 @@ const theme = createTheme({
         shadow: 'md',
         withArrow: true,
         arrowSize: 10,
+      },
+    }),
+    Tooltip: Tooltip.extend({
+      defaultProps: {
+        withArrow: true,
+        arrowSize: 10,
+        color: '#2E2E2E',
       },
     }),
     Button: Button.extend({
