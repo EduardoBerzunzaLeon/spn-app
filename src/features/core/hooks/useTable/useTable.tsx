@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { IconSend, IconUserCircle } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { ColumnFiltersState, PaginationState, SortingState, Updater } from '@tanstack/table-core';
@@ -13,9 +12,9 @@ import {
   useMantineReactTable,
 } from 'mantine-react-table';
 import { MRT_Localization_ES } from 'mantine-react-table/locales/es/index.cjs';
-import { ActionIcon, Flex, Group, Menu, Stack, Tooltip } from '@mantine/core';
+import { ActionIcon, Flex, Tooltip } from '@mantine/core';
 import { UseTableProps } from './useTable.interface';
-import { getColumns, recreateFilters } from './useTable.utils';
+import { getColumns, getColumnsFilter, recreateFilters } from './useTable.utils';
 import { IconError, IconRefresh, IconSettingsOff } from '~/features/ui';
 import { EmptySearch } from '~/features/ui/components/Searchbar/EmptySearch';
 import { isEmpty, isFunction } from '~/shared';
@@ -31,18 +30,18 @@ export const useTable = <T extends MRT_RowData, F extends string>({
   renderRowActionMenuItems,
   enableGlobalFilter = true,
 }: UseTableProps<T, F>) => {
-  const columnsMemo = useMemo(() => getColumns(columns), []);
+  const { columnsTyped, columnsFilter } = useMemo(() => {
+    const columnsTyped = getColumns(columns);
+    const columnsFilter = getColumnsFilter(columnsTyped);
+
+    return {
+      columnsTyped,
+      columnsFilter,
+    };
+  }, []);
 
   const search = useSearch({ from });
   const navigate = useNavigate();
-  // Removed unused and incorrectly typed enableRowActions variable
-
-  const columnsFilter = Object.fromEntries(
-    columnsMemo.map(({ accessorKey, meta, id }) => [
-      accessorKey ?? id,
-      typeof meta === 'string' ? meta : 'contains',
-    ])
-  );
 
   const { data, isLoading, isFetching, refetch } = useQuery(getData({ ...search }));
 
@@ -104,29 +103,24 @@ export const useTable = <T extends MRT_RowData, F extends string>({
   };
 
   const table = useMantineReactTable({
-    columns: columnsMemo,
+    columns: columnsTyped,
     data: fetchedRefunds,
-    renderEmptyRowsFallback: () => (
-      <div className="p-4">
-        <EmptySearch />
-      </div>
-    ),
+    enableColumnFilterModes: true,
     enableColumnOrdering: true,
     enableColumnPinning: true,
+    enableColumnResizing: true,
+    enableGlobalFilter,
+    enableRowActions: !!(renderRowActions || renderRowActionMenuItems),
+    localization: MRT_Localization_ES,
+    manualFiltering: true,
     manualPagination: true,
     manualSorting: true,
-    manualFiltering: true,
-    enableGlobalFilter,
-    onPaginationChange: handlePaginationChange,
-    onSortingChange: handleSortChange,
     onColumnFilterFnsChange: handlerFilterFnChange,
     onColumnFiltersChange: handleFilterChange,
     onGlobalFilterChange: handleGlobalFilterChange,
-    localization: MRT_Localization_ES,
+    onPaginationChange: handlePaginationChange,
+    onSortingChange: handleSortChange,
     rowCount: totalRowCount,
-    enableColumnFilterModes: true,
-    enableColumnResizing: true,
-    enableRowActions: !!(renderRowActions || renderRowActionMenuItems),
     initialState: {
       showGlobalFilter: true,
       showColumnFilters: true,
@@ -141,8 +135,7 @@ export const useTable = <T extends MRT_RowData, F extends string>({
     },
     displayColumnDefOptions: {
       'mrt-row-actions': {
-        header: 'Acciones', //change header text
-        size: 100, //make actions column wider
+        size: 100,
       },
     },
     mantineToolbarAlertBannerProps: !!data?.error?.message
@@ -178,6 +171,11 @@ export const useTable = <T extends MRT_RowData, F extends string>({
         <MRT_ToggleDensePaddingButton table={table} />
         <MRT_ToggleFullScreenButton table={table} />
       </Flex>
+    ),
+    renderEmptyRowsFallback: () => (
+      <div className="p-4">
+        <EmptySearch />
+      </div>
     ),
     renderRowActionMenuItems,
     renderRowActions,

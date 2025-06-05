@@ -2,6 +2,7 @@ import * as React from 'react';
 import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
+import { ModalsProvider } from '@mantine/modals';
 
 import 'dayjs/locale/es';
 
@@ -15,6 +16,7 @@ import {
   HoverCard,
   mantineHtmlProps,
   MantineProvider,
+  Menu,
   Tooltip,
 } from '@mantine/core';
 import mantineCssUrl from '@mantine/core/styles.css?url';
@@ -119,6 +121,14 @@ const theme = createTheme({
         arrowSize: 10,
       },
     }),
+    Menu: Menu.extend({
+      defaultProps: {
+        shadow: 'md',
+        withArrow: true,
+        arrowSize: 10,
+        arrowPosition: 'center',
+      },
+    }),
     Tooltip: Tooltip.extend({
       defaultProps: {
         withArrow: true,
@@ -147,10 +157,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <MantineProvider defaultColorScheme="dark" theme={theme}>
           <NavigationProgress />
-          <Notifications position="top-right" limit={4} />
-          <DatesProvider settings={{ locale: 'es', firstDayOfWeek: 0, weekendDays: [0] }}>
-            {children}
-          </DatesProvider>
+          <ModalsProvider>
+            <Notifications position="bottom-right" limit={4} />
+            <DatesProvider settings={{ locale: 'es', firstDayOfWeek: 0, weekendDays: [0] }}>
+              {children}
+            </DatesProvider>
+          </ModalsProvider>
         </MantineProvider>
         <TanStackRouterDevtools position="bottom-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" />

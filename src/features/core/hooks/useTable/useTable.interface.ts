@@ -1,12 +1,6 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 import { RegisteredRouter, RouteById } from '@tanstack/react-router';
-import {
-  MRT_ColumnDef,
-  MRT_Row,
-  MRT_RowData,
-  MRT_TableInstance,
-  MRT_TableOptions,
-} from 'mantine-react-table';
+import { MRT_ColumnDef, MRT_RowData, MRT_TableOptions } from 'mantine-react-table';
 import { FilterFnI, FilterI, Order, PaginateProps, SearchSchemaI } from '~/shared';
 
 // TODO: Study what happends here, k extends keyof ?? and ternary operation in interfaces

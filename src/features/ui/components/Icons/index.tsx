@@ -11,3 +11,4 @@ export * from './IconSearch';
 export * from './IconEmptySearch';
 export * from './IconRefresh';
 export * from './IconSettingsOff';
+export * from './IconEdit';

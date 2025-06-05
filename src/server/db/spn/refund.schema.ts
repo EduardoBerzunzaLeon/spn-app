@@ -1,13 +1,4 @@
-import {
-  boolean,
-  char,
-  integer,
-  pgEnum,
-  pgSchema,
-  smallint,
-  text,
-  uniqueIndex,
-} from 'drizzle-orm/pg-core';
+import { boolean, char, integer, pgEnum, pgSchema, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import { user } from './auth.schema';
 import { createdAt } from './columns.helpers';
 

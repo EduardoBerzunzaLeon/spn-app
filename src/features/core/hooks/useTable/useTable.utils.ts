@@ -72,6 +72,15 @@ export const getColumns = <T extends MRT_RowData>(columns: Column<T>[]) => {
   return newColumns;
 };
 
+export const getColumnsFilter = <T extends MRT_RowData>(columns: Column<T>[]) => {
+  return Object.fromEntries(
+    columns.map(({ accessorKey, meta, id }) => [
+      accessorKey ?? id,
+      typeof meta === 'string' ? meta : 'contains',
+    ])
+  );
+};
+
 export const recreateFilters = (filters: ColumnFiltersState) => {
   const newFilters = filters.map((filter) => {
     if (Array.isArray(filter.value) && filter.value.length === 2) {
