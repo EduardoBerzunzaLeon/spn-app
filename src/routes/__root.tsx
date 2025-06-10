@@ -2,6 +2,7 @@ import * as React from 'react';
 import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
+import { Toaster } from 'sonner';
 import { ModalsProvider } from '@mantine/modals';
 
 import 'dayjs/locale/es';
@@ -21,8 +22,6 @@ import {
 } from '@mantine/core';
 import mantineCssUrl from '@mantine/core/styles.css?url';
 import datesCssUrl from '@mantine/dates/styles.css?url';
-import { Notifications } from '@mantine/notifications';
-import notificationCssUrl from '@mantine/notifications/styles.css?url';
 import { NavigationProgress } from '@mantine/nprogress';
 import nprogressCssUrl from '@mantine/nprogress/styles.css?url';
 import spotlightCssUrl from '@mantine/spotlight/styles.css?url';
@@ -62,7 +61,6 @@ export const Route = createRootRouteWithContext<{
     ],
     links: [
       { rel: 'stylesheet', href: mantineCssUrl },
-      { rel: 'stylesheet', href: notificationCssUrl },
       { rel: 'stylesheet', href: nprogressCssUrl },
       { rel: 'stylesheet', href: sidebarCssUrl },
       { rel: 'stylesheet', href: linksCssUrl },
@@ -158,7 +156,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <MantineProvider defaultColorScheme="dark" theme={theme}>
           <NavigationProgress />
           <ModalsProvider>
-            <Notifications position="bottom-right" limit={4} />
+            <Toaster theme="dark" />
             <DatesProvider settings={{ locale: 'es', firstDayOfWeek: 0, weekendDays: [0] }}>
               {children}
             </DatesProvider>

@@ -1,4 +1,4 @@
 export * from './pagination.interface';
-export * from './pagination.schema';
+export * from './pagination.shared.schema';
 export * from './pagination.const';
 export * from './paginationHandlerError';

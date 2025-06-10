@@ -1,15 +1,16 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import { serverFn } from '~/server/functions';
-import { PaginateProps } from '~/shared';
+import { SearchSchemaI } from '~/shared';
 
 export const refundKeys = {
   all: ['refund'] as const,
   lists: () => [...refundKeys.all, 'list'] as const,
-  list: (props: PaginateProps) => [...refundKeys.lists(), { ...props }] as const,
+  list: (props: SearchSchemaI) => [...refundKeys.lists(), { ...props }] as const,
+  detail: (id: number) => [...refundKeys.all, id] as const,
 };
 
 export const refundQueries = {
-  logs: (props: PaginateProps) =>
+  logs: (props: SearchSchemaI) =>
     queryOptions({
       queryKey: refundKeys.list(props),
       queryFn: ({ signal }) =>

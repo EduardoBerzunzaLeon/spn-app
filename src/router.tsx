@@ -4,6 +4,7 @@ import { routerWithQueryClient } from '@tanstack/react-router-with-query';
 import { DefaultCatchBoundary } from './features/core/components/DefaultCatchBoundary';
 import { NotFound } from './features/core/components/NotFound';
 import { routeTree } from './routeTree.gen';
+import { isObject } from './shared';
 import { toast } from './utils';
 
 const handleErrorMessage = (errorMessage?: string) => {
@@ -40,8 +41,15 @@ export function createRouter() {
         const message = handleErrorMessage(error.message);
         return toast.error(message);
       },
-      onSuccess: () => {
-        queryClient.invalidateQueries();
+      onSuccess: (data: { message: string } | unknown) => {
+        const message =
+          isObject(data) && typeof (data as any)?.message === 'string'
+            ? (data as { message: string }).message
+            : '';
+
+        if (message) {
+          return toast.success(message);
+        }
       },
     }),
   });

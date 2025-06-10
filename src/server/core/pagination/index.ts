@@ -1,1 +1,1 @@
-export * from './pagination.adapter'
+export * from './pagination.service';

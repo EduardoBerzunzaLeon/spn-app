@@ -1,13 +1,14 @@
 import { MantineReactTable } from 'mantine-react-table';
 import { Group, Menu } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { DEFAULT_REFUND_SEARCH, REFUND_LOG_COLUMNS } from '../const';
+import { REFUND_LOG_COLUMNS } from '../const';
 import { refundQueries } from '../query';
 import { AddNoteForm, NotesModalProps } from './AddNoteForm';
 import { RfcRefundList } from './RfcRefundList';
 import { useTable } from '~/features/core';
 import { IconEdit } from '~/features/ui';
 import { Route as RefundRoute } from '~/routes/_auth/(concepts)/refund';
+import { DEFAULT_REFUND_SEARCH } from '~/shared';
 
 type OpenNodeModalProps = Omit<NotesModalProps, 'onCancel'>;
 
@@ -28,7 +29,7 @@ export const RefundLogHistory = () => {
       return (
         <Group align="flex-start">
           <RfcRefundList gFilter={search.gFilter} rfcList={row.original.rfcSuccess} />
-          <RfcRefundList gFilter={search.gFilter} rfcList={row.original.rfcFailer} type="error" />
+          <RfcRefundList gFilter={search.gFilter} rfcList={row.original.rfcErrors} type="error" />
         </Group>
       );
     },

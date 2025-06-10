@@ -1,25 +1,10 @@
-import { eq, getTableColumns, sql } from 'drizzle-orm';
-import { withPagination } from '~/server/core';
+import { eq, getTableColumns } from 'drizzle-orm';
+import { getRelationalColumn, withPagination } from '~/server/core';
 import { db } from '~/server/db';
 import { refundLogs, refundRfcFailed, refundRfcSuccess, user } from '~/server/db/spn/schema';
-import { PaginateProps } from '~/shared';
+import { EditNotesRefundSchemaI, SearchSchemaI } from '~/shared';
 
-type RfcSuccessType = {
-  rfc: string;
-  type: string;
-  plaza: string;
-};
-
-type RfcErrorType = {
-  rfc: string;
-  type: string;
-  error: string;
-  plaza: string;
-};
-
-export const getRefundLogs = async (props: PaginateProps) => {
-  const { userId, ...columns } = getTableColumns(refundLogs);
-
+const getSubqueryRfcSuccess = () => {
   const subqueryRfcSuccess = db.spn
     .select({
       rfc: refundRfcSuccess.rfc,
@@ -27,8 +12,16 @@ export const getRefundLogs = async (props: PaginateProps) => {
       plaza: refundRfcSuccess.plaza,
     })
     .from(refundRfcSuccess)
-    .where(eq(refundRfcSuccess.refundLogsId, refundLogs.id));
+    .where(eq(refundRfcSuccess.refundLogsId, refundLogs.id))
+    .$dynamic();
 
+  return getRelationalColumn({
+    subquery: subqueryRfcSuccess,
+    as: 'rfcSuccess',
+  });
+};
+
+const getSubqueryRfcFailed = () => {
   const subqueryRfcFailed = db.spn
     .select({
       rfc: refundRfcFailed.rfc,
@@ -37,7 +30,20 @@ export const getRefundLogs = async (props: PaginateProps) => {
       plaza: refundRfcFailed.plaza,
     })
     .from(refundRfcFailed)
-    .where(eq(refundRfcFailed.refundLogsId, refundLogs.id));
+    .where(eq(refundRfcFailed.refundLogsId, refundLogs.id))
+    .$dynamic();
+
+  return getRelationalColumn({
+    subquery: subqueryRfcFailed,
+    as: 'rfcErrors',
+  });
+};
+
+export const getRefundLogs = async (props: SearchSchemaI) => {
+  const { userId, ...columns } = getTableColumns(refundLogs);
+
+  const rfcSuccess = getSubqueryRfcSuccess();
+  const rfcErrors = getSubqueryRfcFailed();
 
   const query = db.spn
     .select({
@@ -46,14 +52,8 @@ export const getRefundLogs = async (props: PaginateProps) => {
         id: user.id,
         name: user.name,
       },
-      rfcSuccess: sql<RfcSuccessType[]>`(
-        SELECT json_agg(row_to_json(subquery))
-        FROM (${subqueryRfcSuccess}) AS subquery
-      )`.as('rfcSuccess'),
-      rfcFailer: sql<RfcErrorType[]>`(
-        SELECT json_agg(row_to_json(subquery))
-        FROM (${subqueryRfcFailed}) AS subquery
-      )`.as('rfcFailer'),
+      rfcSuccess,
+      rfcErrors,
     })
     .from(refundLogs)
     .leftJoin(user, eq(userId, user.id))
@@ -80,4 +80,8 @@ export const getRefundLogs = async (props: PaginateProps) => {
       },
     },
   });
+};
+
+export const updateNotes = async ({ id, notes }: EditNotesRefundSchemaI) => {
+  return await db.spn.update(refundLogs).set({ notes }).where(eq(refundLogs.id, id));
 };

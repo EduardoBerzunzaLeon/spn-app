@@ -1,15 +1,6 @@
-import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { RefundsLogs } from '../interfaces';
 import { Column } from '~/features/core/hooks/useTable';
-import { AppBadge, IconSuccess, IconWarning } from '~/features/ui';
-import { DEFAULT_SEARCH_VALUES } from '~/shared';
-
-export const DEFAULT_COLUMN = 'processFortnight';
-
-export const DEFAULT_REFUND_SEARCH = {
-  ...DEFAULT_SEARCH_VALUES,
-  orderBy: DEFAULT_COLUMN,
-};
+import { AppBadge } from '~/features/ui';
 
 export const REFUND_LOG_COLUMNS: Column<RefundsLogs>[] = [
   {

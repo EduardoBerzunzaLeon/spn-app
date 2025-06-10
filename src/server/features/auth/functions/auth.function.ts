@@ -32,15 +32,19 @@ export const signOut = createServerFn({ method: 'POST' }).handler(async () => {
   }
 });
 
-export const getUser = createServerFn({ method: 'GET' })
-  // .middleware([errorMiddleware])
-  .handler(async () => {
-    try {
-      const { headers } = getWebRequest()!;
-      const session = await betterAuth.api.getSession({ headers });
+export const getUser = createServerFn({ method: 'GET' }).handler(async () => {
+  try {
+    const request = getWebRequest();
 
-      return session?.user || null;
-    } catch (error) {
-      return null;
+    if (!request?.headers) {
+      throw new Error('No se encontró la sesión');
     }
-  });
+
+    const { headers } = request;
+    const session = await betterAuth.api.getSession({ headers });
+
+    return session?.user || null;
+  } catch (error) {
+    return null;
+  }
+});

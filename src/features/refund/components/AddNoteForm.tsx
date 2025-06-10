@@ -1,4 +1,6 @@
 import { Button, Group, Text } from '@mantine/core';
+import { editNoteFormOptions } from '../form';
+import { useUpdateNotes } from '../hooks/useUpdateNotes';
 import { useAppForm } from '~/features/form';
 
 export interface NotesModalProps {
@@ -15,12 +17,16 @@ export const AddNoteForm = ({
   processFortnight,
   onCancel,
 }: NotesModalProps) => {
+  const updateNotesMutation = useUpdateNotes();
+
   const form = useAppForm({
     defaultValues: {
       notes,
+      id,
     },
+    ...editNoteFormOptions,
     onSubmit: ({ value }) => {
-      console.log({ value });
+      updateNotesMutation.mutate({ data: value });
     },
   });
 
@@ -57,7 +63,7 @@ export const AddNoteForm = ({
           Cancelar
         </Button>
         <form.AppForm>
-          <form.SubmitButton label="Agregar Notas" isSubmitting={false} />
+          <form.SubmitButton label="Agregar Notas" isSubmitting={updateNotesMutation.isPending} />
         </form.AppForm>
       </Group>
     </form>

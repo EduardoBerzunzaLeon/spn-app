@@ -94,8 +94,11 @@ export const useTable = <T extends MRT_RowData, F extends string>({
     navigateSearch({ gFilter: value });
   };
 
-  const fetchedRefunds = data?.data ?? [];
-  const totalRowCount = data?.meta.totalRowCount ?? 0;
+  const fetchedData = data?.data ?? [];
+  const totalRowCount =
+    typeof data?.meta.totalRowCount === 'number' && data.meta.totalRowCount >= 0
+      ? data.meta.totalRowCount
+      : 0;
 
   const handleReset = () => {
     table.reset();
@@ -104,7 +107,7 @@ export const useTable = <T extends MRT_RowData, F extends string>({
 
   const table = useMantineReactTable({
     columns: columnsTyped,
-    data: fetchedRefunds,
+    data: fetchedData,
     enableColumnFilterModes: true,
     enableColumnOrdering: true,
     enableColumnPinning: true,
@@ -146,11 +149,6 @@ export const useTable = <T extends MRT_RowData, F extends string>({
           title: 'Error al cargar los datos',
         }
       : undefined,
-    renderBottomToolbar: ({ table }) => (
-      <Flex justify="flex-end">
-        <MRT_TablePagination table={table} />
-      </Flex>
-    ),
     renderTopToolbarCustomActions: () => (
       <Flex gap="xs" align="center">
         <Tooltip label="Refrescar tabla">
@@ -179,10 +177,10 @@ export const useTable = <T extends MRT_RowData, F extends string>({
     ),
     renderRowActionMenuItems,
     renderRowActions,
-    renderDetailPanel: fetchedRefunds.length === 0 ? undefined : renderDetailPanel,
+    renderDetailPanel: fetchedData.length === 0 ? undefined : renderDetailPanel,
     state: {
       columnFilterFns: isEmpty(search.filtersFn) ? columnsFilter : search.filtersFn,
-      columnFilters: search.filters ?? [],
+      columnFilters: search.filters,
       globalFilter: search.gFilter,
       isLoading,
       pagination: {

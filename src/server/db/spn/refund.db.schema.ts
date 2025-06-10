@@ -1,5 +1,5 @@
 import { boolean, char, integer, pgEnum, pgSchema, text, uniqueIndex } from 'drizzle-orm/pg-core';
-import { user } from './auth.schema';
+import { user } from './auth.db.schema';
 import { createdAt } from './columns.helpers';
 
 export const refundTypesEnum = pgEnum('type_refund', [

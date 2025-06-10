@@ -1,7 +1,7 @@
 import { UseQueryOptions } from '@tanstack/react-query';
 import { RegisteredRouter, RouteById } from '@tanstack/react-router';
 import { MRT_ColumnDef, MRT_RowData, MRT_TableOptions } from 'mantine-react-table';
-import { FilterFnI, FilterI, Order, PaginateProps, SearchSchemaI } from '~/shared';
+import { FilterFnSchemaI, FilterSchemaI, OrderSchemaI, SearchSchemaI } from '~/shared';
 
 // TODO: Study what happends here, k extends keyof ?? and ternary operation in interfaces
 export type RouteIdWithSearchKeys<K extends string> = {
@@ -41,9 +41,9 @@ export type QueryKeysPagination<F extends string> = Readonly<
       readonly page: number;
       readonly orderBy: string;
       readonly gFilter: string;
-      readonly order: Order;
-      readonly filters: FilterI;
-      readonly filtersFn: FilterFnI;
+      readonly order: OrderSchemaI;
+      readonly filters: FilterSchemaI;
+      readonly filtersFn: FilterFnSchemaI;
     },
   ]
 >;
@@ -60,7 +60,7 @@ export type UseTableProps<T extends MRT_RowData, F extends string> = {
   from: RoutesWithPageAndLimit;
   initialState: SearchSchemaI;
   getData: (
-    props: PaginateProps
+    props: SearchSchemaI
   ) => UseQueryOptions<DataPagination<T>, any, DataPagination<T>, QueryKeysPagination<F>>;
   enableGlobalFilter?: boolean;
   globalFilterPlaceHolder?: string;

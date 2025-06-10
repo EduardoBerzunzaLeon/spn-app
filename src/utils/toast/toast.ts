@@ -1,35 +1,20 @@
+import { toast as toastSonner } from 'sonner';
 import { notifications } from '@mantine/notifications';
 
 const error = (message: string) => {
-  return notifications.show({
-    color: 'red',
-    title: 'Ocurrio un error',
-    message,
-  });
+  return toastSonner.error('Error', { description: message });
 };
 
 const success = (message: string) => {
-  return notifications.show({
-    color: 'green',
-    title: 'Operación Exitosa',
-    message,
-  });
+  return toastSonner.success('Operación exitosa', { description: message });
 };
 
 const warning = (message: string) => {
-  return notifications.show({
-    color: 'yellow',
-    title: 'Advertencia',
-    message,
-  });
+  return toastSonner.warning('Advertencia', { description: message });
 };
 
 const info = (message: string) => {
-  return notifications.show({
-    color: 'cyan',
-    title: 'Observación',
-    message,
-  });
+  return toastSonner.warning('Información', { description: message });
 };
 
 export const toast = {

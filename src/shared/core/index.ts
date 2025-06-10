@@ -1,3 +1,3 @@
 export * from './core.interface';
 export * from './core.validation';
-export * from './core.schema';
+export * from './core.shared.schema';

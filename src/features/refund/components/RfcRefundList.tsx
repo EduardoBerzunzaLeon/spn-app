@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Highlight, List } from '@mantine/core';
 import { IconList } from '~/features/ui';
 

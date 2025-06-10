@@ -1,7 +1,7 @@
 import { between, eq, gt, gte, ilike, lt, lte, ne, notBetween, SQL } from 'drizzle-orm';
 import { PgColumn } from 'drizzle-orm/pg-core';
 import { ErrorApp } from '../errors';
-import { DateFilterMap, MethodsFilterMap } from './pagination.adapter.interface';
+import { DateFilterMap, MethodsFilterMap } from './pagination.service.interface';
 
 // MOVE THIS METHODS IF IS NECESSARY IN CORE
 const endsWith = (column: PgColumn, value: unknown) => {

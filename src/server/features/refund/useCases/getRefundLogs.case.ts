@@ -1,6 +1,6 @@
 import { repository } from '~/server/repositories';
-import { PaginateProps } from '~/shared';
+import { SearchSchemaI } from '~/shared';
 
-export const getLogs = async (props: PaginateProps) => {
+export const getLogs = async (props: SearchSchemaI) => {
   return await repository.spn.refunds.getRefundLogs({ ...props });
 };

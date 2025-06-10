@@ -84,9 +84,13 @@ export const getColumnsFilter = <T extends MRT_RowData>(columns: Column<T>[]) =>
 export const recreateFilters = (filters: ColumnFiltersState) => {
   const newFilters = filters.map((filter) => {
     if (Array.isArray(filter.value) && filter.value.length === 2) {
-      return { ...filter, key: `${filter.value[0]} - ${filter.value[1]}` };
+      return {
+        ...filter,
+        value: filter.value as string[],
+        key: `${filter.value[0]} - ${filter.value[1]}`,
+      };
     }
-    return { ...filter, key: '' };
+    return { ...filter, value: String(filter.value), key: '' };
   });
 
   return newFilters;

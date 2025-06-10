@@ -1,11 +1,16 @@
-import { PaginateProps } from './pagination.interface';
+import { SearchSchemaI } from './pagination.shared.schema';
 
-export const DEFAULT_SEARCH_VALUES: PaginateProps = {
+export const DEFAULT_SEARCH_VALUES: SearchSchemaI = {
   limit: 10,
   page: 0,
   orderBy: 'id',
   gFilter: '',
-  order: 'desc',
+  order: 'desc' as 'desc',
   filters: [],
   filtersFn: {},
+};
+
+export const DEFAULT_REFUND_SEARCH = {
+  ...DEFAULT_SEARCH_VALUES,
+  orderBy: 'processFortnight',
 };

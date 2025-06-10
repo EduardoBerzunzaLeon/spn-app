@@ -1,6 +1,12 @@
 import { SQL } from 'drizzle-orm';
 import { PgColumn, PgSelect, PgTable } from 'drizzle-orm/pg-core';
-import { FilterFnI, FilterI, NumberFilterTypes, Order, StringFilterTypes } from '~/shared';
+import {
+  FilterFnSchemaI,
+  FilterSchemaI,
+  NumberFilterTypes,
+  OrderSchemaI,
+  StringFilterTypes,
+} from '~/shared';
 
 export type SchemaI = PgTable & { id: PgColumn };
 export type OrderColumnI = PgColumn | SQL | SQL.Aliased | string;
@@ -12,9 +18,9 @@ export interface WithPaginateProps {
   page: number;
   joinSchemas?: JoinSchemas;
   orderBy?: OrderColumnI;
-  order?: Order;
-  filters?: FilterI;
-  filtersFn?: FilterFnI;
+  order?: OrderSchemaI;
+  filters?: FilterSchemaI;
+  filtersFn?: FilterFnSchemaI;
 }
 
 export interface ExtraSchemas {
