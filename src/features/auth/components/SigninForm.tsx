@@ -16,7 +16,6 @@ export const SignInForm = () => {
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        e.stopPropagation();
         form.handleSubmit();
       }}
       method="POST"

@@ -3,20 +3,20 @@ import { editNoteFormOptions } from '../form';
 import { useRefundUpdateNotes } from '../hooks';
 import { useAppForm } from '~/features/form';
 
-export interface NotesModalProps {
+export interface RefundUpdateNotesFormProps {
   id: number;
   processFortnight: string;
   consecutive: number;
   notes: string;
   onCancel: () => void;
 }
-export const AddNoteForm = ({
+export const RefundUpdateNotesForm = ({
   id,
   notes,
   consecutive,
   processFortnight,
   onCancel,
-}: NotesModalProps) => {
+}: RefundUpdateNotesFormProps) => {
   const updateNotesMutation = useRefundUpdateNotes();
 
   const form = useAppForm({
@@ -34,7 +34,6 @@ export const AddNoteForm = ({
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        e.stopPropagation();
         form.handleSubmit();
       }}
       method="POST"

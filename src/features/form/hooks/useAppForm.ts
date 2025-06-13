@@ -14,3 +14,27 @@ export const { useAppForm } = createFormHook({
     SubmitButton,
   },
 });
+
+// type UseAppFormOptions = Parameters<typeof useAppForm>[0];
+
+// export const useTestForm = <T extends TFormData>(options: UseAppFormOptions) => {
+//   const form = useAppForm<
+//     T,
+//     TOnMount,
+//     TOnChange,
+//     TOnChangeAsync,
+//     TOnBlur,
+//     TOnBlurAsync,
+//     TOnSubmit,
+//     TOnSubmitAsync,
+//     TOnServer
+//   >(options);
+
+//   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+//     e.preventDefault();
+//     e.stopPropagation();
+//     form.handleSubmit();
+//   };
+
+//   return { ...form, handleSubmit };
+// };

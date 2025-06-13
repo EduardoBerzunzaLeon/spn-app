@@ -3,20 +3,20 @@ import { Group, Menu } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { REFUND_LOG_COLUMNS } from '../const';
 import { refundQueries } from '../query';
-import { AddNoteForm, NotesModalProps } from './AddNoteForm';
+import { RefundUpdateNotesForm, RefundUpdateNotesFormProps } from './RefundUpdateNotesForm';
 import { RfcRefundList } from './RfcRefundList';
 import { useTable } from '~/features/core';
 import { IconEdit } from '~/features/ui';
 import { Route as RefundRoute } from '~/routes/_auth/(concepts)/refund';
 import { DEFAULT_REFUND_SEARCH } from '~/shared';
 
-type OpenNodeModalProps = Omit<NotesModalProps, 'onCancel'>;
+type OpenNodeModalProps = Omit<RefundUpdateNotesFormProps, 'onCancel'>;
 
 export const RefundLogHistory = () => {
   const openModal = (props: OpenNodeModalProps) =>
     modals.open({
       title: 'Agregar notas de reintegros (19)',
-      children: <AddNoteForm {...props} onCancel={modals.closeAll} />,
+      children: <RefundUpdateNotesForm {...props} onCancel={modals.closeAll} />,
     });
 
   const { table, search } = useTable({
