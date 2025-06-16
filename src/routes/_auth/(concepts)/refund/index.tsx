@@ -1,7 +1,12 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
-import { Button, Group, Title } from '@mantine/core';
+import { Button, Group, Stack, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { RefundLogHistoryTable, refundQueries, useRefundAlerts } from '~/features/refund';
+import {
+  RefundAlerts,
+  RefundLogHistoryTable,
+  refundQueries,
+  useRefundAlerts,
+} from '~/features/refund';
 import { Alert } from '~/features/ui';
 import { DEFAULT_REFUND_SEARCH, RefundSearchSchema } from '~/shared';
 
@@ -23,23 +28,11 @@ export const Route = createFileRoute('/_auth/(concepts)/refund/')({
 
 function RouteComponent() {
   const [loading, { toggle }] = useDisclosure();
-
-  const { hasError, message, hasWarning, messageWarning, isFetching } = useRefundAlerts();
+  const { isFetching, hasError } = useRefundAlerts();
 
   return (
     <>
-      {hasError && (
-        <Alert type="error" title="Error en los consecutivos de reintegros">
-          {message}
-        </Alert>
-      )}
-
-      {hasWarning && (
-        <Alert type="warning" title="Desfase en los consecutivos de reintegros">
-          {messageWarning}
-        </Alert>
-      )}
-
+      <RefundAlerts />
       <Group justify="space-between" align="center" mt="md" mb="md">
         <Title order={4}>Historial</Title>
         <Button loading={loading} onClick={toggle} disabled={isFetching || hasError}>
