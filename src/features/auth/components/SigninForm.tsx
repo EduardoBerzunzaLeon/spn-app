@@ -1,6 +1,6 @@
 import { signInFormOptions } from '../form';
 import { useAuth } from '../hooks';
-import { useAppForm } from '~/features/form';
+import { useAppForm, useHandleSubmitForm } from '~/features/form';
 
 export const SignInForm = () => {
   const signInMutation = useAuth();
@@ -12,14 +12,10 @@ export const SignInForm = () => {
     },
   });
 
+  const { handleSubmit } = useHandleSubmitForm(form);
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.handleSubmit();
-      }}
-      method="POST"
-    >
+    <form onSubmit={handleSubmit} method="POST">
       <form.AppField name="email">
         {(field) => (
           <field.TextField label="Email" placeholder="you@educacioncampeche.gob" required />

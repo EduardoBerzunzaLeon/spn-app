@@ -1,7 +1,7 @@
 import { Button, Group, Text } from '@mantine/core';
 import { editNoteFormOptions } from '../form';
 import { useRefundUpdateNotes } from '../hooks';
-import { useAppForm } from '~/features/form';
+import { useAppForm, useHandleSubmitForm } from '~/features/form';
 
 export interface RefundUpdateNotesFormProps {
   id: number;
@@ -30,14 +30,10 @@ export const RefundUpdateNotesForm = ({
     },
   });
 
+  const { handleSubmit } = useHandleSubmitForm(form);
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.handleSubmit();
-      }}
-      method="POST"
-    >
+    <form onSubmit={handleSubmit} method="POST">
       <Text size="sm">
         Quincena: <span className="font-bold">{processFortnight}</span>
       </Text>

@@ -15,26 +15,14 @@ export const { useAppForm } = createFormHook({
   },
 });
 
-// type UseAppFormOptions = Parameters<typeof useAppForm>[0];
+type Form = Pick<ReturnType<typeof useAppForm>, 'handleSubmit'>;
 
-// export const useTestForm = <T extends TFormData>(options: UseAppFormOptions) => {
-//   const form = useAppForm<
-//     T,
-//     TOnMount,
-//     TOnChange,
-//     TOnChangeAsync,
-//     TOnBlur,
-//     TOnBlurAsync,
-//     TOnSubmit,
-//     TOnSubmitAsync,
-//     TOnServer
-//   >(options);
+export const useHandleSubmitForm = (form: Form) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>, meta?: unknown) => {
+    e.preventDefault();
+    e.stopPropagation();
+    form.handleSubmit(meta);
+  };
 
-//   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     e.stopPropagation();
-//     form.handleSubmit();
-//   };
-
-//   return { ...form, handleSubmit };
-// };
+  return { handleSubmit };
+};
