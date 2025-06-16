@@ -1,1 +1,1 @@
-export * from './RefundLogHistory';
+export * from './RefundLogHistoryTable';

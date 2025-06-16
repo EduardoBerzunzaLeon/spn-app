@@ -1,4 +1,4 @@
-import { eq, getTableColumns } from 'drizzle-orm';
+import { desc, eq, getTableColumns } from 'drizzle-orm';
 import { getRelationalColumn, withPagination } from '~/server/core';
 import { db } from '~/server/db';
 import { refundLogs, refundRfcFailed, refundRfcSuccess, user } from '~/server/db/spn/schema';
@@ -80,6 +80,18 @@ export const getLogs = async (props: SearchSchemaI) => {
       },
     },
   });
+};
+
+export const getLastConsecutive = async () => {
+  return await db.spn
+    .select({
+      id: refundLogs.id,
+      consecutive: refundLogs.consecutive,
+      fortnight: refundLogs.processFortnight,
+    })
+    .from(refundLogs)
+    .orderBy(desc(refundLogs.processFortnight), desc(refundLogs.consecutive))
+    .limit(1);
 };
 
 export const updateNotes = async ({ id, notes }: RefundUpdateNotesSchemaI) => {

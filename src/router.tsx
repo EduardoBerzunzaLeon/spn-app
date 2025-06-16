@@ -28,13 +28,13 @@ export function createRouter() {
         retry: 0,
       },
     },
-    queryCache: new QueryCache({
-      onError: (error) => {
-        console.log({ errorQuery: error });
-        const message = handleErrorMessage(error.message);
-        return toast.error(message);
-      },
-    }),
+    // queryCache: new QueryCache({
+    //   onError: (error) => {
+    //     console.log({ errorQuery: error });
+    //     const message = handleErrorMessage(error.message);
+    //     return toast.error(message);
+    //   },
+    // }),
     mutationCache: new MutationCache({
       onError: (error) => {
         console.log({ errorMutation: error });

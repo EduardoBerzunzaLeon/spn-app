@@ -36,3 +36,7 @@ export const updateNotes = createServerFn()
     await refund.cases.updateNotes(data);
     return { message: 'Nota actualizada' };
   });
+
+export const getLastConsecutive = createServerFn().handler(async () => {
+  return await refund.cases.getLastConsecutive();
+});

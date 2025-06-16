@@ -78,7 +78,6 @@ export const getSiapsepInitialData = async () => {
       currentFortnight,
     };
   } catch (error) {
-    console.log({ error });
     return {
       online: false,
       error: 'Servidor no accesible',

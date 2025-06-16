@@ -12,7 +12,7 @@ import { DEFAULT_REFUND_SEARCH } from '~/shared';
 
 type OpenNodeModalProps = Omit<RefundUpdateNotesFormProps, 'onCancel'>;
 
-export const RefundLogHistory = () => {
+export const RefundLogHistoryTable = () => {
   const openModal = (props: OpenNodeModalProps) =>
     modals.open({
       title: 'Agregar notas de reintegros (19)',
