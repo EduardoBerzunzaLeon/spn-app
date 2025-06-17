@@ -1,5 +1,5 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
-import { Button, Group, Stack, Title } from '@mantine/core';
+import { Button, Group, Text, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import {
   RefundAlerts,
@@ -7,7 +7,7 @@ import {
   refundQueries,
   useRefundAlerts,
 } from '~/features/refund';
-import { Alert } from '~/features/ui';
+import { Alert, IconUpload } from '~/features/ui';
 import { DEFAULT_REFUND_SEARCH, RefundSearchSchema } from '~/shared';
 
 export const Route = createFileRoute('/_auth/(concepts)/refund/')({
@@ -28,15 +28,26 @@ export const Route = createFileRoute('/_auth/(concepts)/refund/')({
 
 function RouteComponent() {
   const [loading, { toggle }] = useDisclosure();
-  const { isFetching, hasError } = useRefundAlerts();
+  const { isFetching, hasError, hasInfo, data } = useRefundAlerts();
+  const isDisabled = isFetching || hasError || hasInfo;
+  const text =
+    !data || isFetching
+      ? 'Sin datos'
+      : `Quincena Activa: ${data?.siconFortnight.fortnight} - Ultimo consecutivo: ${data?.siconFortnight.consecutive}`;
 
   return (
     <>
       <RefundAlerts />
       <Group justify="space-between" align="center" mt="md" mb="md">
         <Title order={4}>Historial</Title>
-        <Button loading={loading} onClick={toggle} disabled={isFetching || hasError}>
-          Verificar consecutivo
+        <Text>{text}</Text>
+        <Button
+          loading={loading}
+          onClick={toggle}
+          disabled={isDisabled}
+          leftSection={<IconUpload size={14} />}
+        >
+          Cargar consecutivo
         </Button>
       </Group>
       <RefundLogHistoryTable />

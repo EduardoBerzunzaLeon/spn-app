@@ -8,77 +8,93 @@ export const useRefundAlerts = () => {
   const { data: fortnightSiapsep } = useSuspenseQuery(controlProcessQueries.fortnight());
 
   const { message, hasError } = useMemo(() => {
+    const alert = {
+      message: '',
+      hasError: false,
+    };
+
     if (isFetching) {
-      return {
-        message: '',
-        hasError: false,
-      };
+      return alert;
     }
 
     if (isError || !data) {
-      return {
-        message: error?.message || 'No se encontro el último consecutivo en sicon',
-        hasError: true,
-      };
+      alert.message = error?.message || 'No se encontro el último consecutivo en sicon';
+      alert.hasError = true;
+      return alert;
     }
 
     if (fortnightSiapsep.error) {
-      return {
-        message: 'El siapsep esta offline',
-        hasError: true,
-      };
+      alert.message = 'El siapsep esta offline';
+      alert.hasError = true;
+      return alert;
     }
 
     const { siconFortnight } = data;
 
     if (String(fortnightSiapsep.ordinaryFortnight.fortnight) !== siconFortnight.fortnight) {
-      return {
-        message: 'Existe un desfase de quincenas entre el SIAPSEP y sicon',
-        hasError: true,
-      };
+      alert.message = 'Existe un desfase de quincenas entre el SIAPSEP y sicon';
+      alert.hasError = true;
+      return alert;
     }
 
-    return {
-      message: '',
-      hasError: false,
-    };
+    return alert;
   }, [data, isFetching]);
 
   const { messageWarning, hasWarning } = useMemo(() => {
+    const alert = {
+      messageWarning: '',
+      hasWarning: false,
+    };
+
     if (isFetching) {
-      return {
-        messageWarning: '',
-        hasWarning: false,
-      };
+      return alert;
     }
 
     if (isError || !data) {
-      return {
-        messageWarning: '',
-        hasWarning: false,
-      };
+      return alert;
     }
 
     const { warning } = data;
 
     if (warning) {
-      return {
-        messageWarning: warning,
-        hasWarning: true,
-      };
+      alert.messageWarning = warning;
+      alert.hasWarning = true;
+      return alert;
     }
 
-    return {
-      messageWarning: '',
-      hasWarning: false,
-    };
+    return alert;
   }, [data, isFetching]);
 
+  const { messageInfo, hasInfo } = useMemo(() => {
+    const alert = {
+      messageInfo: '',
+      hasInfo: false,
+    };
+
+    if (!data || isError) return alert;
+
+    const { siconFortnight, spnFortnight } = data;
+
+    if (
+      siconFortnight.fortnight === spnFortnight.fortnight &&
+      siconFortnight.consecutive === spnFortnight.consecutive
+    ) {
+      alert.messageInfo = 'La quincena y consecutivo coinciden, no hay nada que actualizar';
+      alert.hasInfo = true;
+      return alert;
+    }
+
+    return alert;
+  }, []);
+
   return {
+    hasError,
+    hasInfo,
+    hasWarning,
     isFetching,
     message,
-    hasError,
+    messageInfo,
     messageWarning,
-    hasWarning,
+    data,
   };
 };

@@ -13,3 +13,4 @@ export * from './IconRefresh';
 export * from './IconSettingsOff';
 export * from './IconEdit';
 export * from './IconReturn';
+export * from './IconUpload';
