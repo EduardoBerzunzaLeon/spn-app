@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start';
 import { refund } from '../index';
-import { errorMiddleware, siapsepMiddleware, siconMiddleware } from '~/lib/middleware';
+import { errorMiddleware } from '~/lib/middleware';
 import { RefundSearchSchema, RefundUpdateNotesSchema, withPaginationHandlerError } from '~/shared';
 
 export const getLogs = createServerFn()
@@ -35,6 +35,13 @@ export const updateNotes = createServerFn()
   .handler(async ({ data }) => {
     await refund.cases.updateNotes(data);
     return { message: 'Nota actualizada' };
+  });
+
+export const generateConsecutive = createServerFn()
+  .middleware([errorMiddleware])
+  .handler(async () => {
+    await refund.cases.generateConsecutive();
+    return { message: 'Consecutivo generado correctamente' };
   });
 
 export const getLastConsecutive = createServerFn().handler(async () => {

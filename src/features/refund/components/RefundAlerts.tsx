@@ -8,7 +8,7 @@ export const RefundAlerts = () => {
   return (
     <Stack>
       {hasInfo && (
-        <Alert type="info" title="Los consecutivos de reintegros estan al dia">
+        <Alert type="info" title="Los consecutivos de reintegros estan sincronizados">
           {messageInfo}
         </Alert>
       )}

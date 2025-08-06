@@ -3,7 +3,7 @@ import { setResponseStatus } from '@tanstack/react-start/server';
 import { controlSicon } from '~/server/features/controlSicon';
 
 export const siconMiddleware = (moduleName: string) =>
-  createMiddleware().server(async ({ next }) => {
+  createMiddleware({ type: 'function' }).server(async ({ next }) => {
     const siconFornight = await controlSicon.cases.getFortnightByModule(moduleName);
 
     if (siconFornight.error) {

@@ -1,4 +1,3 @@
-/// <reference types="vinxi/types/client" />
 import { scan } from 'react-scan';
 import { StrictMode } from 'react';
 import { StartClient } from '@tanstack/react-start';

@@ -14,21 +14,30 @@ export class SiapsepConnection implements OdbcConnection {
   }
 
   async prepareStatement<T>({ query, args }: ExecuteProps) {
-    await this.connect();
+    let statement;
 
     try {
-      const statement = await this.connection!.createStatement();
+      await this.connect();
+
+      statement = await this.connection!.createStatement();
       await statement.prepare(query);
       if (args) {
         await statement.bind([...args]);
       }
       const result = await statement.execute<T>();
-      statement.close();
 
       return result;
     } catch (error) {
       console.log({ siapsepDb: error });
       throw Error('Error en la conexión del SIAPSEP, favor de verificar el servidor');
+    } finally {
+      if (statement) {
+        try {
+          await statement.close();
+        } catch {
+          throw Error('Error al momento de cerrar la conexion al SIAPSEP');
+        }
+      }
     }
   }
 

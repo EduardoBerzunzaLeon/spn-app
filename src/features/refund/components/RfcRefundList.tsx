@@ -1,12 +1,6 @@
 import { Highlight, List } from '@mantine/core';
+import { rfcList } from './RefundWrapperRfcList';
 import { IconList } from '~/features/ui';
-
-interface rfcList {
-  rfc: string;
-  type: string;
-  plaza: string;
-  error?: string;
-}
 
 interface Props {
   rfcList: rfcList[];

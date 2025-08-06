@@ -1,10 +1,7 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
-import { AppShell, Burger, Group, ScrollArea } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { SignOutButton } from '~/features/auth';
 import { controlProcessQueries } from '~/features/controlProcess';
 import { controlSiconQueries } from '~/features/controlSicon';
-import { AuthLayout, GroupServerBadge, MainHeader, Searchbar, SideBarMenu } from '~/features/ui';
+import { AuthLayout, MainHeader } from '~/features/ui';
 
 export const Route = createFileRoute('/_auth')({
   component: DashboardLayout,

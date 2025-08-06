@@ -1,8 +1,6 @@
 import { ErrorApp } from './errorApp.entity';
 
 export const handlerError = (error: unknown) => {
-  console.log({ serverError: error });
-
   if (error instanceof AggregateError) {
     return ErrorApp.internal('Error en la conexión');
   }

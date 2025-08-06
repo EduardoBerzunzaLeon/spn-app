@@ -4,7 +4,7 @@ import { controlProcessQueries } from '~/features/controlProcess';
 import { refundQueries } from '~/features/refund';
 
 export const useRefundAlerts = () => {
-  const { data, isError, isFetching, error } = useQuery(refundQueries.lastConsecutive);
+  const { data, isError, isFetching, error } = useQuery(refundQueries.lastConsecutive());
   const { data: fortnightSiapsep } = useSuspenseQuery(controlProcessQueries.fortnight());
 
   const { message, hasError } = useMemo(() => {
@@ -18,21 +18,24 @@ export const useRefundAlerts = () => {
     }
 
     if (isError || !data) {
-      alert.message = error?.message || 'No se encontro el último consecutivo en sicon';
+      alert.message = error?.message || 'No se encontro el último consecutivo en SICON';
       alert.hasError = true;
       return alert;
     }
 
     if (fortnightSiapsep.error) {
-      alert.message = 'El siapsep esta offline';
+      alert.message = 'El SIAPSEP esta offline';
       alert.hasError = true;
       return alert;
     }
 
     const { siconFortnight } = data;
 
-    if (String(fortnightSiapsep.ordinaryFortnight.fortnight) !== siconFortnight.fortnight) {
-      alert.message = 'Existe un desfase de quincenas entre el SIAPSEP y sicon';
+    const siapsepCurrentFortnight =  String(fortnightSiapsep.ordinaryFortnight.fortnight);
+    const siconCurrentFortnight = siconFortnight.fortnight;
+
+    if (siapsepCurrentFortnight !== siconCurrentFortnight) {
+      alert.message = `Existe un desfase de quincenas entre el SIAPSEP (${siapsepCurrentFortnight}) y SICON (${siconCurrentFortnight})`;
       alert.hasError = true;
       return alert;
     }

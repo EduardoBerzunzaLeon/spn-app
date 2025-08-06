@@ -4,6 +4,7 @@ import { modals } from '@mantine/modals';
 import { REFUND_LOG_COLUMNS } from '../const';
 import { refundQueries } from '../query';
 import { RefundUpdateNotesForm, RefundUpdateNotesFormProps } from './RefundUpdateNotesForm';
+import RefundWrapperRfcList from './RefundWrapperRfcList';
 import { RfcRefundList } from './RfcRefundList';
 import { useTable } from '~/features/core';
 import { IconEdit } from '~/features/ui';
@@ -28,8 +29,11 @@ export const RefundLogHistoryTable = () => {
     renderDetailPanel: ({ row }) => {
       return (
         <Group align="flex-start">
-          <RfcRefundList gFilter={search.gFilter} rfcList={row.original.rfcSuccess} />
-          <RfcRefundList gFilter={search.gFilter} rfcList={row.original.rfcErrors} type="error" />
+          <RefundWrapperRfcList
+            gFilter={search.gFilter}
+            rfcListError={row.original.rfcErrors}
+            rfcListSuccess={row.original.rfcSuccess}
+          />
         </Group>
       );
     },

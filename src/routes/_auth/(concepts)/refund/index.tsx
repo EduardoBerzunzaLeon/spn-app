@@ -1,13 +1,12 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
-import { Button, Group, Text, Title } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { Group, Text, Title } from '@mantine/core';
 import {
   RefundAlerts,
+  RefundGenerateConsecutiveBtn,
   RefundLogHistoryTable,
   refundQueries,
   useRefundAlerts,
 } from '~/features/refund';
-import { IconUpload } from '~/features/ui';
 import { DEFAULT_REFUND_SEARCH, RefundSearchSchema } from '~/shared';
 
 export const Route = createFileRoute('/_auth/(concepts)/refund/')({
@@ -15,7 +14,7 @@ export const Route = createFileRoute('/_auth/(concepts)/refund/')({
   validateSearch: RefundSearchSchema,
   beforeLoad: async ({ context, search }) => {
     context.queryClient.prefetchQuery(refundQueries.logs({ ...search }));
-    context.queryClient.prefetchQuery(refundQueries.lastConsecutive);
+    context.queryClient.prefetchQuery(refundQueries.lastConsecutive());
     return { crumb: 'Reintegros', iconName: 'concept' };
   },
   search: {
@@ -27,9 +26,7 @@ export const Route = createFileRoute('/_auth/(concepts)/refund/')({
 });
 
 function RouteComponent() {
-  const [loading, { toggle }] = useDisclosure();
-  const { isFetching, hasError, hasInfo, data } = useRefundAlerts();
-  const isDisabled = isFetching || hasError || hasInfo;
+  const { data, isFetching } = useRefundAlerts();
   const text =
     !data || isFetching
       ? 'Sin datos'
@@ -41,14 +38,7 @@ function RouteComponent() {
       <Group justify="space-between" align="center" mt="md" mb="md">
         <Title order={4}>Historial</Title>
         <Text>{text}</Text>
-        <Button
-          loading={loading}
-          onClick={toggle}
-          disabled={isDisabled}
-          leftSection={<IconUpload />}
-        >
-          Cargar consecutivo
-        </Button>
+        <RefundGenerateConsecutiveBtn />
       </Group>
       <RefundLogHistoryTable />
     </>

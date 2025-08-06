@@ -4,7 +4,8 @@ import { SearchSchemaI } from '~/shared';
 
 export const refundKeys = {
   all: ['refund'] as const,
-  consecutive: ['consecutive'] as const,
+  consecutive: () => [...refundKeys.all, 'consecutive'] as const,
+  consecutives: () => [...new Set([...refundKeys.consecutive(), ...refundKeys.lists()])] as const,
   lists: () => [...refundKeys.all, 'list'] as const,
   list: (props: SearchSchemaI) => [...refundKeys.lists(), { ...props }] as const,
   detail: (id: number) => [...refundKeys.all, id] as const,
@@ -21,8 +22,9 @@ export const refundQueries = {
         }),
       placeholderData: keepPreviousData,
     }),
-  lastConsecutive: queryOptions({
-    queryKey: refundKeys.consecutive,
-    queryFn: ({ signal }) => serverFn.refund.getLastConsecutive({ signal }),
-  }),
+  lastConsecutive: () =>
+    queryOptions({
+      queryKey: refundKeys.consecutive(),
+      queryFn: ({ signal }) => serverFn.refund.getLastConsecutive({ signal }),
+    }),
 };

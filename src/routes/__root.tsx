@@ -8,7 +8,6 @@ import { ModalsProvider } from '@mantine/modals';
 import 'dayjs/locale/es';
 
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-// import { es } from 'date-fns/locale';
 import mantineTablesCssUrl from 'mantine-react-table/styles.css?url';
 import {
   Button,
@@ -23,6 +22,7 @@ import {
 } from '@mantine/core';
 import mantineCssUrl from '@mantine/core/styles.css?url';
 import datesCssUrl from '@mantine/dates/styles.css?url';
+// import { es } from 'date-fns/locale';
 import { NavigationProgress } from '@mantine/nprogress';
 import nprogressCssUrl from '@mantine/nprogress/styles.css?url';
 import spotlightCssUrl from '@mantine/spotlight/styles.css?url';
@@ -33,6 +33,7 @@ import '~/styles/app.css';
 
 import { DatesProvider } from '@mantine/dates';
 import { Nulleable } from '~/shared';
+// import linksCssUrl from '~/styles/links-groups.css?url';
 import linksCssUrl from '~/styles/links-groups.css?url';
 import sidebarCssUrl from '~/styles/sidebar.css?url';
 import { seo } from '~/utils';
