@@ -2,7 +2,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { ActionIcon } from '@mantine/core';
 import { controlSiconQueries } from '../query';
 import { BadgeFortnightSicon } from './BadgeFortnightSicon';
-import { ErrorServerBadge } from '~/features/ui/components';
+import { ErrorServerBadge } from '~/features/ui/components/Badges/ErrorServerBadge';
 
 // import { AppBadge, IconRefresh, IconServerError } from '~/features/ui';
 
