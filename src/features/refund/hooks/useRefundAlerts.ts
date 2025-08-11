@@ -31,7 +31,7 @@ export const useRefundAlerts = () => {
 
     const { siconFortnight } = data;
 
-    const siapsepCurrentFortnight =  String(fortnightSiapsep.ordinaryFortnight.fortnight);
+    const siapsepCurrentFortnight = fortnightSiapsep.ordinaryFortnight.fortnight;
     const siconCurrentFortnight = siconFortnight.fortnight;
 
     if (siapsepCurrentFortnight !== siconCurrentFortnight) {
