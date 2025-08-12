@@ -44,6 +44,65 @@ const getServerFornitghts = async () => {
   };
 };
 
+interface GetSiconCaptureI {
+  id: number;
+  fortnight: string;
+}
+
+const getSiconCapture = async ({ id, fortnight }: GetSiconCaptureI) => {
+  // const data = await repository.sicon.refunds.getCaptureByIdOpenClose(id);
+  const data = await repository.sicon.refunds.getCaptureByIdOpenClose(423);
+
+  // TODO: ask if close de capture before or after verify this
+  if (data.length < 0) {
+    throw ErrorApp.badRequest(`No se encontraron datos de captura para la quincena ${fortnight}`);
+  }
+
+  return data;
+};
+
+const groupByStatus = (data: Awaited<ReturnType<typeof getSiconCapture>>) => {
+  const grouped = data.reduce(
+    (acc, item) => {
+      if (!item.status) {
+        throw ErrorApp.badRequest(`El estado del rfc ${item.rfc} no es válido`);
+      }
+
+      if (item.status === 3 || item.status === 2) {
+        throw ErrorApp.badRequest(
+          'Existen estatus 2 y/o 3, el sistema no puede procesarlas, favor de verificarlo.'
+        );
+      }
+
+      if (!acc[item.status]) {
+        acc[item.status] = [];
+      }
+      acc[item.status].push(item);
+      return acc;
+    },
+    {} as Record<number, typeof data>
+  );
+
+  return grouped;
+};
+
+const groupByRFC = (data: Awaited<ReturnType<typeof getSiconCapture>>) => {
+  const grouped = data.reduce((acc, item) => {
+    if (!item.rfc) {
+      throw ErrorApp.badRequest(`El RFC de la captura no es válido`);
+    }
+
+    if (item.rfc in acc) {
+      return acc;
+    }
+
+    acc.push(item.rfc);
+    return acc;
+  }, [] as string[]);
+
+  return grouped;
+};
+
 export const generateConsecutive = async () => {
   // 1) Verificar si las quincenas del SIAPSEP Y SICON coincidan
   const fortnights = await getServerFornitghts();
@@ -53,15 +112,38 @@ export const generateConsecutive = async () => {
   // await repository.sicon.refunds.updateStatus(fortnights.sicon.id, 2);
 
   // 3) Obtener los datos del SICON
-  const data = await repository.sicon.refunds.getCaptureByIdOpenClose(fortnights.sicon.id);
+  const data = await getSiconCapture(fortnights.sicon);
+  console.log(data);
 
-  if (data.length < 0) {
-    throw ErrorApp.badRequest(
-      `No se encontraron datos de captura para la quincena ${fortnights.sicon.fortnight}`
-    );
-  }
+  //  ====================================
+  //  ========== ESTATUS =================
+  //  ====================================
+
+  //  0 - Sin Reintegro
+  //  1 - Capturado
+  //  2 - Existe en Empleado Plaza Concepto
+  //  3 - Existe en Responsabilidades
+  //  4 - Cierre de vigencia
+  //  5 - Eliminación de responsabilidades
+  //  6 - Borrado en otro consecutivo
 
   // TODO: process data
+  //   id: 32133,
+  //   rfc: 'AUPM720530IW2',
+  //   plaza: '075014  E278130.0040184',
+  //   fortnightStart: '202510',
+  //   fortnightEnd: '202512',
+  //   monthlyAmount: '231.29',
+  //   biweeklyAmount: '115.64',
+  //   status: 5,
+  //   fortnight: '202513',
+  //   idUser: 17
 
-  return await new Promise((resolve) => setTimeout(() => resolve('holi'), 200));
+  // TODO: group by status
+
+  const statusGrouped = groupByStatus(data);
+  const rfcGrouped = groupByRFC(data);
+
+  // return await new Promise((resolve) => setTimeout(() => resolve('holi'), 0));
+  return 'holi';
 };
