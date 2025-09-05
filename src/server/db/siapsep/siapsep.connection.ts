@@ -6,9 +6,19 @@ import 'dotenv/config';
 import { ErrorApp } from '~/shared';
 
 export class SiapsepConnection implements OdbcConnection {
+  private static instance: SiapsepConnection;
   private connection: odbc.Connection | undefined;
 
-  private async connect() {
+  private constructor() {}
+
+  static getInstance() {
+    if (!SiapsepConnection.instance) {
+      SiapsepConnection.instance = new SiapsepConnection();
+    }
+    return SiapsepConnection.instance;
+  }
+
+  async connect() {
     if (this.connection) {
       return;
     }
@@ -52,6 +62,12 @@ export class SiapsepConnection implements OdbcConnection {
     return data[0];
   }
 
+  async executeSet(props: ExecuteProps) {
+    const { count } = await this.prepareStatement(props);
+    return count;
+  }
+
+  // NOTE: ODBC informix not accept rollback and commit
   async executeBulkInsert({ table, columns, args }: ExecuteBulkInsertProps) {
     if (args.length === 0) {
       throw ErrorApp.badRequest('No se encontro información a insertar');
@@ -70,15 +86,21 @@ export class SiapsepConnection implements OdbcConnection {
             'Se encontro un registro vacio al momento de insertar, favor de verificar la información'
           );
         }
-        const values = item.join(',');
+        const values = item
+          .map((v) => {
+            if (typeof v === 'string') {
+              return `'${v}'`;
+            }
+            return v;
+          })
+          .join(',');
+
         await this.connection!.query(`INSERT INTO ${table} ${columnsList} VALUES(${values})`);
         quantity += 1;
       }
-      await this.connection!.commit();
 
       return quantity;
     } catch (error) {
-      await this.connection!.rollback();
       throw error;
     }
   }

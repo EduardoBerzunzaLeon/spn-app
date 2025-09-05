@@ -4,6 +4,46 @@ import { core } from '~/server/core';
 import { repository } from '~/server/repositories';
 import { ErrorApp } from '~/shared';
 
+//  ====================================
+//  ========== ESTATUS =================
+//  ====================================
+
+//  0 - Sin Reintegro
+//  1 - Capturado
+//  2 - Existe en Empleado Plaza Concepto
+//  3 - Existe en Responsabilidades
+//  4 - Cierre de vigencia
+//  5 - Eliminación de responsabilidades
+//  6 - Borrado en otro consecutivo
+
+// const TEST = [
+//   {
+//     id: 32153,
+//     rfc: 'CAMO8907217U6',
+//     payCode: '07',
+//     unit: '04',
+//     subunit: '07',
+//     positionCategory: ' S01808',
+//     hours: '00.0',
+//     consecutivePayment: '200006',
+//     conceptType: 'D',
+//     concept: '19',
+//     fortnightEnd: '202513',
+//     fortnightStart: '202513',
+//     monthlyAmount: '26979.42',
+//     document: 0,
+//     documentDate: '2025-07-03 12:21:27',
+//     flag: 0,
+//     typeFlag: 0,
+//     applicationNumber: 0,
+//     paymentCode: '070407 S0180800.0200006',
+//     biweeklyAmount: '13489.71',
+//     status: 1,
+//     fortnight: '202513',
+//     idUser: 17,
+//   },
+// ];
+
 const getServerFornitghts = async () => {
   const initialSiapsep = await controlProcess.cases.getSiapsepInitialData();
   const initialSicon = await refund.cases.getLastConsecutive();
@@ -75,59 +115,108 @@ const groupByStatus = (data: Awaited<ReturnType<typeof getSiconCapture>>) => {
         );
       }
 
-      if (!acc[item.status]) {
-        acc[item.status] = [];
+      if (item.status === 1 && !item.positionCategory) {
+        throw ErrorApp.badRequest(`El rfc ${item.rfc} no tiene categoría de puesto`);
       }
-      acc[item.status].push(item);
+
+      const statusString = `${item.status}`;
+
+      if (!acc[statusString]) {
+        acc[statusString] = [];
+      }
+      acc[statusString].push(item);
       return acc;
     },
-    {} as Record<number, typeof data>
+    {} as Record<string, typeof data>
   );
 
   return grouped;
 };
 
+const filterRfcs = (
+  data: Awaited<ReturnType<typeof getSiconCapture>>,
+  rfcNotFounded: { rfc: string }[]
+) => {
+  const rfcNotFoundedSet = new Set(rfcNotFounded.map((item) => item.rfc));
+  return data.filter((item) => !rfcNotFoundedSet.has(item.rfc));
+};
+
+// const separateEmptyCodePayment = (data: Awaited<ReturnType<typeof getSiconCapture>>) => {};
+
 export const generateConsecutive = async () => {
-  // 1) Verificar si las quincenas del SIAPSEP Y SICON coincidan
+  const status = {
+    create: '1',
+    close: '4',
+    responsabilities: '5',
+    other: '6',
+  };
+
+  const stats = {
+    respDeleted: 0,
+  };
+
+  const rfcCalculation = core.rfc.rfc2;
+
   const fortnights = await getServerFornitghts();
 
-  // 2) Cerrar captura de SICON
   // TODO: lOCAL SICON IS MANDATORY
   // await repository.sicon.refunds.updateStatus(fortnights.sicon.id, 2);
 
-  // 3) Obtener los datos del SICON
+  const { fortnight } = fortnights.sicon;
+
   const data = await getSiconCapture(fortnights.sicon);
-  console.log(data);
+  let rfcs = [...data];
+  // Agregar RFC unicos en rfc_calculo
+  const rfcUniques = core.rfc.groupByRFCtoSQL(rfcs);
+  await rfcCalculation.insertRFCs(rfcUniques);
 
-  //  ====================================
-  //  ========== ESTATUS =================
-  //  ====================================
+  const rfcsNotFounded = await rfcCalculation.getRfcNotInEmployee();
 
-  //  0 - Sin Reintegro
-  //  1 - Capturado
-  //  2 - Existe en Empleado Plaza Concepto
-  //  3 - Existe en Responsabilidades
-  //  4 - Cierre de vigencia
-  //  5 - Eliminación de responsabilidades
-  //  6 - Borrado en otro consecutivo
+  if (rfcsNotFounded.length > 0) {
+    await rfcCalculation.deleteRfcNotInEmployee();
+    rfcs = filterRfcs(rfcs, rfcsNotFounded);
+  }
 
-  // TODO: process data
-  //   id: 32133,
-  //   rfc: 'AUPM720530IW2',
-  //   plaza: '075014  E278130.0040184',
-  //   fortnightStart: '202510',
-  //   fortnightEnd: '202512',
-  //   monthlyAmount: '231.29',
-  //   biweeklyAmount: '115.64',
-  //   status: 5,
-  //   fortnight: '202513',
-  //   idUser: 17
+  if (rfcs.length === 0) {
+    // TODO: Set stats with real data
+    return stats;
+  }
 
-  // TODO: group by status
+  // TODO: eliminar de responsabilidades
+  // const respDeleted = await repository.siapsep.responsabilities.deleteByRfc('rfc2');
 
-  const statusGrouped = groupByStatus(data);
-  const rfcGrouped = core.rfc.groupByRFCtoSQL(data);
+  // stats.respDeleted = respDeleted;
+  const statusGrouped = groupByStatus(rfcs);
 
-  // return await new Promise((resolve) => setTimeout(() => resolve('holi'), 0));
+  const createSize = statusGrouped[status.create]?.length ?? 0;
+  const closeTermSize = statusGrouped[status.close]?.length ?? 0;
+  // const deleteResponsabilitiesSize = statusGrouped['5']?.length ?? 0;
+
+  if (createSize === 0 && closeTermSize === 0) {
+    return stats;
+  }
+
+  const rfcCodePayments = [
+    ...(statusGrouped[status.create] ?? []),
+    ...(statusGrouped[status.close] ?? []),
+  ];
+
+  const rfcPrepared = core.rfc.prepareToSQLBulkValues({
+    columns: [
+      'rfc',
+      'payCode',
+      'unit',
+      'subunit',
+      'positionCategory',
+      'hours',
+      'consecutivePayment',
+    ],
+    data: rfcCodePayments,
+  });
+
+  await repository.siapsep.rfcPaymentCodeCalculation.createMany(rfcPrepared);
+  const currentRefunds =
+    await repository.siapsep.employeePaymentCodeConcept.refunds.getCount(fortnight);
+
   return 'holi';
 };

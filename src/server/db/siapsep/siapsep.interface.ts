@@ -9,10 +9,12 @@ export interface ExecuteProps {
   args?: (string | number)[];
 }
 
+export type BulkInsertArgs = (string | number | null)[][];
+
 export interface ExecuteBulkInsertProps {
   table: string;
   columns?: string[];
-  args: (string | number)[][];
+  args: BulkInsertArgs;
 }
 
 export interface OdbcConnection {

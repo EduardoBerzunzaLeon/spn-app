@@ -5,7 +5,7 @@ import { db_spn } from './spn/spn.connection';
 const db = {
   spn: db_spn,
   sicon: db_sicon,
-  siapsep: new SiapsepConnection(),
+  siapsep: SiapsepConnection.getInstance(),
 };
 
 export { db };
