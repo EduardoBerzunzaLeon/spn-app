@@ -7,10 +7,12 @@ interface ConvertFortnightI {
 }
 
 const convertFortnightToNumber = <T extends ConvertFortnightI>(serverFortnight: T) => {
+  const { consecutive, fortnight, ...rest } = serverFortnight;
+
   return {
-    ...serverFortnight,
-    consecutive: Number(serverFortnight.consecutive),
-    fortnight: Number(serverFortnight.fortnight),
+    ...rest,
+    consecutive: Number(consecutive),
+    fortnight: Number(fortnight),
   };
 };
 

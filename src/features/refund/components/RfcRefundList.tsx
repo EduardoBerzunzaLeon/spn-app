@@ -16,7 +16,7 @@ export const RfcRefundList = ({ rfcList, gFilter, type = 'success' }: Props) => 
           <Highlight highlight={gFilter}>{`RFC: ${rfc.rfc}`}</Highlight>
           Tipo: <span className="font-bold">{rfc.type}</span> -{rfc.error && ' Error: '}
           {rfc.error && <span className="font-bold">{rfc.error} - </span>}Plaza:{' '}
-          <span className="font-bold">{rfc.plaza}</span>
+          <span className="font-bold">{rfc.paymentCode}</span>
         </List.Item>
       ))}
     </List>

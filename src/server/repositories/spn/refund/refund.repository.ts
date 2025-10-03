@@ -1,4 +1,4 @@
-import { desc, eq, getTableColumns } from 'drizzle-orm';
+import { desc, eq, getTableColumns, InferInsertModel } from 'drizzle-orm';
 import { core } from '~/server/core';
 import { db } from '~/server/db';
 import { refundLogs, refundRfcFailed, refundRfcSuccess, user } from '~/server/db/spn/schema';
@@ -96,4 +96,10 @@ export const getLastConsecutive = async () => {
 
 export const updateNotes = async ({ id, notes }: RefundUpdateNotesSchemaI) => {
   return await db.spn.update(refundLogs).set({ notes }).where(eq(refundLogs.id, id));
+};
+
+export type RefundLogsInsert = InferInsertModel<typeof refundLogs>;
+
+export const createOne = async (data: RefundLogsInsert) => {
+  return await db.spn.insert(refundLogs).values(data).returning({ insertedId: refundLogs.id });
 };

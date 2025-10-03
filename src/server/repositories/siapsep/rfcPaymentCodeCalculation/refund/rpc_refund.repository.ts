@@ -1,7 +1,7 @@
 import { GetRfcNotEPCI, GetRfcPaymentCodeNotEPCI } from './rpc_refund.interface';
 import { db } from '~/server/db';
 
-export const getRfcNotEPC = async (fortnight: string) => {
+export const getRfcNotEPC = async (fortnight: number) => {
   return await db.siapsep.execute<GetRfcNotEPCI>({
     query: `SELECT a.rfc from spn_rfcplaza as a
             left join emp_plaza_cpto as b
@@ -13,7 +13,7 @@ export const getRfcNotEPC = async (fortnight: string) => {
   });
 };
 
-export const getRfcPaymentCodeNotEPC = async (fortnight: string) => {
+export const getRfcPaymentCodeNotEPC = async (fortnight: number) => {
   return await db.siapsep.execute<GetRfcPaymentCodeNotEPCI>({
     query: `SELECT a.* from spn_rfcplaza as a
             left join emp_plaza_cpto as b

@@ -23,7 +23,7 @@ export const createMany = async (table: RfcCalculationTables, rfcs: string[][]) 
 
 export const getNotInEmployee = async (table: RfcCalculationTables) => {
   return await db.siapsep.execute<RfcCalculationI>({
-    query: `SELECT rfc FROM ${table} WHERE rfc NOT IN (SELECT rfc FROM empleado)`,
+    query: `SELECT rfc FROM ${table} WHERE rfc NOT IN (SELECT rfc FROM empleado) group by rfc`,
   });
 };
 

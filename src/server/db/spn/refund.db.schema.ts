@@ -6,12 +6,13 @@ export const refundTypesEnum = pgEnum('type_refund', [
   'cierre_vigencia',
   'creacion',
   'eliminacion_responsabilidades',
+  'borrado_otro_consecutivo',
 ]);
 
 export const refundErrorsEnum = pgEnum('error_refund', [
   'RFC no encontrado',
-  'plaza no encontrada',
-  'RFC, plaza no activa',
+  'RFC no encontrado en EPC',
+  'RFC, plaza no encontrada en EPC',
 ]);
 
 export const refundSchema = pgSchema('refunds');

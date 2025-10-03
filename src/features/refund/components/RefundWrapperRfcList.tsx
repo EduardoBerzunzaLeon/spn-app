@@ -3,7 +3,7 @@ import { RfcRefundList } from './RfcRefundList';
 export interface rfcList {
   rfc: string;
   type: string;
-  plaza: string;
+  paymentCode: string;
   error?: string;
 }
 
