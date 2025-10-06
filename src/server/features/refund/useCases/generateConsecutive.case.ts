@@ -1,13 +1,11 @@
-import { stat } from 'fs';
 import { refund } from '..';
-import { r } from 'node_modules/better-auth/dist/shared/better-auth.ClXlabtY';
 import { controlProcess } from '../../controlProcessFortnight';
+import { getSiapsepCount } from '../services';
 import { core } from '~/server/core';
 import { refundErrorsEnum, refundTypesEnum } from '~/server/db/spn/schema';
 import { repository } from '~/server/repositories';
-import { EmployeePaymentCodeConceptI } from '~/server/repositories/siapsep/employeePaymentCodeConcept';
 import { RefundLogsInsert } from '~/server/repositories/spn/refund';
-import { ArrayElement, ErrorApp, ReturnArrayElement } from '~/shared';
+import { ErrorApp, ReturnArrayElement } from '~/shared';
 
 //  ====================================
 //  ========== ESTATUS =================
@@ -25,14 +23,17 @@ type PrepareInsertEPCColumn = keyof ReturnArrayElement<
   typeof repository.sicon.refunds.getCaptureByIdOpenClose
 >;
 
-const status = {
+type StatusAviable = '1' | '4' | '5' | '6';
+
+const statusAviable: StatusAviable[] = ['1', '4', '5', '6'];
+const status: Record<string, StatusAviable> = {
   create: '1',
   close: '4',
   responsabilities: '5',
   other: '6',
 };
 
-const statusMapped: Record<string, (typeof refundTypesEnum.enumValues)[number]> = {
+const statusMapped: Record<StatusAviable, (typeof refundTypesEnum.enumValues)[number]> = {
   '1': 'creacion',
   '4': 'cierre_vigencia',
   '5': 'eliminacion_responsabilidades',
@@ -45,7 +46,7 @@ const errorMapped: Record<string, (typeof refundErrorsEnum.enumValues)[number]> 
   notFoundPaycodeEPC: 'RFC, plaza no encontrada en EPC',
 };
 
-const getServerFornitghts = async () => {
+const getServerFortnights = async () => {
   const initialSiapsep = await controlProcess.cases.getSiapsepInitialData();
   const initialSicon = await refund.cases.getLastConsecutive();
 
@@ -110,9 +111,11 @@ const groupByStatus = (data: Awaited<ReturnType<typeof getSiconCapture>>) => {
         throw ErrorApp.badRequest(`El estado del rfc ${item.rfc} no es válido`);
       }
 
-      if (item.status === 3 || item.status === 2) {
+      const statusString = `${item.status}` as StatusAviable;
+
+      if (!statusAviable.includes(statusString)) {
         throw ErrorApp.badRequest(
-          'Existen estatus 2 y/o 3, el sistema no puede procesarlas, favor de verificarlo.'
+          'Existen un estatus diferente a 1,4,5,6, el sistema no puede procesarlas, favor de verificarlo.'
         );
       }
 
@@ -120,15 +123,19 @@ const groupByStatus = (data: Awaited<ReturnType<typeof getSiconCapture>>) => {
         throw ErrorApp.badRequest(`El rfc ${item.rfc} no tiene categoría de puesto`);
       }
 
-      const statusString = `${item.status}`;
-
       if (!acc[statusString]) {
         acc[statusString] = [];
       }
+
       acc[statusString].push(item);
       return acc;
     },
-    {} as Record<string, typeof data>
+    {
+      '1': [],
+      '4': [],
+      '5': [],
+      '6': [],
+    } as Record<StatusAviable, RfcSicon>
   );
 
   return grouped;
@@ -142,52 +149,43 @@ const filterRfcs = (
   return data.filter((item) => !rfcNotFoundedSet.has(item.rfc));
 };
 
-// const separateEmptyCodePayment = (data: Awaited<ReturnType<typeof getSiconCapture>>) => {};
+const initialStats = (fortnight: number, consecutive: number): RefundLogsInsert => ({
+  processFortnight: String(fortnight),
+  consecutive,
+  userId: '1',
+  recordsCreated: 0,
+  recordsDeletedResponsabilities: 0,
+  recordsDeletedEmployeeConcept: 0,
+  recordsClosedTerm: 0,
+  recordsSuccesed: 0,
+  recordsFailed: 0,
+  hasError: false,
+  activeBefore: 0,
+  activeAfter: 0,
+});
 
-// -- "cierre_vigencia" | "creacion" | "eliminacion_responsabilidades";
+type RfcError = ReturnArrayElement<typeof getSiconCapture> & {
+  error: (typeof refundErrorsEnum.enumValues)[number];
+};
 
-export const generateConsecutive = async () => {
-  const rfcCalculation = core.rfc.rfc2;
+type RfcSuccess = ReturnArrayElement<typeof getSiconCapture>;
 
-  const fortnights = await getServerFornitghts();
+type RfcSicon = Awaited<ReturnType<typeof getSiconCapture>>;
 
-  // TODO: lOCAL SICON IS MANDATORY
-  // await repository.sicon.refunds.updateStatus(fortnights.sicon.id, 2);
-
-  const { fortnight, consecutive } = fortnights.sicon;
-  const fortnightString = String(fortnight);
-
-  const stats: RefundLogsInsert = {
-    processFortnight: fortnightString,
-    consecutive,
-    userId: '1',
-    recordsCreated: 0,
-    recordsDeletedResponsabilities: 0,
-    recordsDeletedEmployeeConcept: 0,
-    recordsClosedTerm: 0,
-    recordsSuccesed: 0,
-    recordsFailed: 0,
-    hasError: false,
-    activeBefore: 0,
-    activeAfter: 0,
-  };
-
-  const data = await getSiconCapture(fortnights.sicon);
-  let rfcs = [...data];
-  // Agregar RFC unicos en rfc_calculo
-  const rfcUniques = core.rfc.groupByRFCtoSQL(rfcs);
-  await rfcCalculation.insertRFCs(rfcUniques);
-
+const verifyRfcsExistsInEmployee = async (rfcCalculation: typeof core.rfc.rfc2, rfcs: RfcSicon) => {
+  await rfcCalculation.insertUniqueRFCs(rfcs);
   const rfcsNotFounded = await rfcCalculation.getRfcNotInEmployee();
-  const rfcErrors: (ReturnArrayElement<typeof getSiconCapture> & {
-    error: (typeof refundErrorsEnum.enumValues)[number];
-  })[] = [];
-  const rfcSuccess: ReturnArrayElement<typeof getSiconCapture>[] = [];
+
+  const returnObject = {
+    rfcsNotFounded,
+    rfcErrors: [] as RfcError[],
+    hasError: false,
+  };
 
   if (rfcsNotFounded.length > 0) {
     await rfcCalculation.deleteRfcNotInEmployee();
 
-    rfcErrors.push(
+    returnObject.rfcErrors.push(
       ...rfcs
         .filter((item) => rfcsNotFounded.map((i) => i.rfc).includes(item.rfc))
         .map((i) => {
@@ -197,48 +195,55 @@ export const generateConsecutive = async () => {
           };
         })
     );
-    stats.hasError = true;
-    rfcs = filterRfcs(rfcs, rfcsNotFounded);
+    returnObject.hasError = true;
   }
 
-  if (rfcs.length === 0) {
-    throw ErrorApp.badRequest('No hay registros que procesar');
-  }
+  return returnObject;
+};
 
-  const currentRefunds =
-    await repository.siapsep.employeePaymentCodeConcept.refunds.getCount(fortnight);
+type StatusGrouped = Record<StatusAviable, RfcSicon>;
 
-  stats.activeBefore = currentRefunds.count;
-  stats.activeAfter = currentRefunds.count;
+interface CreateIfNoCreateOrCloseI {
+  stats: RefundLogsInsert;
+  rfcSuccess: RfcSuccess[];
+  rfcErrors: RfcError[];
+  statusGrouped: StatusGrouped;
+}
 
-  // TODO: eliminar de responsabilidades
-  const recordsDeletedResponsabilities =
-    await repository.siapsep.responsabilities.deleteByRfc('rfc2');
-  stats.recordsDeletedResponsabilities = recordsDeletedResponsabilities;
-
-  const statusGrouped = groupByStatus(rfcs);
-
-  const createSize = statusGrouped[status.create]?.length ?? 0;
-  const closeTermSize = statusGrouped[status.close]?.length ?? 0;
-
-  rfcSuccess.push(...(statusGrouped[status.responsabilities] ?? []));
+const createIfNoCreateOrClose = async ({
+  stats,
+  rfcSuccess,
+  rfcErrors,
+  statusGrouped,
+}: CreateIfNoCreateOrCloseI) => {
+  const createSize = statusGrouped[status.create].length;
+  const closeTermSize = statusGrouped[status.close].length;
+  let isEmpty = false;
 
   if (createSize === 0 && closeTermSize === 0) {
     stats.recordsFailed = rfcErrors.length;
     stats.recordsSuccesed = rfcSuccess.length;
+
     await createRecord({
       stats,
       rfcSuccess,
       rfcErrors,
     });
 
-    return stats;
+    isEmpty = true;
   }
 
-  const rfcCodePayments = [
-    ...(statusGrouped[status.create] ?? []),
-    ...(statusGrouped[status.close] ?? []),
-  ];
+  return isEmpty;
+};
+
+interface InsertRfcPaymentCodeCalculationI {
+  statusGrouped: StatusGrouped;
+}
+
+const insertRfcPaymentCodeCalculation = async ({
+  statusGrouped,
+}: InsertRfcPaymentCodeCalculationI) => {
+  const rfcCodePayments = [...statusGrouped[status.create], ...statusGrouped[status.close]];
 
   const rfcPrepared = core.rfc.prepareToSQLBulkValues({
     columns: [
@@ -256,8 +261,16 @@ export const generateConsecutive = async () => {
 
   await repository.siapsep.rfcPaymentCodeCalculation.deleteAll();
   await repository.siapsep.rfcPaymentCodeCalculation.createMany(rfcPrepared);
+};
 
-  // rfcErrors.push(...(statusGrouped[status.close].map))
+interface VerifyCloseVigenI {
+  statusGrouped: StatusGrouped;
+  fortnight: number;
+}
+
+export const verifyCloseVigen = async ({ statusGrouped, fortnight }: VerifyCloseVigenI) => {
+  const rfcErrors: RfcError[] = [];
+  const rfcSuccess: RfcSuccess[] = [];
 
   if (statusGrouped[status.close].length > 0) {
     const rfcNotEPC =
@@ -289,33 +302,63 @@ export const generateConsecutive = async () => {
       rfcSuccess.push(item);
     });
   }
+  return {
+    rfcErrors,
+    rfcSuccess,
+  };
+};
+
+interface CloseVigenRefundsI {
+  fortnight: number;
+}
+
+const closeVigenRefunds = async ({ fortnight }: CloseVigenRefundsI) => {
+  const beforeFortnight = core.fortnight.subtractFortnight(fortnight, 1);
 
   const closeVigenByRfc =
     await repository.siapsep.employeePaymentCodeConcept.refunds.closeVigencyByRfc(
       fortnight,
-      fortnight - 1 // TODO create delete one fortnight
+      beforeFortnight
     );
 
   const closeVigenByRfcAndCode =
     await repository.siapsep.employeePaymentCodeConcept.refunds.closeVigencyByRfcAndCode(
       fortnight,
-      fortnight - 1
+      beforeFortnight
     );
 
-  stats.recordsClosedTerm = closeVigenByRfc.count + closeVigenByRfcAndCode.count;
+  return closeVigenByRfc.count + closeVigenByRfcAndCode.count;
+};
 
+interface DeleteRefundsI {
+  fortnight: number;
+}
+
+const deleteRefunds = async ({ fortnight }: DeleteRefundsI) => {
   const deleteByRfc =
     await repository.siapsep.employeePaymentCodeConcept.refunds.deleteByRfc(fortnight);
 
   const deleteByRfcAndCode =
     await repository.siapsep.employeePaymentCodeConcept.refunds.deleteByRfcAndCode(fortnight);
 
-  stats.recordsDeletedEmployeeConcept = deleteByRfc.count + deleteByRfcAndCode.count;
+  return deleteByRfc.count + deleteByRfcAndCode.count;
+};
 
-  const deletedInOtherConsecutiveSize = statusGrouped[status.other]?.length ?? 0;
+interface DeleteInOtherConsecutiveI {
+  statusGrouped: StatusGrouped;
+  fortnight: number;
+}
+
+const deleteInOtherConsecutive = async ({
+  statusGrouped,
+  fortnight,
+}: DeleteInOtherConsecutiveI) => {
+  const rfcs = statusGrouped[status.other];
+  const deletedInOtherConsecutiveSize = rfcs.length;
+  const rfcSuccess: RfcSuccess[] = [];
 
   if (deletedInOtherConsecutiveSize > 0) {
-    const rfcDeleteInOtherConsecutive = statusGrouped[status.other];
+    const rfcDeleteInOtherConsecutive = rfcs;
     const rfcPrepared = core.rfc.prepareToSQLBulkValues({
       columns: [
         'rfc',
@@ -327,7 +370,7 @@ export const generateConsecutive = async () => {
         'consecutivePayment',
         'status',
       ],
-      data: statusGrouped[status.other],
+      data: rfcs,
     });
 
     await repository.siapsep.rfcPaymentCodeCalculation.deleteAll();
@@ -336,6 +379,19 @@ export const generateConsecutive = async () => {
 
     rfcSuccess.push(...rfcDeleteInOtherConsecutive);
   }
+
+  return rfcSuccess;
+};
+
+interface InsertRefundsI {
+  statusGrouped: StatusGrouped;
+}
+
+const insertRefunds = async ({ statusGrouped }: InsertRefundsI) => {
+  const returnObject = {
+    created: 0,
+    rfcSuccess: [] as RfcSuccess[],
+  };
 
   if (statusGrouped[status.create].length > 0) {
     const rfcCreateCodePayments = statusGrouped[status.create];
@@ -364,13 +420,78 @@ export const generateConsecutive = async () => {
       columns,
       data: rfcCreateCodePayments,
     });
-    const created = await repository.siapsep.employeePaymentCodeConcept.createMany(rfcPrepared);
-    stats.recordsCreated = created;
-    rfcSuccess.push(...rfcCreateCodePayments);
+
+    returnObject.created =
+      await repository.siapsep.employeePaymentCodeConcept.createMany(rfcPrepared);
+
+    returnObject.rfcSuccess.push(...rfcCreateCodePayments);
   }
 
-  const lastRefunds =
-    await repository.siapsep.employeePaymentCodeConcept.refunds.getCount(fortnight);
+  return returnObject;
+};
+
+export const generateConsecutive = async () => {
+  const rfcCalculation = core.rfc.rfc2;
+
+  const fortnights = await getServerFortnights();
+
+  const { fortnight, consecutive } = fortnights.sicon;
+  const stats = initialStats(fortnight, consecutive);
+  const rfcErrors: RfcError[] = [];
+  const rfcSuccess: RfcSuccess[] = [];
+
+  // await closeVigenCapture(fortnights.sicon.id);
+
+  const data = await getSiconCapture(fortnights.sicon);
+  let rfcs = [...data];
+
+  const verifiedRfcs = await verifyRfcsExistsInEmployee(rfcCalculation, rfcs);
+  rfcErrors.push(...verifiedRfcs.rfcErrors);
+  stats.hasError = verifiedRfcs.hasError;
+  rfcs = filterRfcs(rfcs, verifiedRfcs.rfcsNotFounded);
+
+  if (rfcs.length === 0) {
+    throw ErrorApp.badRequest('No hay registros que procesar');
+  }
+
+  const { count: currentRefundsCount } = await getSiapsepCount(fortnight);
+
+  stats.activeBefore = currentRefundsCount;
+  stats.activeAfter = currentRefundsCount;
+
+  const statusGrouped = groupByStatus(rfcs);
+
+  stats.recordsDeletedResponsabilities = await repository.siapsep.responsabilities.deleteByRfc(
+    rfcCalculation.getTable()
+  );
+  rfcSuccess.push(...statusGrouped[status.responsabilities]);
+
+  const isEmpty = await createIfNoCreateOrClose({
+    stats,
+    rfcSuccess,
+    rfcErrors,
+    statusGrouped,
+  });
+
+  if (isEmpty) return stats;
+
+  await insertRfcPaymentCodeCalculation({ statusGrouped });
+
+  const closeVigenVerified = await verifyCloseVigen({ statusGrouped, fortnight });
+  rfcErrors.push(...closeVigenVerified.rfcErrors);
+  rfcSuccess.push(...closeVigenVerified.rfcSuccess);
+
+  stats.recordsClosedTerm = await closeVigenRefunds({ fortnight });
+  stats.recordsDeletedEmployeeConcept = await deleteRefunds({ fortnight });
+
+  const rfcsDeleted = await deleteInOtherConsecutive({ statusGrouped, fortnight });
+  rfcSuccess.push(...rfcsDeleted);
+
+  const createdRefunds = await insertRefunds({ statusGrouped });
+  stats.recordsCreated = createdRefunds.created;
+  rfcSuccess.push(...createdRefunds.rfcSuccess);
+
+  const lastRefunds = await getSiapsepCount(fortnight);
   stats.activeAfter = lastRefunds.count;
   stats.recordsFailed = rfcErrors.length;
   stats.recordsSuccesed = rfcSuccess.length;
