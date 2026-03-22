@@ -8,17 +8,13 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createServerRootRoute } from '@tanstack/react-start/server'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AuthconceptsRefundIndexRouteImport } from './routes/_auth/(concepts)/refund/index'
 import { Route as AuthconceptsForteIndexRouteImport } from './routes/_auth/(concepts)/forte/index'
-import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
-
-const rootServerRouteImport = createServerRootRoute()
 
 const SigninRoute = SigninRouteImport.update({
   id: '/signin',
@@ -34,6 +30,11 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthRoute,
 } as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthconceptsRefundIndexRoute = AuthconceptsRefundIndexRouteImport.update({
   id: '/(concepts)/refund/',
   path: '/refund/',
@@ -44,21 +45,18 @@ const AuthconceptsForteIndexRoute = AuthconceptsForteIndexRouteImport.update({
   path: '/forte/',
   getParentRoute: () => AuthRoute,
 } as any)
-const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
-  getParentRoute: () => rootServerRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
-  '/signin': typeof SigninRoute
   '/': typeof AuthIndexRoute
-  '/forte': typeof AuthconceptsForteIndexRoute
-  '/refund': typeof AuthconceptsRefundIndexRoute
+  '/signin': typeof SigninRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/forte/': typeof AuthconceptsForteIndexRoute
+  '/refund/': typeof AuthconceptsRefundIndexRoute
 }
 export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/': typeof AuthIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/forte': typeof AuthconceptsForteIndexRoute
   '/refund': typeof AuthconceptsRefundIndexRoute
 }
@@ -67,19 +65,21 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/signin': typeof SigninRoute
   '/_auth/': typeof AuthIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/_auth/(concepts)/forte/': typeof AuthconceptsForteIndexRoute
   '/_auth/(concepts)/refund/': typeof AuthconceptsRefundIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/signin' | '/' | '/forte' | '/refund'
+  fullPaths: '/' | '/signin' | '/api/auth/$' | '/forte/' | '/refund/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/signin' | '/' | '/forte' | '/refund'
+  to: '/signin' | '/' | '/api/auth/$' | '/forte' | '/refund'
   id:
     | '__root__'
     | '/_auth'
     | '/signin'
     | '/_auth/'
+    | '/api/auth/$'
     | '/_auth/(concepts)/forte/'
     | '/_auth/(concepts)/refund/'
   fileRoutesById: FileRoutesById
@@ -87,27 +87,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   SigninRoute: typeof SigninRoute
-}
-export interface FileServerRoutesByFullPath {
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
-}
-export interface FileServerRoutesByTo {
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
-}
-export interface FileServerRoutesById {
-  __root__: typeof rootServerRouteImport
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
-}
-export interface FileServerRouteTypes {
-  fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/auth/$'
-  fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/auth/$'
-  id: '__root__' | '/api/auth/$'
-  fileServerRoutesById: FileServerRoutesById
-}
-export interface RootServerRouteChildren {
-  ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -122,7 +102,7 @@ declare module '@tanstack/react-router' {
     '/_auth': {
       id: '/_auth'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -133,30 +113,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth/(concepts)/refund/': {
       id: '/_auth/(concepts)/refund/'
       path: '/refund'
-      fullPath: '/refund'
+      fullPath: '/refund/'
       preLoaderRoute: typeof AuthconceptsRefundIndexRouteImport
       parentRoute: typeof AuthRoute
     }
     '/_auth/(concepts)/forte/': {
       id: '/_auth/(concepts)/forte/'
       path: '/forte'
-      fullPath: '/forte'
+      fullPath: '/forte/'
       preLoaderRoute: typeof AuthconceptsForteIndexRouteImport
       parentRoute: typeof AuthRoute
-    }
-  }
-}
-declare module '@tanstack/react-start/server' {
-  interface ServerFileRoutesByPath {
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatServerRouteImport
-      parentRoute: typeof rootServerRouteImport
     }
   }
 }
@@ -178,13 +154,18 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   SigninRoute: SigninRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-const rootServerRouteChildren: RootServerRouteChildren = {
-  ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
 }
-export const serverRouteTree = rootServerRouteImport
-  ._addFileChildren(rootServerRouteChildren)
-  ._addFileTypes<FileServerRouteTypes>()

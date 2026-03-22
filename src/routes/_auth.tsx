@@ -29,7 +29,7 @@ export const Route = createFileRoute('/_auth')({
   }),
 });
 
-export function DashboardLayout() {
+function DashboardLayout() {
   return (
     <AuthLayout>
       <>

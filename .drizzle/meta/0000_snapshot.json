@@ -1,9 +1,318 @@
 {
-  "id": "c075fcd8-8a57-49bc-b5c0-1616f28c35ce",
+  "id": "7fd6ad00-fc32-4462-9f8e-fa82c628c37b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "refunds.re_logs": {
+      "name": "re_logs",
+      "schema": "refunds",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "re_logs_id_seq",
+            "schema": "refunds",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "process_fortnight": {
+          "name": "process_fortnight",
+          "type": "char(6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "consecutive": {
+          "name": "consecutive",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "records_created": {
+          "name": "records_created",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "records_deleted_responsabilities": {
+          "name": "records_deleted_responsabilities",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "records_deleted_employee_concept": {
+          "name": "records_deleted_employee_concept",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "records_closed_term": {
+          "name": "records_closed_term",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "records_succesed": {
+          "name": "records_succesed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "records_failed": {
+          "name": "records_failed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "has_error": {
+          "name": "has_error",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "active_before": {
+          "name": "active_before",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "active_after": {
+          "name": "active_after",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        }
+      },
+      "indexes": {
+        "re_logs_consecutive": {
+          "name": "re_logs_consecutive",
+          "columns": [
+            {
+              "expression": "process_fortnight",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "consecutive",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "re_logs_user_id_user_id_fk": {
+          "name": "re_logs_user_id_user_id_fk",
+          "tableFrom": "re_logs",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "refunds.re_rfc_failed": {
+      "name": "re_rfc_failed",
+      "schema": "refunds",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "re_rfc_failed_id_seq",
+            "schema": "refunds",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "refund_logs_id": {
+          "name": "refund_logs_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rfc": {
+          "name": "rfc",
+          "type": "char(13)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payment_code": {
+          "name": "payment_code",
+          "type": "char(23)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "type_refund",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "error": {
+          "name": "error",
+          "type": "error_refund",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "re_rfc_failed_refund_logs_id_re_logs_id_fk": {
+          "name": "re_rfc_failed_refund_logs_id_re_logs_id_fk",
+          "tableFrom": "re_rfc_failed",
+          "tableTo": "re_logs",
+          "schemaTo": "refunds",
+          "columnsFrom": [
+            "refund_logs_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "refunds.re_rfc_success": {
+      "name": "re_rfc_success",
+      "schema": "refunds",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "re_rfc_success_id_seq",
+            "schema": "refunds",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "refund_logs_id": {
+          "name": "refund_logs_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rfc": {
+          "name": "rfc",
+          "type": "char(13)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payment_code": {
+          "name": "payment_code",
+          "type": "char(23)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "type_refund",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "re_rfc_success_refund_logs_id_re_logs_id_fk": {
+          "name": "re_rfc_success_refund_logs_id_re_logs_id_fk",
+          "tableFrom": "re_rfc_success",
+          "tableTo": "re_logs",
+          "schemaTo": "refunds",
+          "columnsFrom": [
+            "refund_logs_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.account": {
       "name": "account",
       "schema": "",
@@ -324,8 +633,30 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
-  "schemas": {},
+  "enums": {
+    "public.error_refund": {
+      "name": "error_refund",
+      "schema": "public",
+      "values": [
+        "RFC no encontrado",
+        "RFC no encontrado en EPC",
+        "RFC, plaza no encontrada en EPC"
+      ]
+    },
+    "public.type_refund": {
+      "name": "type_refund",
+      "schema": "public",
+      "values": [
+        "cierre_vigencia",
+        "creacion",
+        "eliminacion_responsabilidades",
+        "borrado_otro_consecutivo"
+      ]
+    }
+  },
+  "schemas": {
+    "refunds": "refunds"
+  },
   "sequences": {},
   "roles": {},
   "policies": {},

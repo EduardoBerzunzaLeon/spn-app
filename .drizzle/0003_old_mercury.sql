@@ -1,2 +1,0 @@
-ALTER TABLE "refunds"."re_logs" ADD COLUMN "consecutive" smallint DEFAULT 1 NOT NULL;--> statement-breakpoint
-CREATE UNIQUE INDEX "re_logs_consecutive" ON "refunds"."re_logs" USING btree ("process_fortnight","consecutive");

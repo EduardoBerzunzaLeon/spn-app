@@ -7,8 +7,7 @@ import 'dotenv/config';
 
 // dotenv.config();
 
-// console.log(process.env.BETTER_AUTH_URL);
-
+// FIXME: THIS DOESN'T SEEM TO BE WORKING, REVIEW THIS
 export const authClient = createAuthClient({
   baseURL: process.env.BETTER_AUTH_URL!,
   plugins: [usernameClient()],

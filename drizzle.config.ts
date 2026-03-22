@@ -13,6 +13,5 @@ export default {
   strict: true,
   dbCredentials: {
     url: process.env.SPN_BD_URL!,
-    // url: "postgresql://postgres:postgres@localhost:5432/test_db"
   },
 } as Config;

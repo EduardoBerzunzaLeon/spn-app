@@ -3,42 +3,65 @@ import { reset, seed } from 'drizzle-seed';
 import * as schema from './spn/schema';
 import { db_spn } from './spn/spn.connection';
 
-// import { authClient } from '~/lib/utils/authClient';
+import * as dotenv from 'dotenv';
+import { auth } from '~/lib/auth';
+import { user } from './spn/schema';
 
-// dotenv.config({ path: "./.env.development" });
+dotenv.config({ path: "./.env.development" });
 
-// if (!("DATABASE_URL" in process.env))
-//         throw new Error("DATABASE_URL not found on .env.development");
+if (!("SPN_BD_URL" in process.env))
+        throw new Error("DATABASE_URL not found on .env.development");
 
-// const main = async () => {
-//   await authClient.signUp.email(
-//     {
-//       email: 'FATIMA@gmail.com',
-//       password: '123456790',
-//       name: 'fatima pacheco',
-//       username: 'fatimaPachecho',
-//     },
-//     {
-//       onError: (ctx) => {
-//         // Handle the error
-//         if (ctx.error.status === 403) {
-//           // eslint-disable-next-line no-console
-//           console.log('Please verify your email address');
-//         }
-//         //you can also show the original error message
-//       },
-//       onSuccess: () => {
-//         console.log('successed');
-//       },
-//     }
-//   );
-// };
+const main = async () => {
+  // await authClient.signUp.email(
+  //   {
+  //     email: 'eduardo.berzunza@gmail.com',
+  //     password: '123456790',
+  //     name: 'eduardo berzunza',
+  //     username: 'eduardo.berzunza',
+  //   },
+  //   {
+  //     onError: (ctx) => {
+  //       // Handle the error
+  //       if (ctx.error.status === 403) {
+  //         console.log(ctx.error.message);
+  //         // eslint-disable-next-line no-console
+  //         console.log('Please verify your email address');
+  //       }
+  //       //you can also show the original error message
+  //     },
+  //     onSuccess: () => {
+  //       console.log('successed');
+  //     },
+  //   }
+  // );
+  console.log('Seeding database...');
+  try {
+    // ... tu código de reset existing...
+
+    // Crear usuario por defecto
+    await auth.api.signUpEmail({
+      body: {
+        email: "test@example.com",
+        password: "password123",
+        name: "Test User",
+        username: "testuser",
+      },
+    });
+
+    console.log('Usuario de prueba creado exitosamente');
+  } catch (error) {
+    console.error('Error en seed:', error);
+  }
+};
 
 // main();
 
-async function main() {
+async function main2() {
   console.log('Seeding database...');
   try {
+
+    const firstUser = await db_spn.select().from(user).limit(1);
     await reset(db_spn, {
       refundLogs: schema.refundLogs,
       refundRfcSuccess: schema.refundRfcSuccess,
@@ -53,17 +76,17 @@ async function main() {
         count: 10,
         columns: {
           consecutive: f.int({ minValue: 1, maxValue: 30 }),
-          rfcCreated: f.int({ minValue: 0, maxValue: 10 }),
-          rfcDeletedResponsabilities: f.int({ minValue: 0, maxValue: 5 }),
-          rfcDeletedEmployeeConcept: f.int({ minValue: 0, maxValue: 5 }),
-          rfcClosedTerm: f.int({ minValue: 0, maxValue: 5 }),
-          rfcSuccesed: f.int({ minValue: 0, maxValue: 20 }),
-          rfcFailed: f.int({ minValue: 0, maxValue: 5 }),
+          recordsCreated: f.int({ minValue: 0, maxValue: 10 }),
+          recordsDeletedResponsabilities: f.int({ minValue: 0, maxValue: 5 }),
+          recordsDeletedEmployeeConcept: f.int({ minValue: 0, maxValue: 5 }),
+          recordsClosedTerm: f.int({ minValue: 0, maxValue: 5 }),
+          recordsSuccesed: f.int({ minValue: 0, maxValue: 20 }),
+          recordsFailed: f.int({ minValue: 0, maxValue: 5 }),
           activeBefore: f.int({ minValue: 10, maxValue: 30 }),
           activeAfter: f.int({ minValue: 10, maxValue: 30 }),
           hasError: f.boolean(),
           userId: f.valuesFromArray({
-            values: ['0FRSQbW41WbGHWBd4SRTtG9Z0cmaB3YN', 'Ubfmk4N96XK6h0NgMSi9JKh3f8mKemyd'],
+            values: [firstUser[0]?.id || 'default-user-id'],
           }),
           processFortnight: f.valuesFromArray({ values: ['202509', '202510', '202508', '202509'] }),
           notes: f.valuesFromArray({
@@ -113,4 +136,4 @@ async function main() {
   }
 }
 
-main();
+main2();

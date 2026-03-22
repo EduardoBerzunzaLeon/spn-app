@@ -4,7 +4,7 @@ import { errorMiddleware } from '~/lib/middleware';
 import { RefundSearchSchema, RefundUpdateNotesSchema, withPaginationHandlerError } from '~/shared';
 
 export const getLogs = createServerFn()
-  .validator(RefundSearchSchema)
+  .inputValidator(RefundSearchSchema)
   .handler(
     withPaginationHandlerError(async ({ data }) => {
       if (data.gFilter) {
@@ -31,7 +31,7 @@ export const getLogs = createServerFn()
 
 export const updateNotes = createServerFn()
   .middleware([errorMiddleware])
-  .validator(RefundUpdateNotesSchema)
+  .inputValidator(RefundUpdateNotesSchema)
   .handler(async ({ data }) => {
     await refund.cases.updateNotes(data);
     return { message: 'Nota actualizada' };

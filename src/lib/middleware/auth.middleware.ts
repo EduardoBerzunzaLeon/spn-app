@@ -4,6 +4,7 @@ import { auth } from '~/lib/auth';
 
 export const authMiddleware = createMiddleware().server(async ({ next }) => {
   try {
+
     const request = getRequest();
     if (!request) {
       setResponseStatus(500);
