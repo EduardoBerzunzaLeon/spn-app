@@ -6,7 +6,6 @@ import {
   MRT_FilterOption,
   MRT_RowData,
   MRT_ShowHideColumnsButton,
-  MRT_TablePagination,
   MRT_ToggleDensePaddingButton,
   MRT_ToggleFullScreenButton,
   useMantineReactTable,
@@ -22,6 +21,7 @@ import { isEmpty, isFunction } from '~/shared';
 export const useTable = <T extends MRT_RowData, F extends string>({
   columns,
   from,
+  fullPath,
   initialState,
   getData,
   renderDetailPanel,
@@ -41,17 +41,24 @@ export const useTable = <T extends MRT_RowData, F extends string>({
   }, []);
 
   const search = useSearch({ from });
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: fullPath });
 
   const { data, isLoading, isFetching, refetch } = useQuery(getData({ ...search }));
 
   const navigateSearch = (searchParams: Partial<typeof search>) => {
     navigate({
       to: '.',
+      // search: {
+      //   ...search,
+      //   ...searchParams
+      // },
       search: (prev) => ({
         ...prev,
         ...searchParams,
       }),
+      // search: {
+      //   ...searchParams
+      // },
       replace: true,
       resetScroll: false,
     });

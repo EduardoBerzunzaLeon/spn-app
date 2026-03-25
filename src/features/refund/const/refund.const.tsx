@@ -24,34 +24,33 @@ export const REFUND_LOG_COLUMNS: Column<RefundsLogs>[] = [
     id: 'user.name',
     header: 'Usuario',
   },
-
   {
-    accessorKey: 'rfcCreated',
+    accessorKey: 'recordsCreated',
     header: 'RFC Creados',
     type: 'number',
   },
   {
-    accessorKey: 'rfcDeletedResponsabilities',
+    accessorKey: 'recordsDeletedResponsabilities',
     header: 'RFC Eliminados Responsabilidades',
     type: 'number',
   },
   {
-    accessorKey: 'rfcDeletedEmployeeConcept',
+    accessorKey: 'recordsDeletedEmployeeConcept',
     header: 'RFC Eliminados Empleados Concepto',
     type: 'number',
   },
   {
-    accessorKey: 'rfcClosedTerm',
+    accessorKey: 'recordsClosedTerm',
     header: 'RFC Cierre Vigencia',
     type: 'number',
   },
   {
-    accessorKey: 'rfcSuccesed',
+    accessorKey: 'recordsSuccesed',
     header: 'RFC Exitosos',
     type: 'number',
   },
   {
-    accessorKey: 'rfcFailed',
+    accessorKey: 'recordsFailed',
     header: 'RFC errores',
     type: 'number',
   },

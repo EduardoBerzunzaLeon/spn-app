@@ -22,6 +22,7 @@ export const RefundLogHistoryTable = () => {
   const { table, search } = useTable({
     columns: REFUND_LOG_COLUMNS,
     from: RefundRoute.id,
+    fullPath: RefundRoute.fullPath,
     getData: refundQueries.logs,
     initialState: DEFAULT_REFUND_SEARCH,
     globalFilterPlaceHolder: 'Buscar por RFC',

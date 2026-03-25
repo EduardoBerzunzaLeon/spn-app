@@ -58,6 +58,7 @@ type MRT_Table<T extends MRT_RowData> = Pick<
 export type UseTableProps<T extends MRT_RowData, F extends string> = {
   columns: Column<T>[];
   from: RoutesWithPageAndLimit;
+  fullPath: RoutesWithPath
   initialState: SearchSchemaI;
   getData: (
     props: SearchSchemaI

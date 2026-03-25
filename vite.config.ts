@@ -37,8 +37,8 @@ export default defineConfig({
   },
   plugins: [
     tanstackStart(),
-    tailwindcss(),
     viteReact(),
+    tailwindcss(),
   ],
   resolve: {
     tsconfigPaths: true,

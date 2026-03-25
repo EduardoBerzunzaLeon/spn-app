@@ -4,12 +4,14 @@ import { db } from '~/server/db';
 import { refundLogs, refundRfcFailed, refundRfcSuccess, user } from '~/server/db/spn/schema';
 import { RefundUpdateNotesSchemaI, SearchSchemaI } from '~/shared';
 
+
 const getSubqueryRfcSuccess = () => {
   const subqueryRfcSuccess = db.spn
     .select({
       rfc: refundRfcSuccess.rfc,
       type: refundRfcSuccess.type,
-      paymentCode: refundRfcSuccess.paymentCode,
+      paymentCode: core.query.aliasedColumn(refundRfcSuccess.paymentCode, 'paymentCode'),
+
     })
     .from(refundRfcSuccess)
     .where(eq(refundRfcSuccess.refundLogsId, refundLogs.id))
@@ -27,7 +29,7 @@ const getSubqueryRfcFailed = () => {
       rfc: refundRfcFailed.rfc,
       type: refundRfcFailed.type,
       error: refundRfcFailed.error,
-      paymentCode: refundRfcFailed.paymentCode,
+      paymentCode: core.query.aliasedColumn(refundRfcFailed.paymentCode, 'paymentCode'),
     })
     .from(refundRfcFailed)
     .where(eq(refundRfcFailed.refundLogsId, refundLogs.id))

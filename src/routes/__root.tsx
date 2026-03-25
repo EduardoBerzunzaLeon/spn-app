@@ -22,18 +22,15 @@ import {
 } from '@mantine/core';
 import mantineCssUrl from '@mantine/core/styles.css?url';
 import datesCssUrl from '@mantine/dates/styles.css?url';
-// import { es } from 'date-fns/locale';
 import { NavigationProgress } from '@mantine/nprogress';
 import nprogressCssUrl from '@mantine/nprogress/styles.css?url';
 import spotlightCssUrl from '@mantine/spotlight/styles.css?url';
 import { authQueries } from '~/features/auth';
 import { DefaultCatchBoundary, NotFound } from '~/features/core';
-// import appCssUrl from '~/styles/app.css?url';
-// import '~/global-middleware';
+import appCssUrl from '~/styles/app.css?url';
 
 import { DatesProvider } from '@mantine/dates';
 import { Nulleable } from '~/shared';
-// import linksCssUrl from '~/styles/links-groups.css?url';
 import linksCssUrl from '~/styles/links-groups.css?url';
 import sidebarCssUrl from '~/styles/sidebar.css?url';
 import { seo } from '~/utils';
@@ -62,6 +59,7 @@ export const Route = createRootRouteWithContext<{
       }),
     ],
     links: [
+      { rel: 'stylesheet', href: appCssUrl },
       { rel: 'stylesheet', href: mantineCssUrl },
       { rel: 'stylesheet', href: nprogressCssUrl },
       { rel: 'stylesheet', href: sidebarCssUrl },
@@ -69,7 +67,6 @@ export const Route = createRootRouteWithContext<{
       { rel: 'stylesheet', href: spotlightCssUrl },
       { rel: 'stylesheet', href: mantineTablesCssUrl },
       { rel: 'stylesheet', href: datesCssUrl },
-      // { rel: 'stylesheet', href: appCssUrl },
       {
         rel: 'apple-touch-icon',
         sizes: '180x180',

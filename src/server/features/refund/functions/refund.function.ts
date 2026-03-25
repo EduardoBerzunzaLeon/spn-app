@@ -25,6 +25,7 @@ export const getLogs = createServerFn()
         ];
         data.filters = [...data.filters, ...rfcSuccess, ...rfcError];
       }
+
       return await refund.cases.getLogs({ ...data });
     })
   );
