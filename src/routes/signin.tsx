@@ -10,7 +10,9 @@ export const Route = createFileRoute('/signin')({
     const { redirectTo } = search;
 
     if (context.user) {
-      throw redirect({ to: redirectTo });
+      throw redirect({
+        href: redirectTo,
+      });
     }
   },
   search: {

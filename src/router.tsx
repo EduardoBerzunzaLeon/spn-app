@@ -17,7 +17,7 @@ const handleErrorMessage = (errorMessage?: string) => {
     return 'Error demasiado largo, favor de verificar los logs';
   }
 
-  return errorMessage;
+  return errorMessage; 
 };
 
 export function getRouter() {

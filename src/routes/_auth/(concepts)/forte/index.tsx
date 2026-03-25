@@ -15,7 +15,6 @@ export const Route = createFileRoute('/_auth/(concepts)/forte/')({
 function RouteComponent() {
   return (
     <div>
-      {' '}
       <Outlet />
     </div>
   );

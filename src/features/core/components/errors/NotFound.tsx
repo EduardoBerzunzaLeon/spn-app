@@ -13,7 +13,7 @@ export function NotFound() {
         <NotFundContainer className="flex align-center justify-center" />
       </AuthLayout>
     );
-  }
+  }    
 
   return <NotFundContainer className="h-screen w-screen flex align-center justify-center" />;
 }

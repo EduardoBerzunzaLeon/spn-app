@@ -10,7 +10,7 @@ import { user } from './spn/schema';
 dotenv.config({ path: "./.env.development" });
 
 if (!("SPN_BD_URL" in process.env))
-        throw new Error("DATABASE_URL not found on .env.development");
+  throw new Error("DATABASE_URL not found on .env.development");
 
 const main = async () => {
   // await authClient.signUp.email(
@@ -55,7 +55,7 @@ const main = async () => {
   }
 };
 
-// main();
+
 
 async function main2() {
   console.log('Seeding database...');

@@ -9,7 +9,7 @@ export class SiapsepConnection implements OdbcConnection {
   private static instance: SiapsepConnection;
   private connection: odbc.Connection | undefined;
 
-  private constructor() {}
+  private constructor() { }
 
   static getInstance() {
     if (!SiapsepConnection.instance) {
@@ -22,7 +22,8 @@ export class SiapsepConnection implements OdbcConnection {
     if (this.connection) {
       return;
     }
-    this.connection = await odbc.connect(process.env.SIAPSEP_DB_DS!);
+    this.connection = await odbc.connect(`DSN=${process.env.SIAPSEP_DB_DS}`);
+    // this.connection = await odbc.connect(process.env.SIAPSEP_DB_DS!);
   }
 
   async prepareStatement<T>({ query, args }: ExecuteProps) {
@@ -30,6 +31,13 @@ export class SiapsepConnection implements OdbcConnection {
 
     try {
       await this.connect();
+
+    } catch (error) {
+      console.log(error);
+      throw Error('Error en la conexión del SIAPSEP, favor de verificar el servidor');
+    }
+
+    try {
 
       statement = await this.connection!.createStatement();
       await statement.prepare(query);

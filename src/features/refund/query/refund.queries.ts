@@ -11,7 +11,7 @@ export const refundKeys = {
   detail: (id: number) => [...refundKeys.all, id] as const,
 };
 
-export const refundQueries = {
+export const refundQueries = { 
   logs: (props: SearchSchemaI) =>
     queryOptions({
       queryKey: refundKeys.list(props),
