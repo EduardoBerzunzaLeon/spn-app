@@ -3,3 +3,4 @@ export * from './core';
 export * from './pagination';
 export * from './refund';
 export * from './errors';
+export * from './kardex';

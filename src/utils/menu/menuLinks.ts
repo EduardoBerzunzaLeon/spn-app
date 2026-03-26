@@ -2,7 +2,7 @@ import { IconGauge, IconNotes } from '@tabler/icons-react';
 import { Route as ForteRoute } from '~/routes/_auth/(concepts)/forte';
 import { Route as RefundRoute } from '~/routes/_auth/(concepts)/refund';
 import { Route as DashboardRoute } from '~/routes/_auth/index';
-import { DEFAULT_REFUND_SEARCH } from '~/shared';
+import { Route as KardexRoute } from '~/routes/_auth/kardex';
 
 export const getMenuLinks = () => [
   { label: 'Dashboard', icon: IconGauge, link: DashboardRoute.to },
@@ -16,4 +16,5 @@ export const getMenuLinks = () => [
       { label: 'Forte', link: ForteRoute.to },
     ],
   },
+  {  label: 'Kardex', icon: IconNotes, link: KardexRoute.to }
 ];

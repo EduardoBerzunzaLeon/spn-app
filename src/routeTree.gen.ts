@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
+import { Route as AuthKardexIndexRouteImport } from './routes/_auth/kardex/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AuthconceptsRefundIndexRouteImport } from './routes/_auth/(concepts)/refund/index'
 import { Route as AuthconceptsForteIndexRouteImport } from './routes/_auth/(concepts)/forte/index'
@@ -28,6 +29,11 @@ const AuthRoute = AuthRouteImport.update({
 const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthKardexIndexRoute = AuthKardexIndexRouteImport.update({
+  id: '/kardex/',
+  path: '/kardex/',
   getParentRoute: () => AuthRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -50,6 +56,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
   '/signin': typeof SigninRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/kardex/': typeof AuthKardexIndexRoute
   '/forte/': typeof AuthconceptsForteIndexRoute
   '/refund/': typeof AuthconceptsRefundIndexRoute
 }
@@ -57,6 +64,7 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/': typeof AuthIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/kardex': typeof AuthKardexIndexRoute
   '/forte': typeof AuthconceptsForteIndexRoute
   '/refund': typeof AuthconceptsRefundIndexRoute
 }
@@ -66,20 +74,28 @@ export interface FileRoutesById {
   '/signin': typeof SigninRoute
   '/_auth/': typeof AuthIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_auth/kardex/': typeof AuthKardexIndexRoute
   '/_auth/(concepts)/forte/': typeof AuthconceptsForteIndexRoute
   '/_auth/(concepts)/refund/': typeof AuthconceptsRefundIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/signin' | '/api/auth/$' | '/forte/' | '/refund/'
+  fullPaths:
+    | '/'
+    | '/signin'
+    | '/api/auth/$'
+    | '/kardex/'
+    | '/forte/'
+    | '/refund/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/signin' | '/' | '/api/auth/$' | '/forte' | '/refund'
+  to: '/signin' | '/' | '/api/auth/$' | '/kardex' | '/forte' | '/refund'
   id:
     | '__root__'
     | '/_auth'
     | '/signin'
     | '/_auth/'
     | '/api/auth/$'
+    | '/_auth/kardex/'
     | '/_auth/(concepts)/forte/'
     | '/_auth/(concepts)/refund/'
   fileRoutesById: FileRoutesById
@@ -113,6 +129,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_auth/kardex/': {
+      id: '/_auth/kardex/'
+      path: '/kardex'
+      fullPath: '/kardex/'
+      preLoaderRoute: typeof AuthKardexIndexRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -139,12 +162,14 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthIndexRoute: typeof AuthIndexRoute
+  AuthKardexIndexRoute: typeof AuthKardexIndexRoute
   AuthconceptsForteIndexRoute: typeof AuthconceptsForteIndexRoute
   AuthconceptsRefundIndexRoute: typeof AuthconceptsRefundIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthIndexRoute: AuthIndexRoute,
+  AuthKardexIndexRoute: AuthKardexIndexRoute,
   AuthconceptsForteIndexRoute: AuthconceptsForteIndexRoute,
   AuthconceptsRefundIndexRoute: AuthconceptsRefundIndexRoute,
 }

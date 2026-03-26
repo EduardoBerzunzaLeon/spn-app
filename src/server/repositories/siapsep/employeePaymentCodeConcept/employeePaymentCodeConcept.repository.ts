@@ -22,6 +22,8 @@ const comparativeHash: Record<Comparative, string> = {
   lessEqualThan: '<=',
 };
 
+
+// TODO: move this en generic method
 const getWhereClause = (props: GetManyProps) => {
   const {
     type,
