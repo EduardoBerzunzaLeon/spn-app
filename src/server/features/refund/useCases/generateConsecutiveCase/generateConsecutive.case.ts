@@ -142,7 +142,7 @@ const groupByStatus = (data: Awaited<ReturnType<typeof getSiconCapture>>) => {
 
 const getSiconCapture = async ({ id, fortnight }: GetSiconCaptureI) => {
   // const data = await repository.sicon.refunds.getCaptureByIdOpenClose(id);
-  const data = await repository.sicon.refunds.getCaptureByIdOpenClose(423);
+  const data = await repository.sicon.refunds.getCaptureByIdOpenClose(id);
 
   // TODO: ask if close de capture before or after verify this
   if (data.length < 0) {
@@ -170,6 +170,7 @@ const closeVigenRefunds = async ({ fortnight }: CloseVigenRefundsI) => {
 };
 
 const deleteRefunds = async ({ fortnight }: DeleteRefundsI) => {
+
   const [deleteByRfc, deleteByRfcAndCode] = await Promise.all([
     repository.siapsep.employeePaymentCodeConcept.refunds.deleteByRfc(fortnight),
     repository.siapsep.employeePaymentCodeConcept.refunds.deleteByRfcAndCode(fortnight),
@@ -256,14 +257,15 @@ const createRefunds = async ({ statusGrouped }: CreateRefundsI) => {
 };
 
 const createRecord = async ({ stats, rfcSuccess, rfcErrors }: CreateRecordI) => {
-  const [{ createdId }] = await repository.spn.refunds.createOne(stats);
 
-  if (rfcSuccess.length > 0) {
+  const [{ createdId }] = await repository.spn.refunds.createOne(stats);
+ 
+   if (rfcSuccess.length > 0) {
     await repository.spn.refundRfcSuccess.createMany(
       rfcSuccess.map((item) => ({
         refundLogsId: createdId,
         rfc: item.rfc,
-        paymentCode: item.payCode,
+        paymentCode: item.paymentCode,
         type: statusMapped[`${item.status}` as keyof typeof statusMapped],
       }))
     );
@@ -274,12 +276,13 @@ const createRecord = async ({ stats, rfcSuccess, rfcErrors }: CreateRecordI) => 
       rfcErrors.map((item) => ({
         refundLogsId: createdId,
         rfc: item.rfc,
-        paymentCode: item.payCode,
+        paymentCode: item.paymentCode,
         type: statusMapped[`${item.status}` as keyof typeof statusMapped],
         error: item.error,
       }))
     );
   }
+ 
 };
 
 // ==============================
@@ -289,7 +292,7 @@ const createRecord = async ({ stats, rfcSuccess, rfcErrors }: CreateRecordI) => 
 const initialStats = (fortnight: number, consecutive: number): RefundLogsCreate => ({
   processFortnight: String(fortnight),
   consecutive,
-  userId: '1',
+  userId: 'yCqdSNAZWwn6B4eH5v7Z9PFuA5R2LhK8', // TODO: change for real user id
   recordsCreated: 0,
   recordsDeletedResponsabilities: 0,
   recordsDeletedEmployeeConcept: 0,
@@ -299,6 +302,7 @@ const initialStats = (fortnight: number, consecutive: number): RefundLogsCreate 
   hasError: false,
   activeBefore: 0,
   activeAfter: 0,
+  notes: ''
 });
 
 const handleEmptyCreateOrCloseRecords = async ({
@@ -345,11 +349,12 @@ const getServerFortnights = async () => {
     initialSicon.areEqualFortnights &&
     initialSicon.spnFortnight.consecutive >= initialSicon.siconFortnight.consecutive
   ) {
-    throw ErrorApp.badRequest('El consecutivo registrado en SPN es mayor o igual que en SICON');
+    throw ErrorApp.badRequest(`El consecutivo registrado en SPN ${initialSicon.spnFortnight.consecutive} 
+      es mayor o igual que en SICON ${initialSicon.siconFortnight.consecutive}`);
   }
 
   if (spnFortnight > siconFortnight) {
-    throw ErrorApp.badRequest('La quincena registrada en SPN es mayor que en SICON');
+    throw ErrorApp.badRequest(`La quincena registrada en SPN ${spnFortnight} es mayor que en SICON ${siconFortnight}`);
   }
 
   // TODO: ask if this is necessary
@@ -358,7 +363,7 @@ const getServerFortnights = async () => {
   }
 
   if (siapsepFortnight !== siconFortnight) {
-    throw ErrorApp.badRequest('No coinciden las quincenas de SIAPSEP y SICON');
+    throw ErrorApp.badRequest(`No coinciden las quincenas de SIAPSEP abierta ${siapsepFortnight} y SICON ${siconFortnight}`);
   }
 
   return {
@@ -382,30 +387,35 @@ export const generateConsecutive = async () => {
   const rfcErrors: RfcError[] = [];
   const rfcSuccess: RfcSuccess[] = [];
 
-  // await closeVigenCapture(fortnights.sicon.id);
+
+  // Buscar si ya se genero el consecutivo en SPN posgresql
+  
+  // await repository.sicon.refunds.updateStatus(fortnights.sicon.id, 2);
 
   const data = await getSiconCapture(fortnights.sicon);
   let rfcs = [...data];
 
   const verifiedRfcs = await verifyRfcsExistsInEmployee(rfcCalculation, rfcs);
+
   rfcErrors.push(...verifiedRfcs.rfcErrors);
   stats.hasError = verifiedRfcs.hasError;
   rfcs = core.rfc.filterRfcs(rfcs, verifiedRfcs.rfcsNotFounded);
-
+  
   if (rfcs.length === 0) {
     throw ErrorApp.badRequest('No hay registros que procesar');
   }
 
-  const { count: currentRefundsCount } = await getSiapsepCount(fortnight);
+  const { quantity: currentRefundsCount } = await getSiapsepCount(fortnight);
 
   stats.activeBefore = currentRefundsCount;
   stats.activeAfter = currentRefundsCount;
 
   const statusGrouped = groupByStatus(rfcs);
 
-  stats.recordsDeletedResponsabilities = await repository.siapsep.responsabilities.deleteByRfc(
-    rfcCalculation.getTable()
-  );
+   stats.recordsDeletedResponsabilities = await repository.siapsep.responsabilities.deleteByRfc(
+     rfcCalculation.getTable()
+    );
+    
   rfcSuccess.push(...statusGrouped[status.responsabilities]);
 
   const isEmpty = await handleEmptyCreateOrCloseRecords({
@@ -435,7 +445,8 @@ export const generateConsecutive = async () => {
   rfcSuccess.push(...createdRefunds.rfcSuccess);
 
   const lastRefunds = await getSiapsepCount(fortnight);
-  stats.activeAfter = lastRefunds.count;
+
+  stats.activeAfter = lastRefunds.quantity;
   stats.recordsFailed = rfcErrors.length;
   stats.recordsSuccesed = rfcSuccess.length;
   stats.hasError = rfcErrors.length > 0;

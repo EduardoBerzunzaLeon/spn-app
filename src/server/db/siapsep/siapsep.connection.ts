@@ -27,37 +27,39 @@ export class SiapsepConnection implements OdbcConnection {
   }
 
   async prepareStatement<T>({ query, args }: ExecuteProps) {
-    let statement;
-
     try {
       await this.connect();
 
-    } catch (error) {
-      console.log(error);
-      throw Error('Error en la conexión del SIAPSEP, favor de verificar el servidor');
-    }
-
-    try {
-
-      statement = await this.connection!.createStatement();
-      await statement.prepare(query);
-      if (args) {
-        await statement.bind([...args]);
-      }
-      const result = await statement.execute<T>();
-
-      return result;
-    } catch (error) {
-      console.log({ siapsepDb: error });
-      throw Error('Error en la conexión del SIAPSEP, favor de verificar el servidor');
-    } finally {
-      if (statement) {
+      // Usa .query() directamente en lugar de createStatement
+      // Esto es más simple y evita problemas de statements abiertos
+      if (args && args.length > 0) {
+        // Si hay parámetros, necesitamos bind (aunque Informix tiene limitaciones)
+        let statement;
         try {
+          statement = await this.connection!.createStatement();
+          await statement.prepare(query);
+          await statement.bind([...args]);
+          const result = await statement.execute<T>();
           await statement.close();
-        } catch {
-          throw Error('Error al momento de cerrar la conexion al SIAPSEP');
+          return result;
+        } catch (error) {
+          if (statement) {
+            try {
+              await statement.close();
+            } catch {
+              // Ignorar error de cierre
+            }
+          }
+           throw Error('Error en la conexión del SIAPSEP, favor de verificar el servidor');
         }
+      } else {
+        // Sin parámetros: usa query() directamente
+        // Esto es mucho más confiable para DELETEs simples
+        return await this.connection!.query<T>(query);
       }
+    } catch (error) {
+      console.log({ siapsepDb: error, query});
+      throw Error('Error en la conexión del SIAPSEP, favor de verificar el servidor');
     }
   }
 

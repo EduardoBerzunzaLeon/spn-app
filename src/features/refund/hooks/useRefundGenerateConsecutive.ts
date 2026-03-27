@@ -9,7 +9,14 @@ export const useRefundGenerateConsecutive = () => {
   return useMutation({
     mutationFn: useServerFn(serverFn.refund.generateConsecutive),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: refundKeys.consecutives() });
+      console.log('successed generate consecutive');
+      queryClient.invalidateQueries({ queryKey: refundKeys.consecutive() });
+      queryClient.invalidateQueries({ queryKey: refundKeys.lists() });
+      // queryClient.invalidateQueries({ queryKey: refundKeys.all });
+      // queryClient.invalidateQueries({ queryKey: controlProcessKeys.all });
+      // queryClient.invalidateQueries({ queryKey: controlSiconKeys.all });
+      
+      // queryClient.invalidateQueries({ queryKey: .all });
     },
   });
 };

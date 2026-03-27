@@ -53,8 +53,8 @@ const getWhereClause = (props: GetManyProps) => {
 
 export const getManyCount = async (props: GetManyProps) => {
   const whereClauses = getWhereClause(props);
-  return await db.siapsep.execute<{ count: number }>({
-    query: `SELECT COUNT(*) AS count FROM emp_plaza_cpto
+  return await db.siapsep.executeSingle<{ quantity: number }>({
+    query: `SELECT COUNT(*) AS quantity FROM emp_plaza_cpto
     where ${whereClauses.join(' and ')} `,
   });
 };

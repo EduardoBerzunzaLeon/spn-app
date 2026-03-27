@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from '@tanstack/react-router';
+import { createRootRouteWithContext, HeadContent, Outlet, Scripts, useRouterState } from '@tanstack/react-router';
 import { Toaster } from 'sonner';
 import { ModalsProvider } from '@mantine/modals';
 
@@ -22,7 +22,7 @@ import {
 } from '@mantine/core';
 import mantineCssUrl from '@mantine/core/styles.css?url';
 import datesCssUrl from '@mantine/dates/styles.css?url';
-import { NavigationProgress } from '@mantine/nprogress';
+import { NavigationProgress, nprogress } from '@mantine/nprogress';
 import nprogressCssUrl from '@mantine/nprogress/styles.css?url';
 import spotlightCssUrl from '@mantine/spotlight/styles.css?url';
 import { authQueries } from '~/features/auth';
@@ -34,6 +34,9 @@ import { Nulleable } from '~/shared';
 import linksCssUrl from '~/styles/links-groups.css?url';
 import sidebarCssUrl from '~/styles/sidebar.css?url';
 import { seo } from '~/utils';
+
+import NProgress from "nprogress";
+import "nprogress/nprogress.css";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -156,11 +159,43 @@ const theme = createTheme({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+
+  const routerState = useRouterState();
+  const prevPathnameRef = React.useRef("");
+
+  React.useEffect(() => {
+    const currentPathname = routerState.location.pathname;
+    const pathnameChanged = prevPathnameRef.current !== currentPathname;
+
+    if (pathnameChanged && routerState.status === "pending") {
+      // NProgress.start();
+      nprogress.start();
+      prevPathnameRef.current = currentPathname;
+    }
+
+    if (routerState.status === "idle") {
+      // NProgress.done();
+      nprogress.complete();
+    }
+  }, [routerState.status, routerState.location.pathname]);
+
   return (
     <html lang="es" {...mantineHtmlProps}>
       <head>
         <HeadContent />
         <ColorSchemeScript nonce="8IBTHwOdqNKAWeKl7plt8g==" defaultColorScheme="dark" />
+          <style>{`
+          #nprogress .bar {
+            background: #22c55e !important;
+            height: 3px;
+          }
+          #nprogress .peg {
+            box-shadow: 0 0 10px #22c55e, 0 0 5px #22c55e;
+          }
+          #nprogress .spinner-icon {
+            display: none;
+          }
+        `}</style>
       </head>
       <body>
         <MantineProvider defaultColorScheme="dark" theme={theme}>

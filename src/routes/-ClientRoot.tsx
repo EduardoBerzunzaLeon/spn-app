@@ -12,18 +12,18 @@ scan({
 export function ClientRoot({ children }: { children: React.ReactNode }) {
     const router = useRouter();
 
-    useEffect(() => {
-        const unsubscribeStart = router.subscribe(
-            'onBeforeLoad',
-            ({ fromLocation, pathChanged }) => fromLocation && pathChanged && nprogress.start()
-        );
-        const unsubscribeComplete = router.subscribe('onLoad', () => nprogress.complete());
+    // useEffect(() => {
+    //     const unsubscribeStart = router.subscribe(
+    //         'onBeforeLoad',
+    //         ({ fromLocation, pathChanged }) => fromLocation && pathChanged && nprogress.start()
+    //     );
+    //     const unsubscribeComplete = router.subscribe('onLoad', () => nprogress.complete());
 
-        return () => {
-            unsubscribeStart();
-            unsubscribeComplete();
-        };
-    }, [router]);
+    //     return () => {
+    //         unsubscribeStart();
+    //         unsubscribeComplete();
+    //     };
+    // }, [router]);
 
     return <>{children}</>;
 }

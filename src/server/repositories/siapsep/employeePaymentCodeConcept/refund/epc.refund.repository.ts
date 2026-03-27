@@ -18,11 +18,10 @@ export const closeVigencyByRfc = async (fortnight: number, closeFortnight: numbe
         and (sp.cod_pago is null or sp.cod_pago = 0)
         and em.concepto = '19'
         and em.perc_ded = 'D'
-        and em.qna_ini <= ?
-        and em.qna_fin >= ? 
-        when matched then update set em.qna_fin = ?;
+        and em.qna_ini < ${fortnight}
+        and em.qna_fin >= ${fortnight}
+        when matched then update set em.qna_fin = ${closeFortnight};
     `,
-    args: [fortnight, fortnight, closeFortnight],
   });
 };
 
@@ -37,12 +36,11 @@ export const closeVigencyByRfcAndCode = async (fortnight: number, closeFortnight
         and sp.cat_puesto = em.cat_puesto
         and sp.horas = em.horas
         and sp.cons_plaza = em.cons_plaza
-        and em.qna_ini <= ?
-        and em.qna_fin >= ? 
+        and em.qna_ini < ${fortnight}
+        and em.qna_fin >= ${fortnight} 
         and em.concepto = '19'
         and em.perc_ded = 'D'
-        when matched then update set em.qna_fin = ?`,
-    args: [fortnight, fortnight, closeFortnight],
+        when matched then update set em.qna_fin = ${closeFortnight}`,
   });
 };
 
@@ -57,9 +55,7 @@ export const deleteByRfc = async (fortnight: number) => {
         )
         and concepto = '19'
         and perc_ded = 'D'
-        and qna_ini = ?
-        and qna_fin >= ?`,
-    args: [fortnight, fortnight],
+        and qna_ini = ${fortnight}`,
   });
 };
 
@@ -79,8 +75,6 @@ export const deleteByRfcAndCode = async (fortnight: number) => {
         )
         and concepto = '19'
         and perc_ded = 'D'
-        and qna_ini = ?
-        and qna_fin >= ?`,
-    args: [fortnight, fortnight],
+        and qna_ini = ${fortnight}`,
   });
 };

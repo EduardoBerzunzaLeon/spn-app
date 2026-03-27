@@ -88,7 +88,7 @@ export const useRefundAlerts = () => {
     }
 
     return alert;
-  }, []);
+  }, [data, isFetching, isError]);
 
   return {
     hasError,
