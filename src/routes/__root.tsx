@@ -35,8 +35,8 @@ import linksCssUrl from '~/styles/links-groups.css?url';
 import sidebarCssUrl from '~/styles/sidebar.css?url';
 import { seo } from '~/utils';
 
-import NProgress from "nprogress";
-import "nprogress/nprogress.css";
+// import NProgress from "nprogress";
+// import "nprogress/nprogress.css";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -44,6 +44,7 @@ export const Route = createRootRouteWithContext<{
   iconName: Nulleable<string>;
 }>()({
   beforeLoad: async ({ context }) => {
+    context.queryClient.prefetchQuery(controlProcessQueries.fortnight());
     const user = await context.queryClient.ensureQueryData(authQueries.user());
     return { user };
   },
@@ -103,6 +104,7 @@ export const Route = createRootRouteWithContext<{
 });
 
 import { ClientRoot } from './-ClientRoot';
+import { controlProcessQueries } from '~/features/controlProcess';
 
 function RootComponent() {
   return (

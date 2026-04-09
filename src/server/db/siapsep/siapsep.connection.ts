@@ -3,7 +3,9 @@ import { ExecuteBulkInsertProps, ExecuteProps, OdbcConnection } from './siapsep.
 
 import 'dotenv/config';
 
+
 import { ErrorApp } from '~/shared';
+// import { connectionTest } from './siapsepTest.connection';
 
 export class SiapsepConnection implements OdbcConnection {
   private static instance: SiapsepConnection;
@@ -22,43 +24,74 @@ export class SiapsepConnection implements OdbcConnection {
     if (this.connection) {
       return;
     }
-    this.connection = await odbc.connect(`DSN=${process.env.SIAPSEP_DB_DS}`);
+    try {
+      // this.connection = await odbc.connect(`DSN=${process.env.SIAPSEP_DB_DS};UID=informix;PWD=in4mix`);
+      this.connection = await odbc.connect(
+        `DRIVER={IBM INFORMIX ODBC DRIVER (64-bit)};` +
+        `HOST=localhost;` +
+        `PORT=9088;` +
+        `SERVER=informix;` +
+        `DATABASE=prueba;` +
+        `UID=informix;` +
+        `PWD=in4mix;` +
+        `PROTOCOL=onsoctcp;` +
+        `DB_LOCALE=en_US.819;` +
+        `CLIENT_LOCALE=en_US.819;` +
+        `TRANSLAT=0;`
+      );
+      
+    } catch (error) {
+      console.log('Error en la conexion al SIAPSEP');
+      console.log(error);
+    }
     // this.connection = await odbc.connect(process.env.SIAPSEP_DB_DS!);
   }
 
   async prepareStatement<T>({ query, args }: ExecuteProps) {
+
+    // await connectionTest();
     try {
       await this.connect();
+      console.log('prepare');
+      await this.connection!.query('DATABASE prueba');
+      const data = await this.connection!.query<T>('SELECT * from rfc');
+      console.log('stop');
+      console.log(data);
+      return [];
 
-      // Usa .query() directamente en lugar de createStatement
-      // Esto es más simple y evita problemas de statements abiertos
-      if (args && args.length > 0) {
-        // Si hay parámetros, necesitamos bind (aunque Informix tiene limitaciones)
-        let statement;
-        try {
-          statement = await this.connection!.createStatement();
-          await statement.prepare(query);
-          await statement.bind([...args]);
-          const result = await statement.execute<T>();
-          await statement.close();
-          return result;
-        } catch (error) {
-          if (statement) {
-            try {
-              await statement.close();
-            } catch {
-              // Ignorar error de cierre
-            }
-          }
-           throw Error('Error en la conexión del SIAPSEP, favor de verificar el servidor');
-        }
-      } else {
-        // Sin parámetros: usa query() directamente
-        // Esto es mucho más confiable para DELETEs simples
-        return await this.connection!.query<T>(query);
-      }
+
+      // // Usa .query() directamente en lugar de createStatement
+      // // Esto es más simple y evita problemas de statements abiertos
+      // if (args && args.length > 0) {
+      //   // Si hay parámetros, necesitamos bind (aunque Informix tiene limitaciones)
+      //   let statement;
+      //   try {
+      //     statement = await this.connection!.createStatement();
+      //     await statement.prepare('SELECT * FROM prueba_odbc');
+      //     // await statement.bind([...args]);
+      //     const result = await statement.execute<T>();
+      //     await statement.close();
+      //     return result;
+      //   } catch (error) {
+      //     if (statement) {
+      //       try {
+      //         await statement.close();
+      //       } catch {
+      //         // Ignorar error de cierre
+      //       }
+      //     }
+      //     console.log(error);
+      //     console.log(query)
+      //      throw Error('Error en la conexión del SIAPSEP, favor de verificar el servidor');
+      //   }
+      // } else {
+      //   // Sin parámetros: usa query() directamente
+      //   // Esto es mucho más confiable para DELETEs simples
+      //   return await this.connection!.query<T>(query);
+      // }
     } catch (error) {
-      console.log({ siapsepDb: error, query});
+        console.log('ODBC State:', error.odbcErrors);
+        console.log('Full:', JSON.stringify(error, null, 2));
       throw Error('Error en la conexión del SIAPSEP, favor de verificar el servidor');
     }
   }

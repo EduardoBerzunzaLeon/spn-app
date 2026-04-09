@@ -1,27 +1,47 @@
-version: '3.8'
-
 services:
   informix:
     # Informix 14.10 database service for production backup restoration
     image: icr.io/informix/informix-developer-database:latest
-    container_name: informix1410
+    container_name: informix_db
+    hostname: informix
+    privileged: true
+    tty: true
+    stdin_open: true
     restart: always
     ports:
-      - '9088:9088' # Informix default port
+      - "9088:9088"   # Puerto DRDA
+      - "9089:9089"   # Puerto REST API
+      - "27017:27017" # Puerto MongoDB compat
+      - "27018:27018"
+      - "27883:27883"
     volumes:
-      - informix_data:/opt/informix/data # Persist Informix data
-      - ./backups:/opt/informix/backups # Mount local backups directory
+      - informix_data:/opt/ibm/informix/storage # Persist Informix data
+      - ./backups:/opt/ibm/informix/backups # Mount local backups directory
+      - ./init.sql:/opt/ibm/informix/init.sql  # Cambia la ruta
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo 'SELECT 1 FROM systables WHERE tabid=1' | dbaccess sysmaster -"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s  # Informix tarda en iniciar
     environment:
-      - LICENSE=accept # Accept Informix license
-      - INFORMIXDIR=/opt/informix
-      - INFORMIX_HOME=/opt/informix
+      - LICENSE=accept
+      - DB_INIT=1
+      - DBNAME=prueba          # Crea esta BD automáticamente
+      - DBUSER=informix
+      - INFORMIXSERVER=informix
+      - ONCONFIG=onconfig.std
+      - INFORMIXDIR=/opt/ibm/informix
+      - DELIMIDENT=n
       - DBSERVERNAME=informix
+      - DB_LOCALE=en_US.819
+      - CLIENT_LOCALE=en_US.819
     networks:
       - informix-network
 
 volumes:
-  # Define named volumes that can be used by services
-  informix_data: # Named volume used to persist Informix data outside the container
+  informix_data:
+    driver: local
 
 networks:
   # Define networks for service communication

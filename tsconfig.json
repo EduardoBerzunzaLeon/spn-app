@@ -14,7 +14,7 @@
     "target": "ESNext",
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
+    // "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
     },
