@@ -5,6 +5,7 @@ import 'dotenv/config';
 
 
 import { ErrorApp } from '~/shared';
+import { main } from './siapsepTest.connection';
 // import { connectionTest } from './siapsepTest.connection';
 
 export class SiapsepConnection implements OdbcConnection {
@@ -25,20 +26,20 @@ export class SiapsepConnection implements OdbcConnection {
       return;
     }
     try {
-      // this.connection = await odbc.connect(`DSN=${process.env.SIAPSEP_DB_DS};UID=informix;PWD=in4mix`);
-      this.connection = await odbc.connect(
-        `DRIVER={IBM INFORMIX ODBC DRIVER (64-bit)};` +
-        `HOST=localhost;` +
-        `PORT=9088;` +
-        `SERVER=informix;` +
-        `DATABASE=prueba;` +
-        `UID=informix;` +
-        `PWD=in4mix;` +
-        `PROTOCOL=onsoctcp;` +
-        `DB_LOCALE=en_US.819;` +
-        `CLIENT_LOCALE=en_US.819;` +
-        `TRANSLAT=0;`
-      );
+      this.connection = await odbc.connect(`DSN=${process.env.SIAPSEP_DB_DS}`);
+      // this.connection = await odbc.connect(
+      //   `DRIVER={IBM INFORMIX ODBC DRIVER (64-bit)};` +
+      //   `HOST=localhost;` +
+      //   `PORT=9088;` +
+      //   `SERVER=informix;` +
+      //   `DATABASE=prueba;` +
+      //   `UID=informix;` +
+      //   `PWD=in4mix;` +
+      //   `PROTOCOL=onsoctcp;` +
+      //   `DB_LOCALE=en_US.819;` +
+      //   `CLIENT_LOCALE=en_US.819;` +
+      //   `TRANSLAT=0;`
+      // );
       
     } catch (error) {
       console.log('Error en la conexion al SIAPSEP');
@@ -51,12 +52,17 @@ export class SiapsepConnection implements OdbcConnection {
 
     // await connectionTest();
     try {
-      await this.connect();
+      // await this.connect();
       console.log('prepare');
-      await this.connection!.query('DATABASE prueba');
-      const data = await this.connection!.query<T>('SELECT * from rfc');
+      
+        await main();
+      // await this.connection!.query<T>('set SCHEMA informix');
+      //  await this.connection!.query<T>("DATABASE sysadmin");
+      // const data = await this.connection!.query<T>("SELECT * FROM mi_db:rfc");
+      // const data = await this.connection!.query<T>("SELECT CURRENT, USER, DBINFO('dbname') FROM systables WHERE tabid = 1;");
+      // const data = await this.connection!.query<T>("SELECT DBINFO('dbname') FROM systables WHERE tabid = 1;");
       console.log('stop');
-      console.log(data);
+      // console.log(data);
       return [];
 
 
