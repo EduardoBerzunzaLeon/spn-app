@@ -5,6 +5,7 @@ import 'dotenv/config';
 
 
 import { ErrorApp } from '~/shared';
+import { main } from './siapsepTest.connection';
 // import { connectionTest } from './siapsepTest.connection';
 
 export class SiapsepConnection implements OdbcConnection {
@@ -40,12 +41,12 @@ export class SiapsepConnection implements OdbcConnection {
     // await connectionTest();
     try {
       await this.connect();
-      // console.log('prepare');
-      // // await this.connection!.query('DATABASE prueba');
-      // const data = await this.connection!.query<T>('SELECT * from demopersona');
-      // console.log('stop');
-      // console.log(data);
-      // return [];
+      console.log('prepare');
+      await this.connection!.query('DATABASE prueba');
+      const data = await this.connection!.query<T>('SELECT * from rfc');
+      console.log('stop');
+      console.log(data);
+      return [];
 
 
       // // Usa .query() directamente en lugar de createStatement

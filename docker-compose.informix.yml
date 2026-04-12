@@ -1,49 +1,49 @@
 services:
   informix:
-    # Informix 14.10 database service for production backup restoration
     image: icr.io/informix/informix-developer-database:latest
     container_name: informix_db
     hostname: informix
+    restart: unless-stopped
     privileged: true
-    tty: true
-    stdin_open: true
-    restart: always
+
     ports:
-      - "9088:9088"   # Puerto DRDA
-      - "9089:9089"   # Puerto REST API
-      - "27017:27017" # Puerto MongoDB compat
+      - "9088:9088"   # DRDA / ODBC / JDBC
+      - "9089:9089"   # REST API (si aplica)
+      - "27017:27017"
       - "27018:27018"
-      - "27883:27883"
+
     volumes:
-      - informix_data:/opt/ibm/informix/storage # Persist Informix data
-      - ./backups:/opt/ibm/informix/backups # Mount local backups directory
-      - ./init.sql:/opt/ibm/informix/init.sql  # Cambia la ruta
+      - informix_data:/opt/ibm/informix/data
+      - ./backups:/opt/ibm/informix/backups
+
+    environment:
+      LICENSE: accept
+      INFORMIXSERVER: informix
+      ONCONFIG: onconfig.std
+      INFORMIXDIR: /opt/ibm/informix
+
+      # ⚠️ IMPORTANTE: NO fijar DBNAME en producción
+      # DBNAME: mi_db   ❌ NO recomendado aquí
+
+      DB_LOCALE: en_US.819
+      CLIENT_LOCALE: en_US.819
+
+      # 🔥 CRÍTICO para ODBC / Node / DRDA
+      DELIMIDENT: Y
+
     healthcheck:
       test: ["CMD", "bash", "-c", "echo 'SELECT 1 FROM systables WHERE tabid=1' | dbaccess sysmaster -"]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 120s  # Informix tarda en iniciar
-    environment:
-      - LICENSE=accept
-      - DB_INIT=1
-      - DBNAME=prueba          # Crea esta BD automáticamente
-      - DBUSER=informix
-      - INFORMIXSERVER=informix
-      - ONCONFIG=onconfig.std
-      - INFORMIXDIR=/opt/ibm/informix
-      - DELIMIDENT=n
-      - DBSERVERNAME=informix
-      - DB_LOCALE=en_US.819
-      - CLIENT_LOCALE=en_US.819
+      start_period: 120s
+
     networks:
       - informix-network
 
 volumes:
   informix_data:
-    driver: local
 
 networks:
-  # Define networks for service communication
   informix-network:
     driver: bridge

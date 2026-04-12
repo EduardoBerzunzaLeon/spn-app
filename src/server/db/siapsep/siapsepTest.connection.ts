@@ -1,26 +1,22 @@
-// import { openSync } from "ibm_db";
+import { open } from 'ibm_db';
 
-// const connStr = "DATABASE=nomina_cam;HOSTNAME=localhost;PORT=9088;PROTOCOL=onsoctcp;UID=informix;PWD=in4mix";
+// const connStr = "DATABASE=sysmaster;HOSTNAME=localhost;PORT=9088;PROTOCOL=TCPIP;UID=informix;PWD=in4mix;";
+const connStr = 'DATABASE=sysmaster;HOST=localhost;SERVICE=9088;PROTOCOL=onsoctcp;UID=informix;PWD=in4mix'
+// const connStr ='DSN=siapsep';
 
-// export const connectionTest = async () => {
+export async function main() {
+  let conn;
 
-//     try {
-//       const option = { connectTimeout : 40, systemNaming : true };// Connection Timeout after 40 seconds.
-//     //   console.log(ibmdb);
-//       const conn = openSync(connStr, option);
+  try {
+    conn = await open(connStr);
+    console.log("✅ Conectado a Informix");
 
-//     //   conn.query("select * from prueba_odbc", function (err, rows) {
-// 	// 	if (err) {
-//     //         console.log('error desde connection test');
-// 	// 		console.log(err);
-// 	// 	} else {
-// 	// 	  console.log(rows);
-// 	// 	}
-// 	// 	conn.close();
-//     //   });
-//     } catch (e) {
-//         console.log('error  general desde connection test');
-//       console.log(e);
-//     }
+    const data = await conn.query("SELECT FIRST 1 * FROM systables");
+    console.log(data);
 
-// }
+  } catch (err) {
+    console.error(err);
+  } finally {
+    if (conn) await conn.close();
+  }
+}
