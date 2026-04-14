@@ -1,12 +1,8 @@
 import odbc from 'odbc';
 import { ExecuteBulkInsertProps, ExecuteProps, OdbcConnection } from './siapsep.interface';
+import { ErrorApp } from '~/shared';
 
 import 'dotenv/config';
-
-
-import { ErrorApp } from '~/shared';
-import { main } from './siapsepTest.connection';
-// import { connectionTest } from './siapsepTest.connection';
 
 export class SiapsepConnection implements OdbcConnection {
   private static instance: SiapsepConnection;
@@ -41,13 +37,10 @@ export class SiapsepConnection implements OdbcConnection {
     // await connectionTest();
     try {
       await this.connect();
-      console.log('prepare');
-      await this.connection!.query('DATABASE prueba');
-      const data = await this.connection!.query<T>('SELECT * from rfc');
-      console.log('stop');
-      console.log(data);
-      return [];
-
+      // const data = await this.connection!.query<T>('select * from acumulados');
+      // console.log('inside');
+      // console.log(data);
+      // return data;
 
       // // Usa .query() directamente en lugar de createStatement
       // // Esto es más simple y evita problemas de statements abiertos
@@ -60,6 +53,7 @@ export class SiapsepConnection implements OdbcConnection {
           await statement.bind([...args]);
           const result = await statement.execute<T>();
           await statement.close();
+          console.log(result);
           return result;
         } catch (error) {
           if (statement) {

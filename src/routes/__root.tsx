@@ -44,7 +44,6 @@ export const Route = createRootRouteWithContext<{
   iconName: Nulleable<string>;
 }>()({
   beforeLoad: async ({ context }) => {
-    context.queryClient.prefetchQuery(controlProcessQueries.fortnight());
     const user = await context.queryClient.ensureQueryData(authQueries.user());
     return { user };
   },
