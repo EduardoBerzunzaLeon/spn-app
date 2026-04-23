@@ -1,5 +1,5 @@
-import { AnyColumn, GetColumnData, SQL, sql } from 'drizzle-orm';
-import { PgSelect } from 'drizzle-orm/pg-core';
+import { type AnyColumn, type GetColumnData, type SQL, sql } from 'drizzle-orm';
+import type { PgSelect } from 'drizzle-orm/pg-core';
 
 interface GetRelationalColumnProps<G extends PgSelect> {
   subquery: G;
@@ -9,16 +9,13 @@ interface GetRelationalColumnProps<G extends PgSelect> {
 export const getRelationalColumn = <G extends PgSelect>({
   subquery,
   as,
-}: GetRelationalColumnProps<G>) => {
-  return sql<Awaited<typeof subquery>>`(
+}: GetRelationalColumnProps<G>) =>
+  sql<Awaited<typeof subquery>>`(
           SELECT json_agg(row_to_json(subquery))
           FROM (${subquery}) AS subquery
         )`.as(as);
-};
 
 export const aliasedColumn = <T extends AnyColumn>(
   column: T,
-  alias: string,
-): SQL.Aliased<GetColumnData<T>> => {
-  return column.getSQL().mapWith(column.mapFromDriverValue).as(alias)
-}
+  alias: string
+): SQL.Aliased<GetColumnData<T>> => column.getSQL().mapWith(column.mapFromDriverValue).as(alias);

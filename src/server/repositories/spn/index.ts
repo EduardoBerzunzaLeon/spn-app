@@ -1,5 +1,3 @@
-import * as refunds from './refund';
-import * as refundRfcFailed from './refund/refundRfcFailed.respository';
-import * as refundRfcSuccess from './refund/refundRfcSuccess.repository';
-
-export { refunds, refundRfcFailed, refundRfcSuccess };
+export * as refunds from './refund';
+export * as refundRfcFailed from './refund/refundRfcFailed.respository';
+export * as refundRfcSuccess from './refund/refundRfcSuccess.repository';

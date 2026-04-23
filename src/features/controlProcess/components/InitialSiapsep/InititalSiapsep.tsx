@@ -1,5 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
+
 import { BadgeFortnightSiapsep } from './BadgeFortnightSiapsep';
+
 import { controlProcessQueries } from '~/features/controlProcess';
 import { ErrorServerBadge } from '~/features/ui';
 

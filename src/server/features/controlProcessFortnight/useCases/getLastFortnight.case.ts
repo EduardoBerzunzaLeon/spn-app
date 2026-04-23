@@ -77,7 +77,7 @@ export const getSiapsepInitialData = async () => {
       ordinaryFortnight,
       currentFortnight,
     };
-  } catch (error) {
+  } catch {
     return {
       online: false,
       error: 'Servidor no accesible',

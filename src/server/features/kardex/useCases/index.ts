@@ -1,1 +1,1 @@
-export * from './getPaymentCodeByRFC';
+export * from './getPaymentCodeByRfc';

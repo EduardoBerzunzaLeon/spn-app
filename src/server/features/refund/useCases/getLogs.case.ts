@@ -1,6 +1,5 @@
 import { repository } from '~/server/repositories';
-import { SearchSchemaI } from '~/shared';
+import type { SearchSchemaI } from '~/shared';
 
-export const getLogs = async (props: SearchSchemaI) => {
-  return await repository.spn.refunds.getLogs({ ...props });
-};
+export const getLogs = async (props: SearchSchemaI) =>
+  await repository.spn.refunds.getLogs({ ...props });

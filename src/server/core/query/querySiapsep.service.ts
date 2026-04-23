@@ -12,8 +12,8 @@ export const prepareToSQLBulkValues = <T extends object, K extends keyof T = key
   columns,
   data,
   withoutNull,
-}: PrepareToSQLBulkValuesI<T, K>) => {
-  return data.map((item) =>
+}: PrepareToSQLBulkValuesI<T, K>) =>
+  data.map((item) =>
     columns.map((column) => {
       const columnString = String(column);
 
@@ -33,4 +33,3 @@ export const prepareToSQLBulkValues = <T extends object, K extends keyof T = key
       return withoutNull ? (value as NonNullableBulk<typeof value>) : value;
     })
   );
-};

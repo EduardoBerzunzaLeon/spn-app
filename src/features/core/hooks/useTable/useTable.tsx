@@ -1,23 +1,31 @@
 import { useMemo } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { ColumnFiltersState, PaginationState, SortingState, Updater } from '@tanstack/table-core';
+import type {
+  ColumnFiltersState,
+  PaginationState,
+  SortingState,
+  Updater,
+} from '@tanstack/table-core';
 import {
-  MRT_FilterOption,
-  MRT_RowData,
+  type MRT_FilterOption,
+  type MRT_RowData,
   MRT_ShowHideColumnsButton,
   MRT_ToggleDensePaddingButton,
   MRT_ToggleFullScreenButton,
   useMantineReactTable,
 } from 'mantine-react-table';
 import { MRT_Localization_ES } from 'mantine-react-table/locales/es/index.cjs';
+
 import { ActionIcon, Flex, Tooltip } from '@mantine/core';
-import { UseTableProps } from './useTable.interface';
+
+import type { UseTableProps } from './useTable.interface';
 import { getColumns, getColumnsFilter, recreateFilters } from './useTable.utils';
+
 import { IconError, IconRefresh, IconSettingsOff } from '~/features/ui';
 import { EmptySearch } from '~/features/ui/components/Searchbar/EmptySearch';
 import { isEmpty, isFunction } from '~/shared';
-
 
 export const useTable = <T extends MRT_RowData, F extends string>({
   columns,
@@ -40,7 +48,6 @@ export const useTable = <T extends MRT_RowData, F extends string>({
       columnsFilter,
     };
   }, [columns]);
-
 
   const search = useSearch({ from });
   const navigate = useNavigate({ from: fullPath });
@@ -72,12 +79,11 @@ export const useTable = <T extends MRT_RowData, F extends string>({
   };
 
   const handleFilterChange = (filters: Updater<ColumnFiltersState>) => {
-
     const newFilters = isFunction(filters)
-    ? filters(search.filters ? [...search.filters] : [])
-    : filters;
-    
-    if(search.filters.length === 0 && newFilters.length === 0) return;
+      ? filters(search.filters ? [...search.filters] : [])
+      : filters;
+
+    if (search.filters.length === 0 && newFilters.length === 0) return;
 
     const refreshFilters = recreateFilters(newFilters);
     navigateSearch({ filters: [...refreshFilters] });
@@ -97,9 +103,8 @@ export const useTable = <T extends MRT_RowData, F extends string>({
   };
 
   const handleGlobalFilterChange = (value: string) => {
-    const valueCasted =  !value ? '' : value;
-    search.gFilter !== valueCasted 
-      && navigateSearch({ gFilter: value });
+    const valueCasted = !value ? '' : value;
+    search.gFilter !== valueCasted && navigateSearch({ gFilter: value });
   };
 
   const fetchedData = data?.data ?? [];
@@ -149,7 +154,7 @@ export const useTable = <T extends MRT_RowData, F extends string>({
         size: 100,
       },
     },
-    mantineToolbarAlertBannerProps: !!data?.error?.message
+    mantineToolbarAlertBannerProps: data?.error?.message
       ? {
           color: 'red',
           children: data.error.message,

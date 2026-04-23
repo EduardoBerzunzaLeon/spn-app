@@ -8,15 +8,13 @@
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true
   },
-  "eslint.format.enable": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
+    "source.fixAll": "always",
     "source.fixAll.eslint": "explicit"
+    // "source.organizeImports": "always"
+    // "source.organizeImports": "never"
   },
-  "editor.formatOnSave": true, // Opcional: activa el formato al guardar
-  "eslint.validate": [
-    "javascript",
-    "typescript",
-    "typescriptreact"
-  ],
-  "editor.codeActions.triggerOnFocusChange": true,
+  "editor.codeActions.triggerOnFocusChange": true
 }

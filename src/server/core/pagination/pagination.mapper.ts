@@ -1,20 +1,16 @@
-import { between, eq, gt, gte, ilike, lt, lte, ne, notBetween, SQL } from 'drizzle-orm';
-import { PgColumn } from 'drizzle-orm/pg-core';
+import { between, eq, gt, gte, ilike, lt, lte, ne, notBetween, type SQL } from 'drizzle-orm';
+import type { PgColumn } from 'drizzle-orm/pg-core';
+
 import { ErrorApp } from '../../../shared/errors';
-import { DateFilterMap, MethodsFilterMap } from './pagination.service.interface';
+
+import type { DateFilterMap, MethodsFilterMap } from './pagination.service.interface';
 
 // MOVE THIS METHODS IF IS NECESSARY IN CORE
-const endsWith = (column: PgColumn, value: unknown) => {
-  return ilike(column, `%${value}`);
-};
+const endsWith = (column: PgColumn, value: unknown) => ilike(column, `%${value}`);
 
-const startsWith = (column: PgColumn, value: unknown) => {
-  return ilike(column, `${value}%`);
-};
+const startsWith = (column: PgColumn, value: unknown) => ilike(column, `${value}%`);
 
-const contains = (column: PgColumn, value: unknown) => {
-  return ilike(column, `%${value}%`);
-};
+const contains = (column: PgColumn, value: unknown) => ilike(column, `%${value}%`);
 
 const validateType = (column: PgColumn, value: unknown) => {
   const validator = validTypesMap[column.dataType];

@@ -4,8 +4,8 @@ interface RfcI {
   rfc: string;
 }
 
-export const groupByRFC = (data: RfcI[]) => {
-  return data.reduce((acc, item) => {
+export const groupByRFC = (data: RfcI[]) =>
+  data.reduce((acc, item) => {
     if (!item.rfc) {
       throw ErrorApp.badRequest('Se encontro un RFC vacio');
     }
@@ -23,11 +23,8 @@ export const groupByRFC = (data: RfcI[]) => {
     acc.push(rfc);
     return acc;
   }, [] as string[]);
-};
 
-export const groupByRFCtoSQL = (data: RfcI[]) => {
-  return groupByRFC(data).map((data) => [data]);
-};
+export const groupByRFCtoSQL = (data: RfcI[]) => groupByRFC(data).map((data) => [data]);
 
 export const filterRfcs = <T extends RfcI>(data: T[], rfcToFilter: RfcI[]) => {
   const rfcToFilterSet = new Set(rfcToFilter.map((item) => item.rfc));

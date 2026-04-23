@@ -1,13 +1,12 @@
-import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
+import { MutationCache, QueryClient } from '@tanstack/react-query';
 import { createRouter } from '@tanstack/react-router';
-import { routeTree } from './routeTree.gen';
+import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query';
+
 import { DefaultCatchBoundary } from './features/core/components/errors/DefaultCatchBoundary';
 import { NotFound } from './features/core/components/errors/NotFound';
-import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
-
+import { routeTree } from './routeTree.gen';
 import { isObject } from './shared';
 import { toast } from './utils';
-import { nprogress } from '@mantine/nprogress';
 
 const handleErrorMessage = (errorMessage?: string) => {
   if (!errorMessage) {
@@ -18,7 +17,7 @@ const handleErrorMessage = (errorMessage?: string) => {
     return 'Error demasiado largo, favor de verificar los logs';
   }
 
-  return errorMessage; 
+  return errorMessage;
 };
 
 export function getRouter() {
@@ -30,16 +29,8 @@ export function getRouter() {
         retry: 0,
       },
     },
-    // queryCache: new QueryCache({
-    //   onError: (error) => {
-    //     console.log({ errorQuery: error });
-    //     const message = handleErrorMessage(error.message);
-    //     return toast.error(message);
-    //   },
-    // }),
     mutationCache: new MutationCache({
       onError: (error) => {
-        console.log({ errorMutation: error });
         const message = handleErrorMessage(error.message);
         return toast.error(message);
       },
@@ -82,6 +73,6 @@ export function getRouter() {
 
 declare module '@tanstack/react-router' {
   interface Register {
-    router: ReturnType<typeof getRouter>
+    router: ReturnType<typeof getRouter>;
   }
 }

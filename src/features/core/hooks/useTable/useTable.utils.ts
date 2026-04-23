@@ -1,6 +1,7 @@
-import { ColumnFiltersState } from '@tanstack/table-core';
-import { MRT_ColumnDef, MRT_RowData } from 'mantine-react-table';
-import { BooleanFilterTypes, NumberFilterTypes, StringFilterTypes } from '~/shared';
+import type { ColumnFiltersState } from '@tanstack/table-core';
+import type { MRT_ColumnDef, MRT_RowData } from 'mantine-react-table';
+
+import type { BooleanFilterTypes, NumberFilterTypes, StringFilterTypes } from '~/shared';
 
 const COLUMNS_STRING_FILTER: Array<StringFilterTypes> = [
   'startsWith',
@@ -59,9 +60,8 @@ export const getColumns = <T extends MRT_RowData>(columns: Column<T>[]) => {
 
       if (type === 'date') {
         columnTyped.filterVariant = 'date';
-        columnTyped.Cell = ({ cell }) => {
-          return cell.getValue<Date>()?.toISOString().replace(/[TZ]/g, ' ').slice(0, 19);
-        };
+        columnTyped.Cell = ({ cell }) =>
+          cell.getValue<Date>()?.toISOString().replace(/[TZ]/g, ' ').slice(0, 19);
 
         return columnTyped;
       }
@@ -72,14 +72,13 @@ export const getColumns = <T extends MRT_RowData>(columns: Column<T>[]) => {
   return newColumns;
 };
 
-export const getColumnsFilter = <T extends MRT_RowData>(columns: Column<T>[]) => {
-  return Object.fromEntries(
+export const getColumnsFilter = <T extends MRT_RowData>(columns: Column<T>[]) =>
+  Object.fromEntries(
     columns.map(({ accessorKey, meta, id }) => [
       accessorKey ?? id,
       typeof meta === 'string' ? meta : 'contains',
     ])
   );
-};
 
 export const recreateFilters = (filters: ColumnFiltersState) => {
   const newFilters = filters.map((filter) => {

@@ -1,9 +1,8 @@
 import { auth } from '~/lib/auth';
-import { LoginSchemaI } from '~/shared';
+import type { LoginSchemaI } from '~/shared';
 
-export const signIn = async (data: LoginSchemaI) => {
-  return await auth.api.signInEmail({
+export const signIn = async (data: LoginSchemaI) =>
+  await auth.api.signInEmail({
     body: data,
     asResponse: true,
   });
-};

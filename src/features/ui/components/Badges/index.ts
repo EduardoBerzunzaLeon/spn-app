@@ -1,3 +1,3 @@
 export * from './AppBadge';
-export * from './ServerBadge';
 export * from './ErrorServerBadge';
+export * from './ServerBadge';

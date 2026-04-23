@@ -1,2 +1,2 @@
-export * from './errorApp.entity';
 export * from './error';
+export * from './errorApp.entity';

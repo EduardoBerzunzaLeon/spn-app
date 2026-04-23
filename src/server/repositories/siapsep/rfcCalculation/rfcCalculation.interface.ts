@@ -1,4 +1,4 @@
-import { Rfc } from '../interfaces';
+import type { Rfc } from '../interfaces';
 
 export type RfcCalculationI = Rfc;
 

@@ -1,31 +1,32 @@
-import React from 'react'
-import { useQuery } from '@tanstack/react-query'
-import { kardexQueries } from '../query'
-import { KardexSearchByRFCI } from '~/shared'
+import React from 'react';
+
+import { useQuery } from '@tanstack/react-query';
+
+import { kardexQueries } from '../query';
+
+import type { KardexSearchByRFCI } from '~/shared';
 
 interface KardexListProps {
-  formValues: KardexSearchByRFCI
+  formValues: KardexSearchByRFCI;
 }
 
 export const KardexList = ({ formValues }: KardexListProps) => {
-  const { data, isLoading, isError, error } = useQuery(
-    kardexQueries.rfcSearch(formValues)
-  )
+  const { data, isLoading, isError, error } = useQuery(kardexQueries.rfcSearch(formValues));
 
   if (!formValues.rfc.trim()) {
-    return <p>Ingresa un RFC y presiona Buscar para ver resultados.</p>
+    return <p>Ingresa un RFC y presiona Buscar para ver resultados.</p>;
   }
 
   if (isLoading) {
-    return <p>Cargando datos del kardex...</p>
+    return <p>Cargando datos del kardex...</p>;
   }
 
   if (isError) {
-    return <p>Error al cargar: {(error as Error)?.message ?? 'Desconocido'}</p>
+    return <p>Error al cargar: {(error as Error)?.message ?? 'Desconocido'}</p>;
   }
 
   if (!data || data.length === 0) {
-    return <p>No se encontraron registros para el RFC: {formValues.rfc}</p>
+    return <p>No se encontraron registros para el RFC: {formValues.rfc}</p>;
   }
 
   return (
@@ -55,5 +56,5 @@ export const KardexList = ({ formValues }: KardexListProps) => {
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};

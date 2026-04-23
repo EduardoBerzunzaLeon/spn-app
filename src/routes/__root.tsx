@@ -1,14 +1,19 @@
 import * as React from 'react';
+
 import type { QueryClient } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { createRootRouteWithContext, HeadContent, Outlet, Scripts, useRouterState } from '@tanstack/react-router';
-import { Toaster } from 'sonner';
-import { ModalsProvider } from '@mantine/modals';
-
+import {
+  createRootRouteWithContext,
+  HeadContent,
+  Outlet,
+  Scripts,
+  useRouterState,
+} from '@tanstack/react-router';
 // import 'dayjs/locale/es';
-
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import mantineTablesCssUrl from 'mantine-react-table/styles.css?url';
+import { Toaster } from 'sonner';
+
 import {
   Button,
   ColorSchemeScript,
@@ -21,16 +26,17 @@ import {
   Tooltip,
 } from '@mantine/core';
 import mantineCssUrl from '@mantine/core/styles.css?url';
+import { DatesProvider } from '@mantine/dates';
 import datesCssUrl from '@mantine/dates/styles.css?url';
+import { ModalsProvider } from '@mantine/modals';
 import { NavigationProgress, nprogress } from '@mantine/nprogress';
 import nprogressCssUrl from '@mantine/nprogress/styles.css?url';
 import spotlightCssUrl from '@mantine/spotlight/styles.css?url';
+
 import { authQueries } from '~/features/auth';
 import { DefaultCatchBoundary, NotFound } from '~/features/core';
+import type { Nulleable } from '~/shared';
 import appCssUrl from '~/styles/app.css?url';
-
-import { DatesProvider } from '@mantine/dates';
-import { Nulleable } from '~/shared';
 import linksCssUrl from '~/styles/links-groups.css?url';
 import sidebarCssUrl from '~/styles/sidebar.css?url';
 import { seo } from '~/utils';
@@ -91,19 +97,14 @@ export const Route = createRootRouteWithContext<{
       { rel: 'icon', href: '/favicon.ico' },
     ],
   }),
-  errorComponent: (props) => {
-    return (
-      <RootDocument>
-        <DefaultCatchBoundary {...props} />
-      </RootDocument>
-    );
-  },
+  errorComponent: (props) => (
+    <RootDocument>
+      <DefaultCatchBoundary {...props} />
+    </RootDocument>
+  ),
   notFoundComponent: () => <NotFound />,
   component: RootComponent,
 });
-
-import { ClientRoot } from './-ClientRoot';
-import { controlProcessQueries } from '~/features/controlProcess';
 
 function RootComponent() {
   return (
@@ -160,21 +161,20 @@ const theme = createTheme({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-
   const routerState = useRouterState();
-  const prevPathnameRef = React.useRef("");
+  const prevPathnameRef = React.useRef('');
 
   React.useEffect(() => {
     const currentPathname = routerState.location.pathname;
     const pathnameChanged = prevPathnameRef.current !== currentPathname;
 
-    if (pathnameChanged && routerState.status === "pending") {
+    if (pathnameChanged && routerState.status === 'pending') {
       // NProgress.start();
       nprogress.start();
       prevPathnameRef.current = currentPathname;
     }
 
-    if (routerState.status === "idle") {
+    if (routerState.status === 'idle') {
       // NProgress.done();
       nprogress.complete();
     }
@@ -185,7 +185,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
         <ColorSchemeScript nonce="8IBTHwOdqNKAWeKl7plt8g==" defaultColorScheme="dark" />
-          <style>{`
+        <style>{`
           #nprogress .bar {
             background: #22c55e !important;
             height: 3px;

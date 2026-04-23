@@ -1,9 +1,9 @@
-import { desc, eq, getTableColumns, InferInsertModel } from 'drizzle-orm';
+import { desc, eq, getTableColumns, type InferInsertModel } from 'drizzle-orm';
+
 import { core } from '~/server/core';
 import { db } from '~/server/db';
 import { refundLogs, refundRfcFailed, refundRfcSuccess, user } from '~/server/db/spn/schema';
-import { RefundUpdateNotesSchemaI, SearchSchemaI } from '~/shared';
-
+import type { RefundUpdateNotesSchemaI, SearchSchemaI } from '~/shared';
 
 const getSubqueryRfcSuccess = () => {
   const subqueryRfcSuccess = db.spn
@@ -11,7 +11,6 @@ const getSubqueryRfcSuccess = () => {
       rfc: refundRfcSuccess.rfc,
       type: refundRfcSuccess.type,
       paymentCode: core.query.aliasedColumn(refundRfcSuccess.paymentCode, 'paymentCode'),
-
     })
     .from(refundRfcSuccess)
     .where(eq(refundRfcSuccess.refundLogsId, refundLogs.id))
@@ -84,8 +83,8 @@ export const getLogs = async (props: SearchSchemaI) => {
   });
 };
 
-export const getLastConsecutive = async () => {
-  return await db.spn
+export const getLastConsecutive = async () =>
+  await db.spn
     .select({
       id: refundLogs.id,
       consecutive: refundLogs.consecutive,
@@ -94,14 +93,11 @@ export const getLastConsecutive = async () => {
     .from(refundLogs)
     .orderBy(desc(refundLogs.processFortnight), desc(refundLogs.consecutive))
     .limit(1);
-};
 
-export const updateNotes = async ({ id, notes }: RefundUpdateNotesSchemaI) => {
-  return await db.spn.update(refundLogs).set({ notes }).where(eq(refundLogs.id, id));
-};
+export const updateNotes = async ({ id, notes }: RefundUpdateNotesSchemaI) =>
+  await db.spn.update(refundLogs).set({ notes }).where(eq(refundLogs.id, id));
 
 export type RefundLogsCreate = InferInsertModel<typeof refundLogs>;
 
-export const createOne = async (data: RefundLogsCreate) => {
-  return await db.spn.insert(refundLogs).values(data).returning({ createdId: refundLogs.id });
-};
+export const createOne = async (data: RefundLogsCreate) =>
+  await db.spn.insert(refundLogs).values(data).returning({ createdId: refundLogs.id });

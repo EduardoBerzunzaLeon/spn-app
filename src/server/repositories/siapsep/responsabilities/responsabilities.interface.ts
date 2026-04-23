@@ -1,4 +1,4 @@
-import { Fortnights, PaymentCode, Rfc, UVersion } from '../interfaces';
+import type { Fortnights, PaymentCode, Rfc, UVersion } from '../interfaces';
 
 export interface ResponsabilitiesI extends UVersion, Rfc, PaymentCode, Fortnights {
   qna_proc: number;

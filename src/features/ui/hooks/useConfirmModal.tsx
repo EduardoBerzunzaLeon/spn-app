@@ -1,5 +1,6 @@
 import { Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
+
 import { toast } from '~/utils';
 
 interface UseConfirmModal {

@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
+
 import { Group, List, Popover, Stack, Title } from '@mantine/core';
+
 import { IconList, ServerBadge } from '~/features/ui';
 
 interface Props {

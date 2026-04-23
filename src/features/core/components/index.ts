@@ -1,2 +1,2 @@
-export * from './errors';
 export * from './badges';
+export * from './errors';

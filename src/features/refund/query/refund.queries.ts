@@ -1,6 +1,7 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query';
+
 import { serverFn } from '~/server/functions';
-import { SearchSchemaI } from '~/shared';
+import type { SearchSchemaI } from '~/shared';
 
 export const refundKeys = {
   all: ['refund'] as const,
@@ -11,7 +12,7 @@ export const refundKeys = {
   detail: (id: number) => [...refundKeys.all, id] as const,
 };
 
-export const refundQueries = { 
+export const refundQueries = {
   logs: (props: SearchSchemaI) =>
     queryOptions({
       queryKey: refundKeys.list(props),

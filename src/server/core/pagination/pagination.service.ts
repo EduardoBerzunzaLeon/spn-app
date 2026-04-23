@@ -1,7 +1,8 @@
-import { and, asc, between, count, desc, eq, SQL } from 'drizzle-orm';
-import { PgColumn, PgSelect } from 'drizzle-orm/pg-core';
+import { and, asc, between, count, desc, eq, type SQL } from 'drizzle-orm';
+import type { PgColumn, PgSelect } from 'drizzle-orm/pg-core';
+
 import { dateFilterMap, methodsFilterMap } from './pagination.mapper';
-import {
+import type {
   AddFilterByColumnProps,
   AddPaginateProps,
   CountProps,
@@ -10,6 +11,7 @@ import {
   OrderByProps,
   WithPaginateProps,
 } from './pagination.service.interface';
+
 import { db } from '~/server/db';
 import { ErrorApp, isEmpty } from '~/shared';
 
@@ -90,7 +92,7 @@ const getFilters = ({ filters, filtersFn, schema, joinSchemas }: GetFiltersProps
 
     if (column.dataType === 'boolean') {
       const booleanValue = value === 'true';
-      filtersSQL.push(methodsFilterMap['equals'](column, booleanValue));
+      filtersSQL.push(methodsFilterMap.equals(column, booleanValue));
       continue;
     }
 

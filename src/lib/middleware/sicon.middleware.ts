@@ -1,5 +1,6 @@
 import { createMiddleware } from '@tanstack/react-start';
 import { setResponseStatus } from '@tanstack/react-start/server';
+
 import { controlSicon } from '~/server/features/controlSicon';
 
 export const siconMiddleware = (moduleName: string) =>

@@ -1,15 +1,17 @@
-import { MRT_RowData } from 'mantine-react-table';
-import { DataPagination } from '~/features/core/hooks';
-import { handlerError, SearchSchemaI } from '~/shared';
+import type { MRT_RowData } from 'mantine-react-table';
 
-export const withPaginationHandlerError = <T extends MRT_RowData>(
-  handler: (ctx: { data: SearchSchemaI }) => Promise<DataPagination<T>>
-): ((ctx: any) => Promise<{
-  data: T[] | [];
-  meta: { totalRowCount: number };
-  error?: { message: string; code: number };
-}>) => {
-  return async (ctx) => {
+import type { DataPagination } from '~/features/core/hooks';
+import { handlerError, type SearchSchemaI } from '~/shared';
+
+export const withPaginationHandlerError =
+  <T extends MRT_RowData>(
+    handler: (ctx: { data: SearchSchemaI }) => Promise<DataPagination<T>>
+  ): ((ctx: any) => Promise<{
+    data: T[] | [];
+    meta: { totalRowCount: number };
+    error?: { message: string; code: number };
+  }>) =>
+  async (ctx) => {
     try {
       return await handler(ctx);
     } catch (error) {
@@ -25,4 +27,3 @@ export const withPaginationHandlerError = <T extends MRT_RowData>(
       };
     }
   };
-};

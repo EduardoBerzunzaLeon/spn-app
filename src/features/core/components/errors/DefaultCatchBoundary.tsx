@@ -1,6 +1,11 @@
-import { ErrorComponent, Link, rootRouteId, useMatch, useRouter } from '@tanstack/react-router';
-// eslint-disable-next-line no-duplicate-imports
-import type { ErrorComponentProps } from '@tanstack/react-router';
+import {
+  ErrorComponent,
+  type ErrorComponentProps,
+  Link,
+  rootRouteId,
+  useMatch,
+  useRouter,
+} from '@tanstack/react-router';
 
 export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
   const router = useRouter();

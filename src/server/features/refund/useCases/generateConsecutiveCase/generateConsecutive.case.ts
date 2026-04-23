@@ -1,7 +1,8 @@
 import { refund } from '../..';
 import { getSiapsepCount } from '../../services';
+
 import { errorMapped, status, statusAviable, statusMapped } from './constants';
-import {
+import type {
   CloseVigenRefundsI,
   CreateRecordI,
   CreateRefundsI,
@@ -16,10 +17,11 @@ import {
   StatusAviable,
   VerifyCloseVigenI,
 } from './types';
+
 import { core } from '~/server/core';
 import { controlProcess } from '~/server/features/controlProcessFortnight';
 import { repository } from '~/server/repositories';
-import { RefundLogsCreate } from '~/server/repositories/spn/refund';
+import type { RefundLogsCreate } from '~/server/repositories/spn/refund';
 import { ErrorApp } from '~/shared';
 
 // ==============================
@@ -42,12 +44,10 @@ const verifyRfcsExistsInEmployee = async (rfcCalculation: typeof core.rfc.rfc2, 
     returnObject.rfcErrors.push(
       ...rfcs
         .filter((item) => rfcsNotFounded.map((i) => i.rfc).includes(item.rfc))
-        .map((i) => {
-          return {
-            ...i,
-            error: errorMapped['notFound'],
-          };
-        })
+        .map((i) => ({
+          ...i,
+          error: errorMapped.notFound,
+        }))
     );
     returnObject.hasError = true;
   }
@@ -69,7 +69,7 @@ const verifyCloseVigen = async ({ statusGrouped, fortnight }: VerifyCloseVigenI)
     statusGrouped[status.close].forEach((item) => {
       rfcNotEPC.forEach((rfcNotFounded) => {
         if (item.rfc === rfcNotFounded.rfc) {
-          rfcErrors.push({ ...item, error: errorMapped['notFoundEPC'] });
+          rfcErrors.push({ ...item, error: errorMapped.notFoundEPC });
         }
       });
 
@@ -83,7 +83,7 @@ const verifyCloseVigen = async ({ statusGrouped, fortnight }: VerifyCloseVigenI)
           item.hours === `${rfcCodeNotFounded.horas}` &&
           item.consecutivePayment === `${rfcCodeNotFounded.cons_plaza}`
         ) {
-          rfcErrors.push({ ...item, error: errorMapped['notFoundPaycodeEPC'] });
+          rfcErrors.push({ ...item, error: errorMapped.notFoundPaycodeEPC });
         }
       });
       rfcSuccess.push(item);
@@ -170,7 +170,6 @@ const closeVigenRefunds = async ({ fortnight }: CloseVigenRefundsI) => {
 };
 
 const deleteRefunds = async ({ fortnight }: DeleteRefundsI) => {
-
   const [deleteByRfc, deleteByRfcAndCode] = await Promise.all([
     repository.siapsep.employeePaymentCodeConcept.refunds.deleteByRfc(fortnight),
     repository.siapsep.employeePaymentCodeConcept.refunds.deleteByRfcAndCode(fortnight),
@@ -257,10 +256,9 @@ const createRefunds = async ({ statusGrouped }: CreateRefundsI) => {
 };
 
 const createRecord = async ({ stats, rfcSuccess, rfcErrors }: CreateRecordI) => {
-
   const [{ createdId }] = await repository.spn.refunds.createOne(stats);
- 
-   if (rfcSuccess.length > 0) {
+
+  if (rfcSuccess.length > 0) {
     await repository.spn.refundRfcSuccess.createMany(
       rfcSuccess.map((item) => ({
         refundLogsId: createdId,
@@ -282,7 +280,6 @@ const createRecord = async ({ stats, rfcSuccess, rfcErrors }: CreateRecordI) => 
       }))
     );
   }
- 
 };
 
 // ==============================
@@ -302,7 +299,7 @@ const initialStats = (fortnight: number, consecutive: number): RefundLogsCreate 
   hasError: false,
   activeBefore: 0,
   activeAfter: 0,
-  notes: ''
+  notes: '',
 });
 
 const handleEmptyCreateOrCloseRecords = async ({
@@ -354,7 +351,9 @@ const getServerFortnights = async () => {
   }
 
   if (spnFortnight > siconFortnight) {
-    throw ErrorApp.badRequest(`La quincena registrada en SPN ${spnFortnight} es mayor que en SICON ${siconFortnight}`);
+    throw ErrorApp.badRequest(
+      `La quincena registrada en SPN ${spnFortnight} es mayor que en SICON ${siconFortnight}`
+    );
   }
 
   // TODO: ask if this is necessary
@@ -363,7 +362,9 @@ const getServerFortnights = async () => {
   }
 
   if (siapsepFortnight !== siconFortnight) {
-    throw ErrorApp.badRequest(`No coinciden las quincenas de SIAPSEP abierta ${siapsepFortnight} y SICON ${siconFortnight}`);
+    throw ErrorApp.badRequest(
+      `No coinciden las quincenas de SIAPSEP abierta ${siapsepFortnight} y SICON ${siconFortnight}`
+    );
   }
 
   return {
@@ -387,9 +388,8 @@ export const generateConsecutive = async () => {
   const rfcErrors: RfcError[] = [];
   const rfcSuccess: RfcSuccess[] = [];
 
-
   // Buscar si ya se genero el consecutivo en SPN posgresql
-  
+
   // await repository.sicon.refunds.updateStatus(fortnights.sicon.id, 2);
 
   const data = await getSiconCapture(fortnights.sicon);
@@ -400,7 +400,7 @@ export const generateConsecutive = async () => {
   rfcErrors.push(...verifiedRfcs.rfcErrors);
   stats.hasError = verifiedRfcs.hasError;
   rfcs = core.rfc.filterRfcs(rfcs, verifiedRfcs.rfcsNotFounded);
-  
+
   if (rfcs.length === 0) {
     throw ErrorApp.badRequest('No hay registros que procesar');
   }
@@ -412,10 +412,10 @@ export const generateConsecutive = async () => {
 
   const statusGrouped = groupByStatus(rfcs);
 
-   stats.recordsDeletedResponsabilities = await repository.siapsep.responsabilities.deleteByRfc(
-     rfcCalculation.getTable()
-    );
-    
+  stats.recordsDeletedResponsabilities = await repository.siapsep.responsabilities.deleteByRfc(
+    rfcCalculation.getTable()
+  );
+
   rfcSuccess.push(...statusGrouped[status.responsabilities]);
 
   const isEmpty = await handleEmptyCreateOrCloseRecords({

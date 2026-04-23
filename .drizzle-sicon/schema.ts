@@ -1,6 +1,5 @@
 import { sql } from 'drizzle-orm';
 import {
-  AnyMySqlColumn,
   bigint,
   binary,
   char,
@@ -12,7 +11,6 @@ import {
   longtext,
   mediumtext,
   mysqlEnum,
-  mysqlSchema,
   mysqlTable,
   mysqlView,
   primaryKey,

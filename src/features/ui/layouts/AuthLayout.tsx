@@ -1,7 +1,10 @@
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
+
 import { AppShell, Burger, Group, ScrollArea } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+
 import { Searchbar, SideBarMenu } from '../components';
+
 import { SignOutButton } from '~/features/auth';
 import { GroupServerBadge } from '~/features/core';
 

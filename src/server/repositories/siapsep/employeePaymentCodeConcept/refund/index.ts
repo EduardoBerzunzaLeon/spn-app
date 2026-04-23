@@ -1,3 +1,1 @@
-import * as refunds from './epc.refund.repository';
-
-export { refunds };
+export * as refunds from './epc.refund.repository';

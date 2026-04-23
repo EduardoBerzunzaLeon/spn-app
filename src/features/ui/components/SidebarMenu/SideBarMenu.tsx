@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
+
 import { useChildMatches } from '@tanstack/react-router';
+
 import { LinksGroup } from '../LinksGroup/LinksGroups';
+
 import { getMenuLinks } from '~/utils';
 
 export const SideBarMenu = () => {

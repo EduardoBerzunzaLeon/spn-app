@@ -1,4 +1,4 @@
-import { Fortnights, UVersion } from '../interfaces';
+import type { Fortnights, UVersion } from '../interfaces';
 
 export interface ControlProcess extends UVersion, Fortnights {
   qna_proc: number;

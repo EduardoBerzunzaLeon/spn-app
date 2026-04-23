@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from '@mantine/core';
+import { Button, type ButtonProps } from '@mantine/core';
 
 interface Props extends ButtonProps {
   label: string;

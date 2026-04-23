@@ -1,9 +1,10 @@
 import { eq, sql } from 'drizzle-orm';
+
 import { db } from '~/server/db';
 import { reEmpleadosCapturados } from '~/server/db/sicon/schema';
 
-export const getCaptureByIdOpenClose = async (idOpenClose: number) => {
-  return await db.sicon
+export const getCaptureByIdOpenClose = async (idOpenClose: number) =>
+  await db.sicon
     .select({
       id: reEmpleadosCapturados.id,
       uVersion: sql<string>`'#'`,
@@ -32,4 +33,3 @@ export const getCaptureByIdOpenClose = async (idOpenClose: number) => {
     })
     .from(reEmpleadosCapturados)
     .where(eq(reEmpleadosCapturados.idAperturaCierre, idOpenClose));
-};

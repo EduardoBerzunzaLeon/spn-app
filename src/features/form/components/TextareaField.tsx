@@ -1,4 +1,5 @@
-import { Textarea, TextareaProps } from '@mantine/core';
+import { Textarea, type TextareaProps } from '@mantine/core';
+
 import { useFieldContext } from '../context';
 
 export function TextareaField(props: TextareaProps) {

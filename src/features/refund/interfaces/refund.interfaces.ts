@@ -1,4 +1,4 @@
-import { serverFn } from '~/server/functions';
-import { ReturnPaginateData } from '~/shared';
+import type { serverFn } from '~/server/functions';
+import type { ReturnPaginateData } from '~/shared';
 
 export type RefundsLogs = ReturnPaginateData<typeof serverFn.refund.getLogs>;

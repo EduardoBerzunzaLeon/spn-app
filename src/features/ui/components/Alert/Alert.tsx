@@ -1,5 +1,7 @@
-import { ReactElement, useState } from 'react';
-import { Alert as AlertMantine, AlertProps as AlertMantineProps } from '@mantine/core';
+import { type ReactElement, useState } from 'react';
+
+import { Alert as AlertMantine, type AlertProps as AlertMantineProps } from '@mantine/core';
+
 import { IconError, IconInfo, IconSuccess, IconWarning } from '../Icons';
 
 interface AlertProps extends AlertMantineProps {

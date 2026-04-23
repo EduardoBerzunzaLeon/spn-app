@@ -1,6 +1,7 @@
-import { SQL } from 'drizzle-orm';
-import { PgColumn, PgSelect, PgTable } from 'drizzle-orm/pg-core';
-import {
+import type { SQL } from 'drizzle-orm';
+import type { PgColumn, PgSelect, PgTable } from 'drizzle-orm/pg-core';
+
+import type {
   FilterFnSchemaI,
   FilterSchemaI,
   NumberFilterTypes,

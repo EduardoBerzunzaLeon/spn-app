@@ -1,6 +1,8 @@
-import { auth } from '..';
 import { createServerFn } from '@tanstack/react-start';
 import { getRequest, getRequestHeaders, setResponseHeaders } from '@tanstack/react-start/server';
+
+import { auth } from '..';
+
 import { auth as betterAuth } from '~/lib/auth';
 import { errorMiddleware } from '~/lib/middleware';
 import { ErrorApp, LoginSchema } from '~/shared';
@@ -52,11 +54,11 @@ export const getUser = createServerFn({ method: 'GET' }).handler(async () => {
 
     // return session?.user || null;
     if (!session) {
-      throw new Error("Unauthorized");
+      throw new Error('Unauthorized');
     }
 
     return session;
-  } catch (error) {
+  } catch {
     return null;
   }
 });

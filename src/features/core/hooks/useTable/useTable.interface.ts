@@ -1,7 +1,8 @@
-import { UseQueryOptions } from '@tanstack/react-query';
-import { RegisteredRouter, RouteById } from '@tanstack/react-router';
-import { MRT_ColumnDef, MRT_RowData, MRT_TableOptions } from 'mantine-react-table';
-import { FilterFnSchemaI, FilterSchemaI, OrderSchemaI, SearchSchemaI } from '~/shared';
+import type { UseQueryOptions } from '@tanstack/react-query';
+import type { RegisteredRouter, RouteById } from '@tanstack/react-router';
+import type { MRT_ColumnDef, MRT_RowData, MRT_TableOptions } from 'mantine-react-table';
+
+import type { FilterFnSchemaI, FilterSchemaI, OrderSchemaI, SearchSchemaI } from '~/shared';
 
 // TODO: Study what happends here, k extends keyof ?? and ternary operation in interfaces
 export type RouteIdWithSearchKeys<K extends string> = {
@@ -58,7 +59,7 @@ type MRT_Table<T extends MRT_RowData> = Pick<
 export type UseTableProps<T extends MRT_RowData, F extends string> = {
   columns: Column<T>[];
   from: RoutesWithPageAndLimit;
-  fullPath: RoutesWithPath
+  fullPath: RoutesWithPath;
   initialState: SearchSchemaI;
   getData: (
     props: SearchSchemaI

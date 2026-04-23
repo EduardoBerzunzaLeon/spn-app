@@ -1,5 +1,7 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
+
 import { Group, Text, Title } from '@mantine/core';
+
 import {
   RefundAlerts,
   RefundGenerateConsecutiveBtn,

@@ -1,5 +1,7 @@
-import { JSX, useMemo } from 'react';
-import { IconProps } from '@tabler/icons-react';
+import { type JSX, useMemo } from 'react';
+
+import type { IconProps } from '@tabler/icons-react';
+
 import { IconError, IconSuccess, IconWrapper } from '../Icons';
 
 interface Props {

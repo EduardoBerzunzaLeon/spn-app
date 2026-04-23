@@ -1,4 +1,4 @@
-import { Fortnights, PaymentCode, Rfc, UVersion } from '../interfaces';
+import type { Fortnights, PaymentCode, Rfc, UVersion } from '../interfaces';
 
 export interface EmployeePaymentCodeConceptI extends UVersion, Rfc, PaymentCode, Fortnights {
   perc_ded: string;

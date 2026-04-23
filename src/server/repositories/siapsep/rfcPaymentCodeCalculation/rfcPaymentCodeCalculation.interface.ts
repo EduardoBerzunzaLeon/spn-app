@@ -1,4 +1,4 @@
-import { PaymentCode, Rfc } from '../interfaces';
+import type { PaymentCode, Rfc } from '../interfaces';
 
 export type RfcPaymentCodeCalculationI = Rfc & Partial<PaymentCode>;
 

@@ -1,13 +1,9 @@
-import { IsFunction } from './core.interface';
+import type { IsFunction } from './core.interface';
 
-export const isFunction = <T extends any>(value?: T): value is IsFunction<T> => {
-  return typeof value === 'function';
-};
+export const isFunction = <T>(value?: T): value is IsFunction<T> => typeof value === 'function';
 
-export const isObject = <T extends Object>(value: any): value is T => {
-  return typeof value === 'object' && typeof value !== 'function' && value != undefined;
-};
+export const isObject = <T extends object>(value: any): value is T =>
+  typeof value === 'object' && typeof value !== 'function' && value !== undefined;
 
-export const isEmpty = <T extends Object>(obj?: T) => {
-  return obj && Object.keys(obj).length === 0 && obj.constructor === Object;
-};
+export const isEmpty = <T extends object>(obj?: T) =>
+  obj && Object.keys(obj).length === 0 && obj.constructor === Object;

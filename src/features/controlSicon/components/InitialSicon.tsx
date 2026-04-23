@@ -1,6 +1,9 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
+
 import { controlSiconQueries } from '../query';
+
 import { BadgeFortnightSicon } from './BadgeFortnightSicon';
+
 import { ErrorServerBadge } from '~/features/ui';
 
 export const InititalSicon = () => {

@@ -1,5 +1,6 @@
-import { RefundsLogs } from '../interfaces';
-import { Column } from '~/features/core/hooks/useTable';
+import type { RefundsLogs } from '../interfaces';
+
+import type { Column } from '~/features/core/hooks/useTable';
 import { AppBadge } from '~/features/ui';
 
 export const REFUND_LOG_COLUMNS: Column<RefundsLogs>[] = [

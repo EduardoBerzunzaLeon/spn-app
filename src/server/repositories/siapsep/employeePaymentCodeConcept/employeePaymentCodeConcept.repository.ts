@@ -1,6 +1,7 @@
-import { EmployeePaymentCodeConceptI } from './employeePaymentCodeConcept.interface';
-import { db } from '~/server/db';
-import { BulkInsertArgs } from '~/server/db/siapsep';
+import type { EmployeePaymentCodeConceptI } from './employeePaymentCodeConcept.interface';
+
+import type { db } from '~/server/db';
+import type { BulkInsertArgs } from '~/server/db/siapsep';
 
 type TypeConcept = 'P' | 'D';
 type Comparative = 'moreThan' | 'lessThan' | 'equals' | 'moreEqualThan' | 'lessEqualThan';
@@ -21,7 +22,6 @@ const comparativeHash: Record<Comparative, string> = {
   moreEqualThan: '>=',
   lessEqualThan: '<=',
 };
-
 
 // TODO: move this en generic method
 const getWhereClause = (props: GetManyProps) => {
@@ -67,8 +67,8 @@ export const getMany = async (props: GetManyProps) => {
   });
 };
 
-export const createMany = async (args: BulkInsertArgs) => {
-  return await db.siapsep.executeBulkInsert({
+export const createMany = async (args: BulkInsertArgs) =>
+  await db.siapsep.executeBulkInsert({
     table: 'emp_plaza_cpto',
     columns: [
       'u_version',
@@ -92,4 +92,3 @@ export const createMany = async (args: BulkInsertArgs) => {
     ],
     args,
   });
-};

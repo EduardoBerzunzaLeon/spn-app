@@ -1,8 +1,8 @@
 import { db } from '~/server/db';
 import type { BulkInsertArgs } from '~/server/db/siapsep';
 
-export const createMany = async (args: BulkInsertArgs) => {
-  return await db.siapsep.executeBulkInsert({
+export const createMany = async (args: BulkInsertArgs) =>
+  await db.siapsep.executeBulkInsert({
     table: 'spn_rfcplaza',
     columns: [
       'rfc',
@@ -16,10 +16,8 @@ export const createMany = async (args: BulkInsertArgs) => {
     ],
     args,
   });
-};
 
-export const deleteAll = async () => {
-  return await db.siapsep.execute({
+export const deleteAll = async () =>
+  await db.siapsep.execute({
     query: 'DELETE FROM spn_rfcplaza',
   });
-};

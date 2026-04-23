@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { Badge, BadgeProps } from '@mantine/core';
+
+import { Badge, type BadgeProps } from '@mantine/core';
 
 type BadgesTypes = 'warning' | 'error' | 'success' | 'info';
 

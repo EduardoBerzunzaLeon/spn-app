@@ -1,7 +1,10 @@
 import React from 'react';
+
 import { IconLogout } from '@tabler/icons-react';
 import { useNavigate } from '@tanstack/react-router';
+
 import { nprogress } from '@mantine/nprogress';
+
 import { useSignOut } from '../hooks';
 
 export const SignOutButton = () => {

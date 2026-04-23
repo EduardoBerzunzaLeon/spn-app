@@ -1,4 +1,4 @@
-import odbc from 'odbc';
+import type odbc from 'odbc';
 
 export interface PrismaConnection<T> {
   get client(): T;

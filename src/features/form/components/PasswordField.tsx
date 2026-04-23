@@ -1,4 +1,5 @@
-import { PasswordInput, PasswordInputProps } from '@mantine/core';
+import { PasswordInput, type PasswordInputProps } from '@mantine/core';
+
 import { useFieldContext } from '../context';
 
 export function PasswordField(props: PasswordInputProps) {

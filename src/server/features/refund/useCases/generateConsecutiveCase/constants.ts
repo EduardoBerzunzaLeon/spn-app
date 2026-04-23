@@ -1,4 +1,4 @@
-import { RefundErrors, RefundTypes, StatusAviable } from './types';
+import type { RefundErrors, RefundTypes, StatusAviable } from './types';
 
 //  ====================================
 //  ========== ESTATUS =================

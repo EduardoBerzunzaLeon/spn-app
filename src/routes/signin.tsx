@@ -1,5 +1,7 @@
 import { createFileRoute, redirect, stripSearchParams } from '@tanstack/react-router';
+
 import { Container, Paper, Title } from '@mantine/core';
+
 import { SignInForm } from '~/features/auth';
 import { RedirectSearchSchema } from '~/shared';
 

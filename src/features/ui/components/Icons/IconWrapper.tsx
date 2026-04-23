@@ -1,7 +1,5 @@
-import { ThemeIcon, ThemeIconProps } from '@mantine/core';
+import { ThemeIcon, type ThemeIconProps } from '@mantine/core';
 
 interface Props extends ThemeIconProps {}
 
-export const IconWrapper = (props: Props) => {
-  return <ThemeIcon {...props} size={24} radius="xl" />;
-};
+export const IconWrapper = (props: Props) => <ThemeIcon {...props} size={24} radius="xl" />;

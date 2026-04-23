@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_auth/(siapsep)/capture/')({
   component: RouteComponent,
@@ -6,8 +6,8 @@ export const Route = createFileRoute('/_auth/(siapsep)/capture/')({
   head: () => ({
     meta: [{ title: 'Captura SIAPSEP | SPN' }],
   }),
-})
+});
 
 function RouteComponent() {
-  return <div>Hello "/_auth/(siapsep)/capture/"!</div>
+  return <div>Hello "/_auth/(siapsep)/capture/"!</div>;
 }

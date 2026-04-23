@@ -1,10 +1,6 @@
-export const getFortnight = (fortnight: number) => {
-  return fortnight.toString().slice(-2);
-};
+export const getFortnight = (fortnight: number) => fortnight.toString().slice(-2);
 
-export const getYear = (fortnight: number) => {
-  return fortnight.toString().slice(0, -2);
-};
+export const getYear = (fortnight: number) => fortnight.toString().slice(0, -2);
 
 export const addFortnight = (fortnight: number, quantity: number) => {
   const specificFortnight = getFortnight(fortnight);

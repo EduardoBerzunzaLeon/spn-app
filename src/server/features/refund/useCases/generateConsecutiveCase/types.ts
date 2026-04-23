@@ -1,7 +1,7 @@
-import { refundErrorsEnum, refundTypesEnum } from '~/server/db/spn/schema';
-import { repository } from '~/server/repositories';
-import { RefundLogsCreate } from '~/server/repositories/spn/refund';
-import { ReturnArrayElement } from '~/shared';
+import type { refundErrorsEnum, refundTypesEnum } from '~/server/db/spn/schema';
+import type { repository } from '~/server/repositories';
+import type { RefundLogsCreate } from '~/server/repositories/spn/refund';
+import type { ReturnArrayElement } from '~/shared';
 
 export type StatusAviable = '1' | '4' | '5' | '6';
 

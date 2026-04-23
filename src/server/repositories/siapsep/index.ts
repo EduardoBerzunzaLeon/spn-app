@@ -1,15 +1,6 @@
-import * as controlProcess from './controlProcessFortnight';
-import * as employeePaymentCodeConcept from './employeePaymentCodeConcept';
-import * as responsabilities from './responsabilities';
-import * as rfcCalculation from './rfcCalculation';
-import * as rfcPaymentCodeCalculation from './rfcPaymentCodeCalculation';
-import * as employeePaymentCode from './employeePaymentCode';
-
-export {
-  controlProcess,
-  employeePaymentCodeConcept,
-  responsabilities,
-  rfcCalculation,
-  rfcPaymentCodeCalculation,
-  employeePaymentCode
-};
+export * as controlProcess from './controlProcessFortnight';
+export * as employeePaymentCode from './employeePaymentCode';
+export * as employeePaymentCodeConcept from './employeePaymentCodeConcept';
+export * as responsabilities from './responsabilities';
+export * as rfcCalculation from './rfcCalculation';
+export * as rfcPaymentCodeCalculation from './rfcPaymentCodeCalculation';

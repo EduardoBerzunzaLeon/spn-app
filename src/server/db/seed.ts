@@ -1,40 +1,19 @@
+/* eslint-disable */
+import * as dotenv from 'dotenv';
 import { reset, seed } from 'drizzle-seed';
+
 // import { refundLogs, refundRfcSuccess } from './spn/refund.schema';
 import * as schema from './spn/schema';
+import { user } from './spn/schema';
 import { db_spn } from './spn/spn.connection';
 
-import * as dotenv from 'dotenv';
 import { auth } from '~/lib/auth';
-import { user } from './spn/schema';
 
-dotenv.config({ path: "./.env.development" });
+dotenv.config({ path: './.env.development' });
 
-if (!("SPN_BD_URL" in process.env))
-  throw new Error("DATABASE_URL not found on .env.development");
+if (!('SPN_BD_URL' in process.env)) throw new Error('DATABASE_URL not found on .env.development');
 
 const main = async () => {
-  // await authClient.signUp.email(
-  //   {
-  //     email: 'eduardo.berzunza@gmail.com',
-  //     password: '123456790',
-  //     name: 'eduardo berzunza',
-  //     username: 'eduardo.berzunza',
-  //   },
-  //   {
-  //     onError: (ctx) => {
-  //       // Handle the error
-  //       if (ctx.error.status === 403) {
-  //         console.log(ctx.error.message);
-  //         // eslint-disable-next-line no-console
-  //         console.log('Please verify your email address');
-  //       }
-  //       //you can also show the original error message
-  //     },
-  //     onSuccess: () => {
-  //       console.log('successed');
-  //     },
-  //   }
-  // );
   console.log('Seeding database...');
   try {
     // ... tu código de reset existing...
@@ -42,10 +21,10 @@ const main = async () => {
     // Crear usuario por defecto
     await auth.api.signUpEmail({
       body: {
-        email: "test@example.com",
-        password: "password123",
-        name: "Test User",
-        username: "testuser",
+        email: 'test@example.com',
+        password: 'password123',
+        name: 'Test User',
+        username: 'testuser',
       },
     });
 
@@ -55,12 +34,9 @@ const main = async () => {
   }
 };
 
-
-
 async function main2() {
   console.log('Seeding database...');
   try {
-
     const firstUser = await db_spn.select().from(user).limit(1);
     await reset(db_spn, {
       refundLogs: schema.refundLogs,

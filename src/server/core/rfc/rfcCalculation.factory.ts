@@ -1,4 +1,5 @@
 import { core } from '..';
+
 import { repository } from '~/server/repositories';
 
 type RfcCalculationTables = 'rfc_calculo' | 'rfc2' | 'rfc3';
@@ -13,9 +14,7 @@ const rfcCalculationFactory = (rfcTable: RfcCalculationTables) => {
 
   const getTable = () => table;
 
-  const getRfcs = async () => {
-    return await repository.siapsep.rfcCalculation.getAll(table);
-  };
+  const getRfcs = async () => await repository.siapsep.rfcCalculation.getAll(table);
 
   const createUniqueRFCs = async (rfcs: Rfc[]) => {
     const rfcUniques = core.rfc.groupByRFCtoSQL(rfcs);
@@ -27,13 +26,11 @@ const rfcCalculationFactory = (rfcTable: RfcCalculationTables) => {
     return await repository.siapsep.rfcCalculation.createMany(table, rfcs);
   };
 
-  const getRfcNotInEmployee = async () => {
-    return await repository.siapsep.rfcCalculation.getNotInEmployee(table);
-  };
+  const getRfcNotInEmployee = async () =>
+    await repository.siapsep.rfcCalculation.getNotInEmployee(table);
 
-  const deleteRfcNotInEmployee = async () => {
-    return await repository.siapsep.rfcCalculation.deleteNotInEmployee(table);
-  };
+  const deleteRfcNotInEmployee = async () =>
+    await repository.siapsep.rfcCalculation.deleteNotInEmployee(table);
 
   return {
     deleteRfcNotInEmployee,

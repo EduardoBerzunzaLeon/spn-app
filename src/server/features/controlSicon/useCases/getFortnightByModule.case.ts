@@ -24,8 +24,7 @@ export const getFortnightByModule = async (moduleName: string = 'cargar_tablas')
       error: '',
       module: { ...siconModule[0] },
     };
-  } catch (error) {
-    console.log({ errorSicon: error });
+  } catch {
     return getErrorResponse('Servidor no accesible');
   }
 };

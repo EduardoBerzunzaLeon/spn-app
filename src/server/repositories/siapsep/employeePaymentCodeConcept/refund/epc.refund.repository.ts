@@ -1,17 +1,17 @@
 import { getManyCount } from '../employeePaymentCodeConcept.repository';
+
 import { db } from '~/server/db';
 
-export const getCount = async (fortnight: number) => {
-  return await getManyCount({
+export const getCount = async (fortnight: number) =>
+  await getManyCount({
     concept: '19',
     type: 'D',
     endFortnight: fortnight,
     endFortnightComparative: 'moreEqualThan',
   });
-};
 
-export const closeVigencyByRfc = async (fortnight: number, closeFortnight: number) => {
-  return await db.siapsep.execute({
+export const closeVigencyByRfc = async (fortnight: number, closeFortnight: number) =>
+  await db.siapsep.execute({
     query: `merge into emp_plaza_cpto as em
         using spn_rfcplaza as sp
         on sp.rfc = em.rfc 
@@ -23,10 +23,9 @@ export const closeVigencyByRfc = async (fortnight: number, closeFortnight: numbe
         when matched then update set em.qna_fin = ${closeFortnight};
     `,
   });
-};
 
-export const closeVigencyByRfcAndCode = async (fortnight: number, closeFortnight: number) => {
-  return await db.siapsep.execute({
+export const closeVigencyByRfcAndCode = async (fortnight: number, closeFortnight: number) =>
+  await db.siapsep.execute({
     query: `merge into emp_plaza_cpto as em
         using spn_rfcplaza as sp
         on sp.rfc = em.rfc  
@@ -42,10 +41,9 @@ export const closeVigencyByRfcAndCode = async (fortnight: number, closeFortnight
         and em.perc_ded = 'D'
         when matched then update set em.qna_fin = ${closeFortnight}`,
   });
-};
 
-export const deleteByRfc = async (fortnight: number) => {
-  return await db.siapsep.execute({
+export const deleteByRfc = async (fortnight: number) =>
+  await db.siapsep.execute({
     query: `delete from emp_plaza_cpto
         where exists (
           select 1
@@ -57,10 +55,9 @@ export const deleteByRfc = async (fortnight: number) => {
         and perc_ded = 'D'
         and qna_ini = ${fortnight}`,
   });
-};
 
-export const deleteByRfcAndCode = async (fortnight: number) => {
-  return await db.siapsep.execute({
+export const deleteByRfcAndCode = async (fortnight: number) =>
+  await db.siapsep.execute({
     query: `delete from emp_plaza_cpto em
         where exists (
           select 1
@@ -77,4 +74,3 @@ export const deleteByRfcAndCode = async (fortnight: number) => {
         and perc_ded = 'D'
         and qna_ini = ${fortnight}`,
   });
-};

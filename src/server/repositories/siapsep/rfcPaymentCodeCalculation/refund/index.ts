@@ -1,3 +1,1 @@
-import * as refunds from './rpc_refund.repository';
-
-export { refunds };
+export * as refunds from './rpc.refund.repository';

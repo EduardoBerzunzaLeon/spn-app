@@ -1,7 +1,8 @@
 import { useNavigate, useRouteContext } from '@tanstack/react-router';
-// import MyImage from '/Loch_Ness-big.png';
-import MyImage from '/Ghost-big.png';
+
 import { Button, Container, Group, Image, SimpleGrid, Stack, Text, Title } from '@mantine/core';
+
+import MyImage from '/Ghost-big.png';
 import { AuthLayout, IconHome, IconReturn } from '~/features/ui';
 
 export function NotFound() {
@@ -13,7 +14,7 @@ export function NotFound() {
         <NotFundContainer className="flex align-center justify-center" />
       </AuthLayout>
     );
-  }    
+  }
 
   return <NotFundContainer className="h-screen w-screen flex align-center justify-center" />;
 }
@@ -25,6 +26,7 @@ interface Props {
 const NotFundContainer = ({ className }: Props) => {
   const navigate = useNavigate();
 
+  // eslint-disable-next-line unicorn/consistent-function-scoping
   const handleReturn = () => {
     window.history.back();
   };

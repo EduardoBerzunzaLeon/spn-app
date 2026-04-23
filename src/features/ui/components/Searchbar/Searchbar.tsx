@@ -1,9 +1,13 @@
 import { useMemo, useState } from 'react';
+
 import { Button, Kbd } from '@mantine/core';
 import { Spotlight, spotlight } from '@mantine/spotlight';
+
 import { AppSpotlightLink } from '../AppLink';
 import { IconConcept, IconHome, IconSearch } from '../Icons';
+
 import { EmptySearch } from './EmptySearch';
+
 import { DEFAULT_REFUND_SEARCH } from '~/shared';
 
 interface Action {
@@ -50,12 +54,11 @@ export function Searchbar() {
 
   const items = useMemo(() => {
     const itemsObject = actions
-      .filter((item) => {
-        return (
+      .filter(
+        (item) =>
           item.label?.toLowerCase().includes(query.toLowerCase().trim()) ||
           item.description?.toLowerCase().includes(query.toLowerCase().trim())
-        );
-      })
+      )
       .slice(0, 5)
       .reduce(
         (acc, item) => {

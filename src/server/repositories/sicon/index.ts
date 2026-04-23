@@ -1,4 +1,2 @@
-import * as modules from './modules';
-import * as refunds from './refunds';
-
-export { modules, refunds };
+export * as modules from './modules';
+export * as refunds from './refunds';

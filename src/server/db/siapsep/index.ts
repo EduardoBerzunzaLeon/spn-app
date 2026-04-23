@@ -1,2 +1,2 @@
-export * from './siapsep.interface';
 export * from './siapsep.connection';
+export * from './siapsep.interface';

@@ -1,11 +1,9 @@
-import { createServerFn } from "@tanstack/react-start";
-import { KardexSearchByRFC } from "~/shared";
-import { kardex } from "..";
+import { createServerFn } from '@tanstack/react-start';
 
+import { kardex } from '..';
+
+import { KardexSearchByRFC } from '~/shared';
 
 export const getPaymentCodeByRFC = createServerFn()
-    .inputValidator(KardexSearchByRFC)
-    .handler(async ({ data }) => {
-        console.log(data);
-        return await kardex.cases.getPaymentCodeByRFC(data.rfc);
-    })
+  .inputValidator(KardexSearchByRFC)
+  .handler(async ({ data }) => await kardex.cases.getPaymentCodeByRFC(data.rfc));

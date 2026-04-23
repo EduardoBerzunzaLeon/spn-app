@@ -1,14 +1,15 @@
 import { IconGauge, IconNotes, IconServer, IconUsers } from '@tabler/icons-react';
+
+import { Route as DashboardRoute } from '~/routes/_auth';
 import { Route as ForteRoute } from '~/routes/_auth/(concepts)/forte';
 import { Route as RefundRoute } from '~/routes/_auth/(concepts)/refund';
-import { Route as DashboardRoute } from '~/routes/_auth';
 import { Route as EmployeesRoute } from '~/routes/_auth/(kardex)/employees';
-import { Route as controlCoverRoute } from '~/routes/_auth/(siapsep)/controlCover';
 import { Route as captureRoute } from '~/routes/_auth/(siapsep)/capture';
+import { Route as controlCoverRoute } from '~/routes/_auth/(siapsep)/controlCover';
 
 export const getMenuLinks = () => [
   { label: 'Dashboard', icon: IconGauge, link: DashboardRoute.to },
-    {
+  {
     label: 'SIAPSEP',
     icon: IconServer,
     initiallyOpened: false,
@@ -33,9 +34,6 @@ export const getMenuLinks = () => [
     icon: IconUsers,
     initiallyOpened: false,
     matchRoute: EmployeesRoute?.id?.replace(EmployeesRoute.path, '') ?? '',
-    links: [
-      { label: 'Empleados', link: EmployeesRoute.to },
-    ],
+    links: [{ label: 'Empleados', link: EmployeesRoute.to }],
   },
-
 ];

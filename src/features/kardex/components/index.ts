@@ -1,2 +1,2 @@
-export * from './RfcForm'
-export * from './KardexList'
+export * from './KardexList';
+export * from './RfcForm';
