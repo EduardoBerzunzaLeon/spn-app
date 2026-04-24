@@ -16,14 +16,14 @@ const rfcCalculationFactory = (rfcTable: RfcCalculationTables) => {
 
   const getRfcs = async () => await repository.siapsep.rfcCalculation.getAll(table);
 
-  const createUniqueRFCs = async (rfcs: Rfc[]) => {
-    const rfcUniques = core.rfc.groupByRFCtoSQL(rfcs);
-    return await createRFCs(rfcUniques);
-  };
-
   const createRFCs = async (rfcs: string[][]) => {
     await repository.siapsep.rfcCalculation.deleteAll(table);
     return await repository.siapsep.rfcCalculation.createMany(table, rfcs);
+  };
+
+  const createUniqueRFCs = async (rfcs: Rfc[]) => {
+    const rfcUniques = core.rfc.groupByRFCtoSQL(rfcs);
+    return await createRFCs(rfcUniques);
   };
 
   const getRfcNotInEmployee = async () =>

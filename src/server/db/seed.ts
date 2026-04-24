@@ -2,7 +2,6 @@
 import * as dotenv from 'dotenv';
 import { reset, seed } from 'drizzle-seed';
 
-// import { refundLogs, refundRfcSuccess } from './spn/refund.schema';
 import * as schema from './spn/schema';
 import { user } from './spn/schema';
 import { db_spn } from './spn/spn.connection';
@@ -112,4 +111,4 @@ async function main2() {
   }
 }
 
-main2();
+main();

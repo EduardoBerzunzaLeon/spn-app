@@ -48,8 +48,8 @@ export class SiapsepConnection implements OdbcConnection {
       } else {
         return await this.connection!.query<T>(query);
       }
-    } catch {
-      // console.log('Full:', JSON.stringify(error, null, 2));
+    } catch (error) {
+      console.log('Full:', JSON.stringify(error, null, 2));
       throw Error('Error en la conexión del SIAPSEP, favor de verificar el servidor');
     }
   }
@@ -78,7 +78,7 @@ export class SiapsepConnection implements OdbcConnection {
     let quantity = 0;
 
     await this.connect();
-    await this.connection!.beginTransaction();
+    // await this.connection!.beginTransaction();
 
     for (const item of args) {
       if (item.length === 0) {
@@ -97,8 +97,10 @@ export class SiapsepConnection implements OdbcConnection {
 
       const queryString = `INSERT INTO ${table} ${columnsList} VALUES(${values})`;
       await this.connection!.query(queryString);
-      quantity += 1;
+      quantity++;
     }
+
+    // await this.connection!.commit();
 
     return quantity;
   }

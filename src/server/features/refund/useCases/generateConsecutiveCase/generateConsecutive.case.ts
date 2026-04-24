@@ -289,7 +289,7 @@ const createRecord = async ({ stats, rfcSuccess, rfcErrors }: CreateRecordI) => 
 const initialStats = (fortnight: number, consecutive: number): RefundLogsCreate => ({
   processFortnight: String(fortnight),
   consecutive,
-  userId: 'yCqdSNAZWwn6B4eH5v7Z9PFuA5R2LhK8', // TODO: change for real user id
+  userId: 'JedX201iIxFMqDqJNHpSKq6jGjNjp4WV', // TODO: change for real user id
   recordsCreated: 0,
   recordsDeletedResponsabilities: 0,
   recordsDeletedEmployeeConcept: 0,
@@ -379,83 +379,88 @@ const getServerFortnights = async () => {
 // ==============================
 
 export const generateConsecutive = async () => {
-  const rfcCalculation = core.rfc.rfc2;
+  try {
+    const rfcCalculation = core.rfc.rfc2;
 
-  const fortnights = await getServerFortnights();
+    const fortnights = await getServerFortnights();
 
-  const { fortnight, consecutive } = fortnights.sicon;
-  const stats = initialStats(fortnight, consecutive);
-  const rfcErrors: RfcError[] = [];
-  const rfcSuccess: RfcSuccess[] = [];
+    const { fortnight, consecutive } = fortnights.sicon;
+    const stats = initialStats(fortnight, consecutive);
+    const rfcErrors: RfcError[] = [];
+    const rfcSuccess: RfcSuccess[] = [];
 
-  // Buscar si ya se genero el consecutivo en SPN posgresql
+    // Buscar si ya se genero el consecutivo en SPN posgresql
 
-  // await repository.sicon.refunds.updateStatus(fortnights.sicon.id, 2);
+    await repository.sicon.refunds.updateStatus(fortnights.sicon.id, 2);
 
-  const data = await getSiconCapture(fortnights.sicon);
-  let rfcs = [...data];
+    const data = await getSiconCapture(fortnights.sicon);
+    let rfcs = [...data];
 
-  const verifiedRfcs = await verifyRfcsExistsInEmployee(rfcCalculation, rfcs);
+    const verifiedRfcs = await verifyRfcsExistsInEmployee(rfcCalculation, rfcs);
 
-  rfcErrors.push(...verifiedRfcs.rfcErrors);
-  stats.hasError = verifiedRfcs.hasError;
-  rfcs = core.rfc.filterRfcs(rfcs, verifiedRfcs.rfcsNotFounded);
+    rfcErrors.push(...verifiedRfcs.rfcErrors);
+    stats.hasError = verifiedRfcs.hasError;
+    rfcs = core.rfc.filterRfcs(rfcs, verifiedRfcs.rfcsNotFounded);
 
-  if (rfcs.length === 0) {
-    throw ErrorApp.badRequest('No hay registros que procesar');
+    if (rfcs.length === 0) {
+      throw ErrorApp.badRequest('No hay registros que procesar');
+    }
+
+    const { quantity: currentRefundsCount } = await getSiapsepCount(fortnight);
+
+    stats.activeBefore = currentRefundsCount;
+    stats.activeAfter = currentRefundsCount;
+
+    const statusGrouped = groupByStatus(rfcs);
+
+    stats.recordsDeletedResponsabilities = await repository.siapsep.responsabilities.deleteByRfc(
+      rfcCalculation.getTable()
+    );
+
+    rfcSuccess.push(...statusGrouped[status.responsabilities]);
+
+    const isEmpty = await handleEmptyCreateOrCloseRecords({
+      stats,
+      rfcSuccess,
+      rfcErrors,
+      statusGrouped,
+    });
+
+    if (isEmpty) return stats;
+
+    const rfcCodePayments = [...statusGrouped[status.create], ...statusGrouped[status.close]];
+    await core.rfcPaymentCode.createRfcPaymentCodeCalculation({ data: rfcCodePayments });
+
+    const closeVigenVerified = await verifyCloseVigen({ statusGrouped, fortnight });
+    rfcErrors.push(...closeVigenVerified.rfcErrors);
+    rfcSuccess.push(...closeVigenVerified.rfcSuccess);
+
+    stats.recordsClosedTerm = await closeVigenRefunds({ fortnight });
+    stats.recordsDeletedEmployeeConcept = await deleteRefunds({ fortnight });
+
+    const rfcsDeleted = await deleteInOtherConsecutive({ statusGrouped, fortnight });
+    rfcSuccess.push(...rfcsDeleted);
+
+    const createdRefunds = await createRefunds({ statusGrouped });
+    stats.recordsCreated = createdRefunds.created;
+    rfcSuccess.push(...createdRefunds.rfcSuccess);
+
+    const lastRefunds = await getSiapsepCount(fortnight);
+
+    stats.activeAfter = lastRefunds.quantity;
+    stats.recordsFailed = rfcErrors.length;
+    stats.recordsSuccesed = rfcSuccess.length;
+    stats.hasError = rfcErrors.length > 0;
+
+    await createRecord({
+      stats,
+      rfcSuccess,
+      rfcErrors,
+    });
+
+    return stats;
+  } catch (error) {
+    console.log(error);
+    throw error;
   }
-
-  const { quantity: currentRefundsCount } = await getSiapsepCount(fortnight);
-
-  stats.activeBefore = currentRefundsCount;
-  stats.activeAfter = currentRefundsCount;
-
-  const statusGrouped = groupByStatus(rfcs);
-
-  stats.recordsDeletedResponsabilities = await repository.siapsep.responsabilities.deleteByRfc(
-    rfcCalculation.getTable()
-  );
-
-  rfcSuccess.push(...statusGrouped[status.responsabilities]);
-
-  const isEmpty = await handleEmptyCreateOrCloseRecords({
-    stats,
-    rfcSuccess,
-    rfcErrors,
-    statusGrouped,
-  });
-
-  if (isEmpty) return stats;
-
-  const rfcCodePayments = [...statusGrouped[status.create], ...statusGrouped[status.close]];
-  await core.rfcPaymentCode.createRfcPaymentCodeCalculation({ data: rfcCodePayments });
-
-  const closeVigenVerified = await verifyCloseVigen({ statusGrouped, fortnight });
-  rfcErrors.push(...closeVigenVerified.rfcErrors);
-  rfcSuccess.push(...closeVigenVerified.rfcSuccess);
-
-  stats.recordsClosedTerm = await closeVigenRefunds({ fortnight });
-  stats.recordsDeletedEmployeeConcept = await deleteRefunds({ fortnight });
-
-  const rfcsDeleted = await deleteInOtherConsecutive({ statusGrouped, fortnight });
-  rfcSuccess.push(...rfcsDeleted);
-
-  const createdRefunds = await createRefunds({ statusGrouped });
-  stats.recordsCreated = createdRefunds.created;
-  rfcSuccess.push(...createdRefunds.rfcSuccess);
-
-  const lastRefunds = await getSiapsepCount(fortnight);
-
-  stats.activeAfter = lastRefunds.quantity;
-  stats.recordsFailed = rfcErrors.length;
-  stats.recordsSuccesed = rfcSuccess.length;
-  stats.hasError = rfcErrors.length > 0;
-
-  await createRecord({
-    stats,
-    rfcSuccess,
-    rfcErrors,
-  });
-
-  return stats;
 };

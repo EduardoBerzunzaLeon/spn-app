@@ -35,12 +35,18 @@ export default tseslint.config(
       unicorn,
     },
     rules: {
-      'prettier/prettier': 'error',
+      'prettier/prettier': [
+        'error',
+        {
+          endOfLine: 'auto',
+        },
+      ],
       'no-console': 'warn',
       'no-debugger': 'error',
       'prefer-const': 'error',
       'no-var': 'error',
       'object-shorthand': 'error',
+      'linebreak-style': 'off',
       // unicorn
       'unicorn/prefer-node-protocol': 'error',
       'unicorn/prefer-ternary': 'error',

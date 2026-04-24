@@ -1,6 +1,6 @@
 import type { EmployeePaymentCodeConceptI } from './employeePaymentCodeConcept.interface';
 
-import type { db } from '~/server/db';
+import { db } from '~/server/db';
 import type { BulkInsertArgs } from '~/server/db/siapsep';
 
 type TypeConcept = 'P' | 'D';

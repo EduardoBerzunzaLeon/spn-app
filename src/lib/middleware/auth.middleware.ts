@@ -20,10 +20,10 @@ export const authMiddleware = createMiddleware().server(async ({ next }) => {
   });
 
   // FIXME: THIS IS CAUSING PROBLEMS WITH VITE, REVIEW WHAT THE HELL IS GOING ON
-  if (!session || !session.user) {
-    setResponseStatus(401);
-    throw new Error('Unauthorized');
-  }
+  // if (!session || !session.user) {
+  //   setResponseStatus(401);
+  //   return next();
+  // }
 
   return next({ context: { user: session?.user } });
 });

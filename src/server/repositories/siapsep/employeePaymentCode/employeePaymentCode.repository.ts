@@ -1,6 +1,6 @@
 import type { EmployeePaymentCodeI } from './employeePaymentCode.interface';
 
-import { db, db } from '~/server/db';
+import { db } from '~/server/db';
 
 export const getManyByRFC = async (rfc: string) =>
   await db.siapsep.execute<EmployeePaymentCodeI>({

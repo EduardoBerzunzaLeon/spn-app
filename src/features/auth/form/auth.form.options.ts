@@ -4,8 +4,8 @@ import { LoginSchema } from '~/shared';
 
 export const signInFormOptions = formOptions({
   defaultValues: {
-    email: 'eduardo@gmail.com',
-    password: '123456790',
+    email: 'test@example.com',
+    password: 'password123',
   },
   validators: {
     onChange: LoginSchema,

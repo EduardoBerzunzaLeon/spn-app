@@ -42,7 +42,7 @@ export const getLastConsecutive = async () => {
     repository.spn.refunds.getLastConsecutive(),
   ]);
 
-  if (!siconFortnightPre || !siconFortnightPre.fortnight) {
+  if (!siconFortnightPre || !siconFortnightPre?.fortnight) {
     throw ErrorApp.internal('No se encontraron consecutivos de SICON');
   }
 
@@ -51,7 +51,7 @@ export const getLastConsecutive = async () => {
   if (!spnFortnightPre) {
     return {
       siconFortnight,
-      spnFortnight: spnFortnightPre,
+      spnFortnight: { fortnight: 0, consecutive: 0 },
       warning: 'No se encontro consecutivo en SPN',
       isFirstCharge: true,
       areEqualFortnights: false,

@@ -31,6 +31,7 @@ export function getRouter() {
     },
     mutationCache: new MutationCache({
       onError: (error) => {
+        console.log({ error });
         const message = handleErrorMessage(error.message);
         return toast.error(message);
       },
