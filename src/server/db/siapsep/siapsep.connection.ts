@@ -3,6 +3,7 @@ import odbc from 'odbc';
 import type { ExecuteBulkInsertProps, ExecuteProps, OdbcConnection } from './siapsep.interface';
 
 import 'dotenv/config';
+import { logger } from '~/lib';
 import { ErrorApp } from '~/shared';
 
 export class SiapsepConnection implements OdbcConnection {
@@ -49,7 +50,7 @@ export class SiapsepConnection implements OdbcConnection {
         return await this.connection!.query<T>(query);
       }
     } catch (error) {
-      console.log('Full:', JSON.stringify(error, null, 2));
+      logger.error(error, { location: 'SiapsepConnection' });
       throw Error('Error en la conexión del SIAPSEP, favor de verificar el servidor');
     }
   }

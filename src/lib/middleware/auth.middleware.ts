@@ -1,10 +1,9 @@
 import { createMiddleware } from '@tanstack/react-start';
-import { getRequest, setResponseStatus } from '@tanstack/react-start/server';
+import { setResponseStatus } from '@tanstack/react-start/server';
 
 import { auth } from '~/lib/auth';
 
-export const authMiddleware = createMiddleware().server(async ({ next }) => {
-  const request = getRequest();
+export const authMiddleware = createMiddleware().server(async ({ next, request }) => {
   if (!request) {
     setResponseStatus(500);
     throw new Error('Internal server error');
@@ -19,11 +18,10 @@ export const authMiddleware = createMiddleware().server(async ({ next }) => {
     },
   });
 
-  // FIXME: THIS IS CAUSING PROBLEMS WITH VITE, REVIEW WHAT THE HELL IS GOING ON
-  // if (!session || !session.user) {
-  //   setResponseStatus(401);
-  //   return next();
-  // }
+  if (!session || !session.user) {
+    setResponseStatus(401);
+    throw new Error('Unauthorized');
+  }
 
-  return next({ context: { user: session?.user } });
+  return next({ context: { user: session.user, headers } });
 });

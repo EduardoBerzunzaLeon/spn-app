@@ -1,9 +1,7 @@
-import { createServerFn } from '@tanstack/react-start';
-
 import { controlProcess } from '../index';
 
-export const getFortnight = createServerFn().handler(
-  async () =>
-    // FIXME: VIGILAR SI ESTO OCASIONA ERRORES CON VITE
-    await controlProcess.cases.getSiapsepInitialData()
+import { protectedQuery } from '~/lib';
+
+export const getFortnight = protectedQuery.handler(
+  async () => await controlProcess.cases.getSiapsepInitialData()
 );

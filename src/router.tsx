@@ -1,12 +1,16 @@
+import * as Sentry from '@sentry/tanstackstart-react';
 import { MutationCache, QueryClient } from '@tanstack/react-query';
 import { createRouter } from '@tanstack/react-router';
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query';
+import * as dotenv from 'dotenv';
 
 import { DefaultCatchBoundary } from './features/core/components/errors/DefaultCatchBoundary';
 import { NotFound } from './features/core/components/errors/NotFound';
 import { routeTree } from './routeTree.gen';
 import { isObject } from './shared';
 import { toast } from './utils';
+
+dotenv.config({ path: './.env.development' });
 
 const handleErrorMessage = (errorMessage?: string) => {
   if (!errorMessage) {
@@ -31,7 +35,9 @@ export function getRouter() {
     },
     mutationCache: new MutationCache({
       onError: (error) => {
-        console.log({ error });
+        // Sentry.captureException(error, {
+        //   extra: { section: 'Mutation', retryCount: 3 },
+        // });
         const message = handleErrorMessage(error.message);
         return toast.error(message);
       },
@@ -63,6 +69,20 @@ export function getRouter() {
     defaultStructuralSharing: true,
     notFoundMode: 'fuzzy',
   });
+
+  if (typeof window !== 'undefined') {
+    Sentry.init({
+      dsn: process.env.DSN_SENTRY, // Lo obtienes al crear el proyecto en sentry.io
+      integrations: [
+        Sentry.tanstackRouterBrowserTracingIntegration(router),
+        Sentry.replayIntegration(),
+      ],
+      // Ajustes recomendados para desarrollo:
+      tracesSampleRate: 1.0,
+      replaysSessionSampleRate: 0.1,
+      replaysOnErrorSampleRate: 1.0,
+    });
+  }
 
   setupRouterSsrQueryIntegration({
     router,

@@ -14,6 +14,7 @@ const getSubqueryRfcSuccess = () => {
     })
     .from(refundRfcSuccess)
     .where(eq(refundRfcSuccess.refundLogsId, refundLogs.id))
+    .limit(10)
     .$dynamic();
 
   return core.query.getRelationalColumn({
@@ -32,6 +33,7 @@ const getSubqueryRfcFailed = () => {
     })
     .from(refundRfcFailed)
     .where(eq(refundRfcFailed.refundLogsId, refundLogs.id))
+    .limit(10)
     .$dynamic();
 
   return core.query.getRelationalColumn({
