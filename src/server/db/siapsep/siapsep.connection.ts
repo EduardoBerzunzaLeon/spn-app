@@ -79,7 +79,6 @@ export class SiapsepConnection implements OdbcConnection {
     let quantity = 0;
 
     await this.connect();
-    // await this.connection!.beginTransaction();
 
     for (const item of args) {
       if (item.length === 0) {
@@ -100,8 +99,6 @@ export class SiapsepConnection implements OdbcConnection {
       await this.connection!.query(queryString);
       quantity++;
     }
-
-    // await this.connection!.commit();
 
     return quantity;
   }

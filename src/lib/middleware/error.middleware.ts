@@ -1,8 +1,7 @@
-import * as Sentry from '@sentry/node'; // O @sentry/tanstackstart-react dependiendo de dónde corra
+import * as Sentry from '@sentry/node';
 import { createMiddleware } from '@tanstack/react-start';
 
-import { getOptionalUser } from '../utils';
-
+import { auth as betterAuth } from '~/lib/auth';
 import { handlerError } from '~/shared';
 
 //request
@@ -11,11 +10,12 @@ export const errorMiddleware = createMiddleware().server(async ({ next, request 
     const result = await next();
     return result;
   } catch (error) {
-    const session = await getOptionalUser();
-    // Sentry.captureException(error, {
-    //   user: { id: session?.user?.id || 'notdefined ' },
-    //   extra: { url: request.url },
-    // });
+    const session = await betterAuth.api.getSession({ headers: request.headers });
+
+    Sentry.captureException(error, {
+      user: { id: session?.user?.id || 'notdefined ' },
+      extra: { url: request.url },
+    });
     Sentry.withScope((scope) => {
       if (session?.user) {
         scope.setUser({

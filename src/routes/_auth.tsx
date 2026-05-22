@@ -3,13 +3,9 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { controlProcessQueries } from '~/features/controlProcess';
 import { controlSiconQueries } from '~/features/controlSicon';
 import { AuthLayout, MainHeader } from '~/features/ui';
-import { authMiddleware } from '~/lib/middleware';
 
 export const Route = createFileRoute('/_auth')({
   component: DashboardLayout,
-  server: {
-    middleware: [authMiddleware],
-  },
   beforeLoad: async ({ context, location }) => {
     if (!context.user) {
       throw redirect({

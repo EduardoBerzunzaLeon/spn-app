@@ -1,6 +1,6 @@
+import { protectedQuery } from '~/server/utils';
 import { kardex } from '..';
 
-import { protectedQuery } from '~/lib';
 import { KardexSearchByRFC } from '~/shared';
 
 export const getPaymentCodeByRFC = protectedQuery

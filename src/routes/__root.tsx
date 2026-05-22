@@ -33,8 +33,6 @@ import { NavigationProgress, nprogress } from '@mantine/nprogress';
 import nprogressCssUrl from '@mantine/nprogress/styles.css?url';
 import spotlightCssUrl from '@mantine/spotlight/styles.css?url';
 
-import { ClientRoot } from './-ClientRoot';
-
 import { authQueries } from '~/features/auth';
 import { DefaultCatchBoundary, NotFound } from '~/features/core';
 import type { Nulleable } from '~/shared';
@@ -111,9 +109,7 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
   return (
     <RootDocument>
-      <ClientRoot>
-        <Outlet />
-      </ClientRoot>
+      <Outlet />
     </RootDocument>
   );
 }

@@ -72,7 +72,7 @@ export default tseslint.config(
         {
           groups: [
             ['.*styles\\.css$'],
-            ['^react-scan$', '^react$', '^next$', '^next/'],
+            ['^react$', '^next$', '^next/'],
             ['^node:'],
             ['^dayjs$', '^@?\\w'],
             ['^@mantine/', '^@mantinex/', '^@mantine-tests/'],

@@ -2,15 +2,12 @@ import * as Sentry from '@sentry/tanstackstart-react';
 import { MutationCache, QueryClient } from '@tanstack/react-query';
 import { createRouter } from '@tanstack/react-router';
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query';
-import * as dotenv from 'dotenv';
 
 import { DefaultCatchBoundary } from './features/core/components/errors/DefaultCatchBoundary';
 import { NotFound } from './features/core/components/errors/NotFound';
 import { routeTree } from './routeTree.gen';
 import { isObject } from './shared';
 import { toast } from './utils';
-
-dotenv.config({ path: './.env.development' });
 
 const handleErrorMessage = (errorMessage?: string) => {
   if (!errorMessage) {
@@ -35,9 +32,6 @@ export function getRouter() {
     },
     mutationCache: new MutationCache({
       onError: (error) => {
-        // Sentry.captureException(error, {
-        //   extra: { section: 'Mutation', retryCount: 3 },
-        // });
         const message = handleErrorMessage(error.message);
         return toast.error(message);
       },
@@ -70,9 +64,9 @@ export function getRouter() {
     notFoundMode: 'fuzzy',
   });
 
-  if (typeof window !== 'undefined') {
+  if (!router.isServer) {
     Sentry.init({
-      dsn: process.env.DSN_SENTRY, // Lo obtienes al crear el proyecto en sentry.io
+      dsn: import.meta.env.VITE_DSN_SENTRY,
       integrations: [
         Sentry.tanstackRouterBrowserTracingIntegration(router),
         Sentry.replayIntegration(),

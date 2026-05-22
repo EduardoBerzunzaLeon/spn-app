@@ -1,7 +1,6 @@
+import { protectedMutation } from '~/server/utils';
 import { controlProcess } from '../index';
 
-import { protectedQuery } from '~/lib';
-
-export const getFortnight = protectedQuery.handler(
+export const getFortnight = protectedMutation.handler(
   async () => await controlProcess.cases.getSiapsepInitialData()
 );

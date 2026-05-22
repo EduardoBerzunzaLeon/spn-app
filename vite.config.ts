@@ -1,3 +1,4 @@
+import { sentryTanstackStart } from '@sentry/tanstackstart-react/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { tanstackStart } from '@tanstack/react-start/plugin/vite';
 import viteReact from '@vitejs/plugin-react';
@@ -7,7 +8,16 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  plugins: [tanstackStart(), viteReact(), tailwindcss()],
+  plugins: [
+    tanstackStart(),
+    viteReact(),
+    tailwindcss(),
+    sentryTanstackStart({
+      org: 'eduardo-berzunza',
+      project: 'javascript-tanstackstart-react',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+    }),
+  ],
   resolve: {
     tsconfigPaths: true,
     alias: {

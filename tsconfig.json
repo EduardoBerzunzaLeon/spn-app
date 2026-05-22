@@ -1,6 +1,7 @@
 {
   "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
+    "types": ["vite/client"],
     "strict": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
@@ -19,5 +20,5 @@
       "~/*": ["./src/*"]
     },
     "noEmit": true
-  },
+  }
 }

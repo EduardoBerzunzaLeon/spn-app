@@ -1,5 +1,7 @@
 import { ErrorApp } from './errorApp.entity';
 
+// import { logger } from '~/lib';
+
 export const handlerError = (error: unknown) => {
   if (error instanceof AggregateError) {
     return ErrorApp.internal('Error en la conexión');
@@ -9,5 +11,7 @@ export const handlerError = (error: unknown) => {
     return error;
   }
 
+  // logger.error('Error no manejado:', error);
+  console.log({ error });
   return ErrorApp.internal('Ocurrio un error sin manejar, favor de contactar al administrador.');
 };
