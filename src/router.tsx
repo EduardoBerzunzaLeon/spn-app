@@ -64,17 +64,28 @@ export function getRouter() {
     notFoundMode: 'fuzzy',
   });
 
+  const isProduction = process.env.NODE_ENV === 'production';
+
   if (!router.isServer) {
     Sentry.init({
       dsn: import.meta.env.VITE_DSN_SENTRY,
+      environment: isProduction ? 'production' : 'development',
       integrations: [
         Sentry.tanstackRouterBrowserTracingIntegration(router),
         Sentry.replayIntegration(),
       ],
-      // Ajustes recomendados para desarrollo:
-      tracesSampleRate: 1.0,
+      sampleRate: 1.0,
+      tracesSampleRate: isProduction ? 0.1 : 1.0,
       replaysSessionSampleRate: 0.1,
       replaysOnErrorSampleRate: 1.0,
+    });
+  } else {
+    Sentry.init({
+      dsn: process.env.SENTRY_SERVER_DSN || import.meta.env.VITE_DSN_SENTR,
+      environment: isProduction ? 'production' : 'development',
+      sampleRate: 1.0,
+      tracesSampleRate: isProduction ? 0.1 : 1.0,
+      // Nota: En el servidor NO se usan replays ni tracing de navegador
     });
   }
 

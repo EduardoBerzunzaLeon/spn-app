@@ -1,7 +1,7 @@
 export class ErrorApp extends Error {
   readonly status: number;
 
-  private constructor(message: string, status: number) {
+  public constructor(message: string, status: number) {
     super(message);
     this.name = this.constructor.name;
     this.status = status;

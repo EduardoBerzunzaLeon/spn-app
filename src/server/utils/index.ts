@@ -1,1 +1,1 @@
-export * from './rpc';
+export { protectedMutation, protectedQuery } from './rpc';

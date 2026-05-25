@@ -5,9 +5,11 @@ export const Route = createFileRoute('/_auth/')({
 });
 
 function RouteComponent() {
+  const { user } = Route.useRouteContext();
+
   return (
     <div>
-      Hello <span className="font-bold">Hoisliwis</span>
+      Hello <span className="font-bold">{user.name}</span>
     </div>
   );
 }

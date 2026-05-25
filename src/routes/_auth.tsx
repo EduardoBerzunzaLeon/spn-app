@@ -19,7 +19,7 @@ export const Route = createFileRoute('/_auth')({
     context.queryClient.prefetchQuery(controlProcessQueries.fortnight());
     context.queryClient.prefetchQuery(controlSiconQueries.fortnight());
 
-    return { crumb: 'Dashboard', iconName: 'home' };
+    return { crumb: 'Dashboard', iconName: 'home', user: context.user };
   },
   head: () => ({
     meta: [

@@ -4,7 +4,6 @@ import { createMiddleware } from '@tanstack/react-start';
 import { auth as betterAuth } from '~/lib/auth';
 import { handlerError } from '~/shared';
 
-//request
 export const errorMiddleware = createMiddleware().server(async ({ next, request }) => {
   try {
     const result = await next();
@@ -12,10 +11,6 @@ export const errorMiddleware = createMiddleware().server(async ({ next, request 
   } catch (error) {
     const session = await betterAuth.api.getSession({ headers: request.headers });
 
-    Sentry.captureException(error, {
-      user: { id: session?.user?.id || 'notdefined ' },
-      extra: { url: request.url },
-    });
     Sentry.withScope((scope) => {
       if (session?.user) {
         scope.setUser({
@@ -23,11 +18,14 @@ export const errorMiddleware = createMiddleware().server(async ({ next, request 
           email: session.user.email,
         });
       } else {
-        scope.setUser(null);
+        scope.setUser({ id: 'notdefined' });
       }
       scope.setTag('auth_status', session?.user ? 'authenticated' : 'anonymous');
-      Sentry.captureException(error, { extra: { url: request.url } });
+      scope.setExtra('url', request.url);
+      scope.setExtra('method', request.method);
+      Sentry.captureException(error);
     });
+
     throw handlerError(error);
   }
 });

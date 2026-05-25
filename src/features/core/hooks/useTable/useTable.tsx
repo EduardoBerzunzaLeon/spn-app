@@ -23,8 +23,7 @@ import { ActionIcon, Flex, Tooltip } from '@mantine/core';
 import type { UseTableProps } from './useTable.interface';
 import { getColumns, getColumnsFilter, recreateFilters } from './useTable.utils';
 
-import { IconError, IconRefresh, IconSettingsOff } from '~/features/ui';
-import { EmptySearch } from '~/features/ui/components/Searchbar/EmptySearch';
+import { IconEmptySearch, IconError, IconRefresh, IconSettingsOff } from '~/features/ui';
 import { isEmpty, isFunction } from '~/shared';
 
 export const useTable = <T extends MRT_RowData, F extends string>({
@@ -184,8 +183,14 @@ export const useTable = <T extends MRT_RowData, F extends string>({
       </Flex>
     ),
     renderEmptyRowsFallback: () => (
-      <div className="p-4">
-        <EmptySearch />
+      <div className="sticky left-1/2 -translate-x-1/2 w-max py-20">
+        <div className="flex flex-col items-center justify-center text-center">
+          <IconEmptySearch size={90} stroke={1.5} />
+          <h3 className="text-lg font-semibold">No se encontraron resultados</h3>
+          <p className="text-sm text-gray-500 max-w-xs">
+            Parece que no hay información disponible con los filtros seleccionados.
+          </p>
+        </div>
       </div>
     ),
     renderRowActionMenuItems,

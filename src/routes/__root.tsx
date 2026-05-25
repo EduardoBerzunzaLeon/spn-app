@@ -14,17 +14,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import mantineTablesCssUrl from 'mantine-react-table/styles.css?url';
 import { Toaster } from 'sonner';
 
-import {
-  Button,
-  ColorSchemeScript,
-  createTheme,
-  HoverCard,
-  mantineHtmlProps,
-  MantineProvider,
-  Menu,
-  Popover,
-  Tooltip,
-} from '@mantine/core';
+import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import mantineCssUrl from '@mantine/core/styles.css?url';
 import { DatesProvider } from '@mantine/dates';
 import datesCssUrl from '@mantine/dates/styles.css?url';
@@ -39,6 +29,7 @@ import type { Nulleable } from '~/shared';
 import appCssUrl from '~/styles/app.css?url';
 import linksCssUrl from '~/styles/links-groups.css?url';
 import sidebarCssUrl from '~/styles/sidebar.css?url';
+import { theme } from '~/styles/theme';
 import { seo } from '~/utils';
 
 // import NProgress from "nprogress";
@@ -113,50 +104,6 @@ function RootComponent() {
     </RootDocument>
   );
 }
-
-const theme = createTheme({
-  defaultRadius: 'md',
-  cursorType: 'pointer',
-  components: {
-    HoverCard: HoverCard.extend({
-      defaultProps: {
-        shadow: 'md',
-        withArrow: true,
-        arrowSize: 10,
-      },
-    }),
-    Popover: Popover.extend({
-      defaultProps: {
-        shadow: 'md',
-        withArrow: true,
-        arrowSize: 10,
-      },
-    }),
-    Menu: Menu.extend({
-      defaultProps: {
-        shadow: 'md',
-        withArrow: true,
-        arrowSize: 10,
-        arrowPosition: 'center',
-      },
-    }),
-    Tooltip: Tooltip.extend({
-      defaultProps: {
-        withArrow: true,
-        arrowSize: 10,
-        color: '#2E2E2E',
-      },
-    }),
-    Button: Button.extend({
-      defaultProps: {
-        variant: 'light',
-        loaderProps: {
-          type: 'dots',
-        },
-      },
-    }),
-  },
-});
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   const routerState = useRouterState();

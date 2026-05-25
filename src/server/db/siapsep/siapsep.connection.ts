@@ -6,17 +6,26 @@ import 'dotenv/config';
 import { logger } from '~/lib';
 import { ErrorApp } from '~/shared';
 
+declare global {
+  var __siapsep_connection_instance: SiapsepConnection | undefined;
+}
+
 export class SiapsepConnection implements OdbcConnection {
-  private static instance: SiapsepConnection;
+  // private static instance: SiapsepConnection;
   private connection: odbc.Connection | undefined;
 
   private constructor() {}
 
   static getInstance() {
-    if (!SiapsepConnection.instance) {
-      SiapsepConnection.instance = new SiapsepConnection();
+    if (process.env.NODE_ENV === 'production') {
+      return new SiapsepConnection();
     }
-    return SiapsepConnection.instance;
+
+    if (!globalThis.__siapsep_connection_instance) {
+      globalThis.__siapsep_connection_instance = new SiapsepConnection();
+    }
+
+    return globalThis.__siapsep_connection_instance;
   }
 
   async connect() {
