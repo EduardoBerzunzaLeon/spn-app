@@ -23,7 +23,7 @@ export const useConfirmModal = ({
   const exactTitle = title || 'Por favor confirmar esta acción';
   const exactBody =
     body ||
-    'Esta acción es tan importante que se requiere confirmarla. Por favor, haga clic en uno de estos botones para continuar.';
+    'Esta acción es tan importante e irreversible que se requiere confirmarla. Por favor, haga clic en uno de estos botones para continuar.';
   const exactCancelAlertText = cancelAlertText || 'Petición cancelada';
   const exactConfirmText = confirmText || 'Confirmar';
   const exactCancelText = cancelText || 'Cancelar';

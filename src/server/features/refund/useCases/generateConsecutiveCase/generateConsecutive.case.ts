@@ -145,7 +145,7 @@ const getSiconCapture = async ({ id, fortnight }: GetSiconCaptureI) => {
   const data = await repository.sicon.refunds.getCaptureByIdOpenClose(id);
 
   // TODO: ask if close de capture before or after verify this
-  if (data.length < 0) {
+  if (data.length === 0) {
     throw ErrorApp.badRequest(`No se encontraron datos de captura para la quincena ${fortnight}`);
   }
 
@@ -406,6 +406,11 @@ export const generateConsecutive = async (userId: string) => {
   rfcs = core.rfc.filterRfcs(rfcs, verifiedRfcs.rfcsNotFounded);
 
   if (rfcs.length === 0) {
+    if (verifiedRfcs.rfcsNotFounded.length > 0) {
+      throw ErrorApp.badRequest(
+        'Todos los registros tienen errores, no hay registros que procesar'
+      );
+    }
     throw ErrorApp.badRequest('No hay registros que procesar');
   }
 
@@ -421,6 +426,9 @@ export const generateConsecutive = async (userId: string) => {
   );
 
   rfcSuccess.push(...statusGrouped[status.responsabilities]);
+
+  const rfcsDeleted = await deleteInOtherConsecutive({ statusGrouped, fortnight });
+  rfcSuccess.push(...rfcsDeleted);
 
   const isEmpty = await handleEmptyCreateOrCloseRecords({
     stats,
@@ -440,9 +448,6 @@ export const generateConsecutive = async (userId: string) => {
 
   stats.recordsClosedTerm = await closeVigenRefunds({ fortnight });
   stats.recordsDeletedEmployeeConcept = await deleteRefunds({ fortnight });
-
-  const rfcsDeleted = await deleteInOtherConsecutive({ statusGrouped, fortnight });
-  rfcSuccess.push(...rfcsDeleted);
 
   const createdRefunds = await createRefunds({ statusGrouped });
   stats.recordsCreated = createdRefunds.created;

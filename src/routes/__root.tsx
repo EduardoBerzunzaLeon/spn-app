@@ -1,3 +1,9 @@
+// import '@mantine/core/styles.css';
+
+// ‼️ import notifications styles after core package styles
+
+import '@mantine/notifications/styles.css';
+
 import * as React from 'react';
 
 import type { QueryClient } from '@tanstack/react-query';
@@ -12,13 +18,13 @@ import {
 // import 'dayjs/locale/es';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import mantineTablesCssUrl from 'mantine-react-table/styles.css?url';
-import { Toaster } from 'sonner';
 
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import mantineCssUrl from '@mantine/core/styles.css?url';
 import { DatesProvider } from '@mantine/dates';
 import datesCssUrl from '@mantine/dates/styles.css?url';
 import { ModalsProvider } from '@mantine/modals';
+import { Notifications } from '@mantine/notifications';
 import { NavigationProgress, nprogress } from '@mantine/nprogress';
 import nprogressCssUrl from '@mantine/nprogress/styles.css?url';
 import spotlightCssUrl from '@mantine/spotlight/styles.css?url';
@@ -147,7 +153,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <MantineProvider defaultColorScheme="dark" theme={theme}>
           <NavigationProgress />
           <ModalsProvider>
-            <Toaster theme="dark" />
+            <Notifications />
             <DatesProvider settings={{ locale: 'es', firstDayOfWeek: 0, weekendDays: [0] }}>
               {children}
             </DatesProvider>

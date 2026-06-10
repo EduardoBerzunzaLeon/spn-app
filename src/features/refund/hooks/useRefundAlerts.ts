@@ -6,7 +6,7 @@ import { controlProcessQueries } from '~/features/controlProcess';
 import { refundQueries } from '~/features/refund';
 
 export const useRefundAlerts = () => {
-  const { data, isError, isFetching, error } = useQuery(refundQueries.lastConsecutive());
+  const { data, isError, isFetching, error, refetch } = useQuery(refundQueries.lastConsecutive());
   const { data: fortnightSiapsep } = useSuspenseQuery(controlProcessQueries.fortnight());
 
   const { message, hasError } = useMemo(() => {
@@ -99,6 +99,7 @@ export const useRefundAlerts = () => {
     isFetching,
     message,
     messageInfo,
+    refetch,
     messageWarning,
     data,
   };

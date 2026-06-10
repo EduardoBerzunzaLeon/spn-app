@@ -80,7 +80,9 @@ export const getLastConsecutive = async () => {
   });
 
   if (!areEqualFortnights || differencesConsecutive !== 0) {
-    const extraText = warningIsImportant && 'La diferencia es mayor a un consecutivo, ¡VERIFICALO!';
+    const extraText = warningIsImportant
+      ? 'La diferencia es mayor a un consecutivo, ¡VERIFICALO!'
+      : '';
     fortnights.warning = `Existe un desfase entre quincenas y consecutivos del SICON (quincena: ${siconFortnight.fortnight}, consecutivo: ${siconFortnight.consecutive})  y SPN (quincena: ${spnFortnight.fortnight}, consecutivo: ${spnFortnight.consecutive}). ${extraText}`;
   }
 

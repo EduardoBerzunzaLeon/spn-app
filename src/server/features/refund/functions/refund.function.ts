@@ -1,6 +1,6 @@
 import { refund } from '../index';
 
-import { protectedQuery, protectedMutation } from '~/server/utils';
+import { protectedMutation, protectedQuery } from '~/server/utils';
 import { RefundSearchSchema, RefundUpdateNotesSchema, withPaginationHandlerError } from '~/shared';
 
 export const getLogs = protectedQuery.inputValidator(RefundSearchSchema).handler(

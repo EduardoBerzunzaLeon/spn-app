@@ -1,13 +1,16 @@
-import { toast as toastSonner } from 'sonner';
+// import { toast as toastSonner } from 'sonner';
+import { notifications } from '@mantine/notifications';
 
-const error = (message: string) => toastSonner.error('Error', { description: message });
+const error = (message: string) => notifications.show({ title: 'Error', message, color: 'red' });
 
 const success = (message: string) =>
-  toastSonner.success('Operación exitosa', { description: message });
+  notifications.show({ title: 'Operación exitosa', message, color: 'teal' });
 
-const warning = (message: string) => toastSonner.warning('Advertencia', { description: message });
+const warning = (message: string) =>
+  notifications.show({ title: 'Advertencia', message, color: 'yellow' });
 
-const info = (message: string) => toastSonner.warning('Información', { description: message });
+const info = (message: string) =>
+  notifications.show({ title: 'Información', message, color: 'blue' });
 
 export const toast = {
   error,

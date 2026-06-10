@@ -1,10 +1,13 @@
 import { Stack } from '@mantine/core';
 
 import { useRefundAlerts } from '~/features/refund';
-import { Alert } from '~/features/ui';
+import { Alert, Skeleton } from '~/features/ui';
 
 export const RefundAlerts = () => {
-  const { hasError, message, hasWarning, messageWarning, hasInfo, messageInfo } = useRefundAlerts();
+  const { hasError, message, hasWarning, messageWarning, hasInfo, messageInfo, isFetching } =
+    useRefundAlerts();
+
+  if (isFetching) return <Skeleton height={80} radius="md" />;
 
   return (
     <Stack>

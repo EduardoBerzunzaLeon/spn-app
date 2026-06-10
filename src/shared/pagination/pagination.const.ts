@@ -12,5 +12,5 @@ export const DEFAULT_SEARCH_VALUES: SearchSchemaI = {
 
 export const DEFAULT_REFUND_SEARCH = {
   ...DEFAULT_SEARCH_VALUES,
-  orderBy: 'processFortnight',
+  orderBy: 'createdAt',
 };

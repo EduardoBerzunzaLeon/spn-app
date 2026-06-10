@@ -1,6 +1,6 @@
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router';
 
-import { Group, Text, Title } from '@mantine/core';
+import { Button, Group, Text, Title } from '@mantine/core';
 
 import {
   RefundAlerts,
@@ -9,6 +9,7 @@ import {
   refundQueries,
   useRefundAlerts,
 } from '~/features/refund';
+import { IconRefresh } from '~/features/ui';
 import { DEFAULT_REFUND_SEARCH, RefundSearchSchema } from '~/shared';
 
 export const Route = createFileRoute('/_auth/(concepts)/refund/')({
@@ -29,17 +30,26 @@ export const Route = createFileRoute('/_auth/(concepts)/refund/')({
 });
 
 function RouteComponent() {
-  const { data, isFetching } = useRefundAlerts();
+  const { data, isFetching, refetch } = useRefundAlerts();
   const text =
     !data || isFetching
       ? 'Sin datos'
       : `Quincena Activa: ${data?.siconFortnight.fortnight} - Ultimo consecutivo: ${data?.siconFortnight.consecutive}`;
 
+  const syncronize = () => {
+    refetch();
+  };
+
   return (
     <>
       <RefundAlerts />
       <Group justify="space-between" align="center" mt="md" mb="md">
-        <Title order={4}>Historial</Title>
+        <Group>
+          <Title order={4}>Historial</Title>
+          <Button onClick={syncronize} disabled={isFetching} leftSection={<IconRefresh />}>
+            Sincronizar
+          </Button>
+        </Group>
         <Text>{text}</Text>
         <RefundGenerateConsecutiveBtn />
       </Group>

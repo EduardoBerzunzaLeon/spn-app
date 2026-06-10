@@ -13,6 +13,7 @@ export const RefundGenerateConsecutiveBtn = () => {
   const openModal = useConfirmModal({
     onConfirm: () => generateConsecutive.mutate({}),
     cancelAlertText: 'Generación cancelada',
+    body: '¿Estás seguro de que deseas procesar y cargar los reintegros al sistema SIAPSEP? Esta acción es irreversible.',
   });
 
   return (
@@ -22,7 +23,7 @@ export const RefundGenerateConsecutiveBtn = () => {
       onClick={openModal}
       loading={generateConsecutive.isPending}
     >
-      Cargar consecutivo
+      Cargar reintegros
     </Button>
   );
 };
